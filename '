@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+//#include <netinet/in.h>
+//#include <sys/socket.h>
+//#include <sys/types.h>
+#include <sys/fcntl.h>
+#include "fsplib.h"
+
+//p2pnat
+#include "rendezvous_packet.h"
+#include "rendezvous_endpoint.h"
+//?end
+int new_udp_socket1(int local_port, char *local_address)
+{
+	int udp_fd, rc;
+	struct sockaddr_in addr;
+	int flag = 1, len = sizeof(int);
+	udp_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if(udp_fd <= 0){
+		printf("%s:%d open socket error", __FUNCTION__, __LINE__);
+		return -1;
+	}
+	bzero(&addr, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(local_port);
+	if(local_address != NULL && strlen(local_address) > 0){
+		addr.sin_addr.s_addr = inet_addr(local_address);
+	}else{
+		addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	}
+	if(setsockopt(udp_fd, SOL_SOCKET, SO_REUSEADDR, &flag, len) == -1){
+		printf("%s:%d setsockopt error", __FUNCTION__, __LINE__);
+		perror("setsockopt");
+		close( udp_fd );
+		return -1;
+	}
+
+	if((rc=bind(udp_fd, (struct sockaddr*)&addr, sizeof(addr))) < 0){
+		printf("%s:%d socket binding error rc = %d", __FUNCTION__, __LINE__, rc);
+		close( udp_fd );
+		return -1;
+	}
+	rc = fcntl(udp_fd, F_SETFD, FD_CLOEXEC);
+	return udp_fd;
+}
+
+
+int main (int argc, char *argv[])
+{
+	int i;
+	FSP_SESSION* s;
+	FSP_PKT p;
+	FSP_PKT r;
+	FSP_FILE *f;
+	struct dirent *d;
+	FSP_DIR *dir;
+	int port=2000;
+	char server_addr[60]="127.0.0.1";
+	char udp_message[1024] = {0};
+	rendezvous_packet_t resp_packet;
+	struct sockaddr_in peer_addr;
+
+	//p2pnat add by xxfan 2016-03-10
+	int peer_fd;
+	int status;
+	char cid[41],ped[25];
+	char r_ed[25]={0}, r_ped[25]={0};
+	char tid[41]="OM20020160308";
+	REND_EPT_HANDLE p2p_endpoint = NULL;
+	REND_CONN_HANDLE p2p_conn = NULL;
+
+	//get device id
+	if(argc>=2)
+		strcpy(tid,argv[1]);
+
+	p2p_init(NULL,"fsp",5,NULL,0);
+	fd = new_udp_socket(0,NULL);
+	p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,NULL,peer_fd);
+
+	if(p2p_endpoint == NULL)
+	{
+		printf("create new p2p endpoint fail\n");
+		close(fd);
+		return 0;
+	}
+
+	rendezvous_endpoint_reg(p2p_endpoint);
+
+	while(1)
+	{
+		rendezvous_status_handle();
+		if(get_rendezvous_endpoint(p2p_endpoint,&status,cid,NULL,ped) == 0)
+		{
+			if( status == ENDPOINT_REGISTER_OK && p2p_conn == NULL)
+			{
+				p2p_conn = new_rendezvous_connection(p2p_endpoint, tid, "FSP", "default" ,NULL);
+				if(p2p_conn != NULL)
+				{
+					printf("p2p conn create successful\n");
+					continue;
+				}
+			}
+		}
+		if(get_rendezvous_connection(p2p_conn, &status, r_ed, r_ped) == 0){
+			if(status == CONNECTION_OK) {
+				//如果连接建立成功，则可以发送应用数据
+				if(strlen(r_ped) > 0){
+					printf("send data to %s\n", r_ped);
+					strcpy(server_addr, r_ped);
+				}
+				if(strlen(r_ed) > 0){
+					printf("send data to %s\n", r_ed);
+					strcpy(server_addr, r_ed);
+				}
+				break;
+			}
+		}
+		memset(udp_message, 0, sizeof(udp_message));
+		rc = recv_udp_packet(fd, udp_message, sizeof(udp_message), &peer_addr);
+		if(rc <= 0){
+			continue;
+		}
+
+		rc = decode_rendezvous_packet(udp_message, &peer_addr, &resp_packet);
+		if(rc == 0){
+			rendezvous_message_handle(fd, &resp_packet);
+			continue;
+		}
+	}
+
+	rc = endpoint_to_address(server_addr, &peer_addr);
+	if(rc != 0)
+	{
+		printf("invalid ip port:%s\n", server_addr);
+		return -1;
+	}
+	s=fsp_open_session(fd, &peer_addr,NULL);
+	assert(s);
+	s->timeout=9000;
+
+	printf("running here\n");
+	printf("s->fd-%d\n",s->fd);
+	memset(&p,0,sizeof(p));
+	p.cmd=FSP_CC_VERSION;
+	printf("p->xlen-%d\n",p.xlen);
+	for(i=0;i<100;i++)
+	{
+		assert (fsp_transaction(s,&p,&r)==0 );
+	}
+
+	/* dir list test */
+	dir=fsp_opendir(s,"/");
+	assert(dir);
+
+	while ( (d=fsp_readdir(dir)) != NULL )
+		printf("d_name-%s\n",d->d_name);
+
+	printf("after read dir\n");
+	fsp_closedir(dir);	
+
+	/* get a file */
+	f=fsp_fopen(s,"xxfan","rb");
+	assert(f);
+	while( ( i=fsp_fread(p.buf,1,1000,f) ) )
+		write(1,p.buf,i);
+	fsp_fclose(f);
+
+	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
+	/* bye! */ 
+	fsp_close_session(s);
+	return 0;
+}

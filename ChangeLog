@@ -1,0 +1,69 @@
+0.12
+	SConstruct check routines moved into separate files in site_scons
+	  directory and updated from fsp suite codebase where possible.
+	  we have only 2 checks specific to this project, rest are shared
+	  with fsp and fspclient.
+	use -Wno-cast-align to silence Clang warnings
+0.11
+        optionally build and install shared library (EXPERIMENTAL FEATURE)
+	  based on report by Ahmed El-Mahmoudy, Debian fsplib maintainer
+	name of static fsp library should be libfsplib.a as it used to be
+	  in libtool's days. Noticed by Ahmed El-Mahmoudy.
+0.10
+	configure.ac nuked, fsplib builds now with scons tool only
+	INSTALL file removed, it was autoconf specific
+	Makefile.am removed
+	Don't turn on unreachable code GCC compilation warning, it was wrong
+	  for all tested 3.x and 4.x GCC versions
+	Check return codes from getaddrinfo and turn them into errno
+	  used in fsp_open_session
+	Improved check for valid arguments in function fsp_readdir_native
+	  reported by Kalle Olavi Niemitalo, discovered by witekfl   
+0.9
+	Solaris compile fix by Brian Masney
+	fix possible security hole if MAXNAMLEN>256 reported by
+	  Kalle Olavi Niemitalo
+	add terminating \0 if directory entry is MAXNAMLEN long
+	check if server sends ASCIIZ terminated filenames
+	  reported by Kalle Olavi Niemitalo
+	fixed possible buffer overflow on systems not defining dirent.d_name
+	  long enough. Reported by Kalle Olavi Niemitalo
+0.8
+	Security bugfix release
+	off by one error, found by David Binderman
+	https://bugzilla.novell.com/show_bug.cgi?id=150399
+
+0.7
+	Added missing #includes to fsplib.h
+0.6
+	SCons build framework now has full support for distcc and ccache
+	seq. number is now random
+	test received filepos
+	test received command reply
+	fixed typo in configure.ac
+	./test program can take optional port number
+0.5
+	new configure tests for stdint.h patch from Brian Masney
+	SCons build framework improved, now support CC from command line
+	  and supports distcc use.
+0.4
+	renamed configure/scons defines from HAVE_XX to HAVE_DIRENT_XX
+	new tests for dirent.d_type and dirent.d_fileno
+0.3
+	Check for prefix= in scons build scripts
+	Correct install target in scons build scripts
+	Remove symlink destination from directory listing in fsp_readdir_r
+	  function. FSP symlinks are returned only from fsp_readdir_native
+	  call for better compatibility with other C programs. 
+	Scons: compile with -O by default
+	fsplib.c: avoid `l_delay' might be used uninitialized bogus warning.
+	fixed compile warning on test.c
+0.2
+	Protect against multiple including of fsplib internal lock.h file
+	More detailed error reporting on semop failures
+	Corrected fatal pointer retyping error when calling locking
+	  subsystem
+	Retry delay changed from 1.25s to standard 1.34s. Old value
+	  was used for debug purposes.
+0.1
+	First public release. Let's go!

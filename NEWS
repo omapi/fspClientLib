@@ -1,0 +1,31 @@
+0.11
+     we can optionally build shared library
+     name of static FSPLIB library is libfsplib.a
+0.10
+     GNU autoconf toolchain support removed
+     fsp_open_session now sets errno
+0.9
+     fixed 3 security problems reported by Kalle Olavi Niemitalo
+0.8
+     security bugfix release
+0.7
+     added missing #includes into fsplib.h
+0.6
+     make more tests on received packet -- improve resistance against certain
+       kind of attacks.
+     SCons build framework improved
+     fixed typo in configure.ac
+0.5
+     use stdint.h if available - should fix Mac OSX build problem
+     SCons build framework improved
+0.4
+     Added build time checks for various members of dirent structure.
+     fsplib should built on IRIX as result.
+0.3
+     SCons build system fix: prefix now works, fixed install target,
+       compile with -O by default
+     Filter symlinks from non native directory listings
+0.2
+     fsplib now works!
+0.1
+     Project created, coded and first released to public.
