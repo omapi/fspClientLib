@@ -30,6 +30,11 @@ LDFLAGS += -L$(PWD)/../lib/x86
 CFLAGS += -DX86
 # LDLIBS = -lmqtt3as -lpthread -lssl -lcrypto
 endif
+ifeq ($(TARGET),x64)
+LDFLAGS += -L$(PWD)/../lib/x64
+CFLAGS += -DX86
+# LDLIBS = -lmqtt3as -lpthread -lssl -lcrypto
+endif
 ifeq ($(TARGET),wroc)
 CROSS_COMPILE = /opt/buildroot-gcc342/bin/mipsel-linux-uclibc
 LDFLAGS += -L$(PWD)/../lib/wroc/
@@ -42,7 +47,9 @@ all:
 endif
 CC = ${CROSS_COMPILE}-gcc
 STRIP = ${CROSS_COMPILE}-strip
-# LDFLAGS += -static
+ifeq ($(STATIC),static)
+LDFLAGS += -static
+endif
 
 p2pdemo: p2pdemo.c comm.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LDLIBS)

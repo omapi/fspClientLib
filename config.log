@@ -1,4 +1,4 @@
-file /home/xxfan/fspClientLib/SConstruct,line 64:
+file /home/xxfan/fspClientLib/SConstruct,line 63:
 	Configure(confdir = .sconf_temp)
 scons: Configure: Checking whether gcc supports -Wall... 
 scons: Configure: ".sconf_temp/conftest_0.c" is up to date.
@@ -483,9 +483,13 @@ scons: Configure: The original builder output was:
   |  |}
   |  |
   |
-scons: Configure: Building ".sconf_temp/conftest_31.o" failed in a previous run and all its sources are up to date.
+scons: Configure: ".sconf_temp/conftest_31.o" is up to date.
 scons: Configure: The original builder output was:
   |gcc -o .sconf_temp/conftest_31.o -c -Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wshadow -Wbad-function-cast -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wmissing-declarations -Wmissing-format-attribute -Wnested-externs -ggdb -fno-common -Wchar-subscripts -Wcomment -Wimplicit -Wsequence-point -Wreturn-type -Wfloat-equal -Wno-system-headers -Wredundant-decls -Wmissing-noreturn -pedantic -Wlong-long -Wundef -Winline -Wpointer-arith -Wno-unused-parameter -Wno-cast-align -Iinclude -Ip2pnat/include .sconf_temp/conftest_31.c
+  |
+scons: Configure: Building ".sconf_temp/conftest_31" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |gcc -o .sconf_temp/conftest_31 .sconf_temp/conftest_31.o -Lp2pnat/lib/x86 -lp2pnat
   |
 scons: Configure: (cached) no
 

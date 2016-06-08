@@ -41,17 +41,22 @@ int ttest(void)
 {
 	int nr_of_bytes;
 	char fingprint[41] = {0};
+	char device_id[64], device_key[64];
 	unsigned char *key="12345678901234561234567890123456";
 	unsigned char *data="abcdefg1234567890abchello,are you ok.haha";
 	unsigned char *out, *out2;
 	out = (unsigned char *)malloc(strlen(data)/16*16+16);
 	out2 = (unsigned char *)malloc(strlen(data)/16*16+16);
-	nr_of_bytes = message_encrypt(key, 32, data, strlen(data), out);
+	nr_of_bytes = p2p_message_encrypt(key, 32, data, strlen(data), out);
 
-	message_decrypt(key, 32, out, nr_of_bytes, out2);
+	p2p_message_decrypt(key, 32, out, nr_of_bytes, out2);
 	printf("out2:%s\n", out2);
-	generate_fingprint("somedata somedata", "somekeysomekey", fingprint, 41);
+	p2p_generate_fingprint("somedata somedata", "somekeysomekey", fingprint, 41);
 	printf("fingprint:%s\n", fingprint);
+	memset(device_id, 0, sizeof(device_id));
+	memset(device_key, 0, sizeof(device_key));
+	get_deviceId_key(device_id, device_key);
+	printf("get device_id:%s, device_key:%s\n", device_id, device_key);
 	return 0;
 }
 
@@ -59,25 +64,30 @@ int phrase_argv(int argc, char *argv[])
 {
 	int rc = 0;
 
-	while ((rc = getopt(argc, argv, "k:L:S:N:l:c:p:s:i:dt")) != -1) {
+	while ((rc = getopt(argc, argv, "k:L:S:N:l:c:p:s:i:dtT")) != -1) {
 		switch(rc) {
 		case 'd':
-			debug_output = 1;
+			if(debug_output < 1)
+				debug_output = 1;
 			break;
 		case 'l':
 			log_level = atoi(optarg);
 			break;
+		case 'T':
+			ttest();
+			exit(0);
+			break;
 		case 'S':
-			strcpy(client_service, optarg);
+			strncpy(client_service, optarg, sizeof(client_service) - 1);
 			break;
 		case 'L':
 			client_port = atoi(optarg);
 			break;
 		case 'N':
-			strcpy(demo_log_name, optarg);
+			strncpy(demo_log_name, optarg, sizeof(demo_log_name) - 1);
 			break;
 		case 's':
-			strcpy(server_address, optarg);
+			strncpy(server_address, optarg, sizeof(server_address) - 1);
 			break;
 		case 'p':
 			server_port = atoi(optarg);
@@ -87,13 +97,13 @@ int phrase_argv(int argc, char *argv[])
 			break;
 		case 'i':
 			random_cid = 0;
-			strcpy(client_id, optarg);
+			strncpy(client_id, optarg, sizeof(client_id) - 1);
 			break;
 		case 'k':
-			strcpy(client_key, optarg);
+			strncpy(client_key, optarg, sizeof(client_key) - 1);
 			break;
 		case 'c':
-			strcpy(g_tid, optarg);
+			strncpy(g_tid, optarg, sizeof(g_tid) - 1);
 			break;
 		default:
 			fprintf(stderr,"%s\n", Usage);
@@ -156,32 +166,28 @@ void check_connection_and_send(int peer_fd, REND_CONN_HANDLE conn)
 int main(int argc, char *argv[])
 {
 	int rc = 0;
+	int log_type = P2P_LOG_TYPE_FILE;
 	char ed[25];
 	char udp_message[1024] = {0};
-	rendezvous_packet_t resp_packet;
 	struct sockaddr_in peer_addr;
 	int peer_fd;
 	REND_EPT_HANDLE p2p_endpoint;
 	REND_CONN_HANDLE p2p_conn = NULL;
-	ttest();
 	phrase_argv(argc, argv);
+	if(log_level > 0)
+		printf("demo server version %s\n", VERSION);
+	if(debug_output >= 1)
+		log_type = P2P_LOG_TYPE_SCREEN;
 	if(strlen(demo_log_name) > 0)
-		rc = p2p_init(NULL, demo_log_name, log_level, server_address, server_port);
+		rc = p2p_init(NULL, demo_log_name, log_type, log_level, server_address, server_port);
 	else
-		rc = p2p_init(NULL, "p2pdemo", log_level, server_address, server_port);
+		rc = p2p_init(NULL, "p2pdemo", log_type, log_level, server_address, server_port);
 	if(rc != 0){
 		fprintf(stderr, "init p2p failed\n");
 		return -1;
 	}
 	if(debug_output >= 2)
 		set_p2p_option(0, 1);
-	if(debug_output >= 1){
-		set_event_log_type(eLOG_TYPE_SCREEN);
-		if(log_level > 0)
-		show_event_log_config();
-	}
-	if(log_level > 0)
-	debug_log(eLOG_COMP_API, 0, __FILE__, __LINE__, "demo server version %s", VERSION);
 
 	peer_fd = new_udp_socket(client_port, NULL);
 
@@ -212,10 +218,10 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
-		//解析数据包，判断是不是p2p协议数据
-		rc = decode_rendezvous_packet(udp_message, &peer_addr, &resp_packet);
+		//解析并处理数据包
+		rc = handle_rendezvous_packet(peer_fd, udp_message, &peer_addr);
 		if(rc == 0){
-			rendezvous_message_handle(peer_fd, &resp_packet);
+			// 处理成功，继续接收处理下个包
 			continue;
 		}
 
@@ -226,7 +232,8 @@ int main(int argc, char *argv[])
 			memcpy(udp_message+6, ed, strlen(ed));
 			sendto(peer_fd, udp_message, strlen(udp_message), 0, (struct sockaddr *)&peer_addr, sizeof(struct sockaddr_in));
 		}else{
-			printf("recv from %s == %s\n", address_to_endpoint(&peer_addr, ed), udp_message);
+			address_to_endpoint(&peer_addr, ed);
+			printf("recv from %s == %s\n", ed, udp_message);
 		}
 	}
 	free_rendezvous_endpoint(p2p_endpoint);
