@@ -1,87 +1,87 @@
-[06/07 15:36:00.518675] p2pnat lib version 1.1.3
-[06/07 15:36:00.530712] API: p2p_dns_resove(395) - IP address [54.223.244.5] for hostname - <p2p.newrocktech.com>
-[06/07 15:36:00.561904] send packet 54.223.244.5:7042
+[06/16 11:12:47.019068] p2pnat lib version 1.1.3
+[06/16 11:12:47.052793] API: p2p_dns_resove(395) - IP address [54.223.244.5] for hostname - <p2p.newrocktech.com>
+[06/16 11:12:47.084016] send packet 54.223.244.5:7042
 P2PNAT00 REG
-mid: 00001360
+mid: 00001a6f
 
-[06/07 15:36:00.592358] recv packet 54.223.244.5:7042
+[06/16 11:12:47.116609] recv packet 54.223.244.5:7042
 P2PNAT01 REG
-cid: cefe8f02-2c81-11e6-bfcb-024abe532443
-mid: 00001360
-key: baf7c8f24e664b4f01e7d30c55323932
+cid: 65b6a863-336f-11e6-bfcb-024abe532443
+mid: 00001a6f
+key: 62de553a60c3d3a44019e966adbbe3f2
 code: 201
 
-[06/07 15:36:00.592393] cefe8f02-2c81-11e6-bfcb-024abe532443 Obtain cid and key
-[06/07 15:36:00.624482] send secure packet 54.223.244.5:7042
+[06/16 11:12:47.116643] 65b6a863-336f-11e6-bfcb-024abe532443 Obtain cid and key
+[06/16 11:12:47.150175] send secure packet 54.223.244.5:7042
 P2PNAT00 REG
-cid: cefe8f02-2c81-11e6-bfcb-024abe532443
-mid: 00001361
-data: uP69Kl3Xp5S4L9TPtE46oZNt1odBn5POnt8dbtJFWMiq/4t/Kw2oiFm2pAM1ovx0ATVHb6uOzsYsIrjuBA9QRHNtRarfhADFO74nIOP/9Ec=
+cid: 65b6a863-336f-11e6-bfcb-024abe532443
+mid: 00001a70
+data: /bi2fVIVwJj5KjB9jGSI1modNO6jjGUqdt30Q9gRCrYgP5iOByatG6PJWuCL1o55+Od3V/c1LBV0QgiD5+ghbFYSsMl4IVqzB7z2EFHe7i4=
 
-[06/07 15:36:00.653702] recv secure packet 54.223.244.5:7042
+[06/16 11:12:47.180246] recv secure packet 54.223.244.5:7042
 P2PNAT01 REG
-cid: cefe8f02-2c81-11e6-bfcb-024abe532443
-mid: 00001361
+cid: 65b6a863-336f-11e6-bfcb-024abe532443
+mid: 00001a70
 service: FSP
-ed: 192.168.20.164:37334
+ed: 192.168.20.164:47756
 oid: default
-ped: 116.236.246.122:37334
+ped: 116.236.246.122:47756
 code: 200
 
-[06/07 15:36:00.653762] cefe8f02-2c81-11e6-bfcb-024abe532443 Registered
-[06/07 15:36:00.653817] send secure packet 54.223.244.5:7042
+[06/16 11:12:47.180276] 65b6a863-336f-11e6-bfcb-024abe532443 Registered
+[06/16 11:12:47.180325] send secure packet 54.223.244.5:7042
 P2PNAT00 CON
-cid: cefe8f02-2c81-11e6-bfcb-024abe532443
-mid: 00001362
-data: Xkhz2ClInErsU4Iook4SiCds71qD3UY/FYsw0MlhKvq1vUDyb+rkQQJC3k2te9gVHmpxEOPyN7fyvQyLuGiw6owJ8IwmFYb/di0TMv6J/fNeK1BE8j689puCH/VGi+K7
+cid: 65b6a863-336f-11e6-bfcb-024abe532443
+mid: 00001a71
+data: K0laHGWFjutcq2zYgeZdDbbaM/jb9Z99/IofUOYC2jecWCxy1j7QdKGeo/ML/y4uCz1U5FCFQqubSWFVW6OeWlBkPDWSRj/ynJ71lP3W/zsgMkxjP70WEsemniTgD6jZ
 
-[06/07 15:36:00.683385] recv secure packet 54.223.244.5:7042
+[06/16 11:12:47.210035] recv secure packet 54.223.244.5:7042
 P2PNAT01 CON
-cid: cefe8f02-2c81-11e6-bfcb-024abe532443
-mid: 00001362
-connid: 1602b5fe
+cid: 65b6a863-336f-11e6-bfcb-024abe532443
+mid: 00001a71
+connid: e78c5465
 service: FSP
 tid: 8b008c8c-2209-97ab-5143-f0a4aa470023
-ed: 192.168.130.53:2000
+ed: 192.168.130.122:2000
 oid: default
 toid: default
 ped: 116.231.53.85:2000
 code: 200
 
-[06/07 15:36:00.683412] cefe8f02-2c81-11e6-bfcb-024abe532443->8b008c8c-2209-97ab-5143-f0a4aa470023 Start Connecting
-[06/07 15:36:00.683453] send packet 192.168.130.53:2000
+[06/16 11:12:47.210063] 65b6a863-336f-11e6-bfcb-024abe532443->8b008c8c-2209-97ab-5143-f0a4aa470023 Start Connecting
+[06/16 11:12:47.210102] send packet 192.168.130.122:2000
 P2PNAT00 PING
-mid: 00001363
-connid: 1602b5fE
+mid: 00001a72
+connid: e78c546E
 
-[06/07 15:36:00.683521] send packet 116.231.53.85:2000
+[06/16 11:12:47.210166] send packet 116.231.53.85:2000
 P2PNAT00 PING
-mid: 00001364
-connid: 1602b5fP
+mid: 00001a73
+connid: e78c546P
 
-[06/07 15:36:00.686115] recv packet 192.168.130.53:2000
+[06/16 11:12:47.211109] recv packet 192.168.130.122:2000
 P2PNAT00 PING
-mid: 00000b7b
-connid: 1602b5fE
+mid: 000018aa
+connid: e78c546E
 
-[06/07 15:36:00.686152] send packet 192.168.130.53:2000
+[06/16 11:12:47.211145] send packet 192.168.130.122:2000
 P2PNAT01 PONG
-mid: 00000b7b
-connid: 1602b5fE
+mid: 000018aa
+connid: e78c546E
 
-[06/07 15:36:00.686213] send packet 192.168.130.53:2000
+[06/16 11:12:47.211203] send packet 192.168.130.122:2000
 P2PNAT00 PING
-mid: 00001365
-connid: 1602b5fE
+mid: 00001a74
+connid: e78c546E
 
-[06/07 15:36:00.686262] send packet 116.231.53.85:2000
+[06/16 11:12:47.211251] send packet 116.231.53.85:2000
 P2PNAT00 PING
-mid: 00001366
-connid: 1602b5fP
+mid: 00001a75
+connid: e78c546P
 
-[06/07 15:36:00.687435] recv packet 192.168.130.53:2000
+[06/16 11:12:47.212115] recv packet 192.168.130.122:2000
 P2PNAT01 PONG
-mid: 00001365
-connid: 1602b5fE
+mid: 00001a72
+connid: e78c546E
 
-[06/07 15:36:00.687463] cefe8f02-2c81-11e6-bfcb-024abe532443->8b008c8c-2209-97ab-5143-f0a4aa470023 Connect Success
+[06/16 11:12:47.212143] 65b6a863-336f-11e6-bfcb-024abe532443->8b008c8c-2209-97ab-5143-f0a4aa470023 Connect Success

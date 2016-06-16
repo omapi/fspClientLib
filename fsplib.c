@@ -25,6 +25,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
+#include <time.h>
+
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
@@ -667,9 +669,11 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
   int rc;
   char *c;
 
-  if (dir == NULL || entry == NULL || *result == NULL)
+  //- by xxfan 2016-06-13
+  //if (dir == NULL || entry == NULL || *result == NULL)
+  //+
+  if (dir == NULL || entry == NULL )//?end +
   {
-    printf("return EINVAL\n");
     return -EINVAL;
   }
   if (dir->dirpos<0 || dir->dirpos % 4)
@@ -680,7 +684,6 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
 
   rc=fsp_readdir_native(dir,&fentry,&fresult);
 
-  printf("fsp_readdir_native rc=%d\n",rc);
   if (rc != 0)
     return rc;
 
@@ -741,7 +744,6 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
   if (dir->dirpos<0 || dir->dirpos % 4)
     return -ESPIPE;
 
-  printf("here\n");
   while(1)
   {
     if ( dir->dirpos >= (int)dir->datasize )
@@ -772,8 +774,12 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
     }
     /* extract binary data */
     entry->lastmod=ntohl( *(const uint32_t *)( dir->data+ dir->dirpos ));
-    entry->size=ntohl( *(const uint32_t *)(dir->data+ dir->dirpos +4 ));
+	printf("entry->lastmod-%ld\n",entry->lastmod);
+	printf("entry->time-%s\n",ctime(&(entry->lastmod))); 
+	entry->size=ntohl( *(const uint32_t *)(dir->data+ dir->dirpos +4 ));
+	printf("entry->size-%ld\n",entry->size);
     entry->type=ftype;
+	printf("entry->type-%c\n",entry->type);
 
     /* skip file date and file size */
     dir->dirpos += 9;
@@ -1492,3 +1498,73 @@ int fsp_access(FSP_SESSION *s,const char *path, int mode)
   errno = 0;
   return 0;
 }
+// Add by xxfan 2016-03-30
+int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)
+{
+	FSP_PKT pkt_in,pkt_out;
+	FSP_PKT* out=&pkt_out;
+	FSP_PKT* in=&pkt_in;
+
+	//the password file is saved in  the root dir
+	//date format like: dir name\nold passwd\nnew passwd
+	int len=strlen("\n"); 
+	memcpy(out->buf,"\n",len+1);
+	out->len=len;
+
+	if(s->password)
+	{
+		len=strlen(s->password);
+		if(out->len+ len >= FSP_SPACE -1 )
+		{
+			errno = ENAMETOOLONG;
+			return -1;
+		}
+		memcpy(out->buf+out->len,s->password,len+1);
+		out->len+=len;
+	}
+
+	len=strlen("\n");
+
+	if(out->len + len >= FSP_SPACE -1 )
+	{
+		errno = ENAMETOOLONG;
+		return -1;
+	}
+	memcpy(out->buf+out->len,"\n",len+1);
+	out->len+=len;
+
+	if(new_fsp_password!=NULL)
+	{
+		len = strlen(new_fsp_password);
+		if(out->len + len >= FSP_SPACE -1 )
+		{
+			errno = ENAMETOOLONG;
+			return -1;
+
+		}
+		memcpy(out->buf+out->len,new_fsp_password,len+1);
+		out->len+=len;
+	}
+
+	printf("out->buf-%s\n",out->buf);
+	/* add terminating \0 */
+	out->len++;
+
+	out->cmd=FSP_CC_CH_PASSWD;
+	out->xlen=0;
+	out->pos=0;
+
+	if(fsp_transaction(s,out,in))
+		return -1;
+
+	if(in->cmd == FSP_CC_ERR)
+	{
+		errno = EPERM;
+		return -1;
+	}
+
+	errno = 0;
+	return  0;
+}
+
+
