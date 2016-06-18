@@ -60,7 +60,7 @@
 #define FSP_OFFSET_LEN          6
 #define FSP_OFFSET_POS          8
 
-/* types of directory entry */ 
+/* types of directory entry */
 #define FSP_RDTYPE_END      0x00
 #define FSP_RDTYPE_FILE     0x01
 #define FSP_RDTYPE_DIR      0x02
@@ -89,7 +89,7 @@ typedef struct FSP_PKT {
 	unsigned short      key; /* message key.              */
 	unsigned short      seq; /* message sequence number.  */
 	unsigned short      len; /* number of bytes in buf 1. */
-	unsigned int        pos; /* location in the file.     */                       
+	unsigned int        pos; /* location in the file.     */
 	unsigned short     xlen; /* number of bytes in buf 2  */
 	unsigned char   buf[FSP_SPACE];   /* packet payload */
 } FSP_PKT;
@@ -110,7 +110,7 @@ typedef struct FSP_SESSION {
 	unsigned int last_resends;/* last resends        */
 	int fd;                   /* i/o descriptor      */
 	char *password;           /* host acccess password */
-	REND_EPT_HANDLE p2p_endpoint;/*p2p nat struct*/ 
+	REND_EPT_HANDLE p2p_endpoint;/*p2p nat struct*/
 } FSP_SESSION;
 
 /* fsp directory handle */

@@ -10,7 +10,7 @@ VERSION='0.12_v2'
 PREFIX='/usr/local'
 SHARED=0
 
-env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH='#/p2pnat/lib/x86/',LIBS='p2pnat')
+env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH='#/p2pnat/lib/x64/',LIBS='p2pnat')
 # Turn CPPFLAGS to list
 env.Append( CPPFLAGS = [])
 
@@ -77,7 +77,7 @@ for option in Split("""
       -Wno-cast-align
 """):
        conf.checkForGCCOption(option)
-#portability checks       
+#portability checks
 if not conf.CheckType("union semun", "#include <sys/types.h>\n#include <sys/ipc.h>\n#include <sys/sem.h>",'c'):
        conf.env.Append(CPPFLAGS = "-D_SEM_SEMUN_UNDEFINED=1")
 conf.checkDirentFor('d_namlen','HAVE_DIRENT_NAMLEN')
