@@ -18,7 +18,7 @@
 
 本程序采用的代码构建工具为[scons](http://scons.org/)，如果没有，需要先安装。
 
-**安装说明见：**[doc/scons安装和使用说明](https://github.com/omapi/fspClientLib/blob/master/doc/scons%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md)
+**安装说明见：**[scons安装和使用说明](https://github.com/omapi/fspClientLib/blob/master/doc/scons%E7%9A%84%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md)
 
 ### 3. 编译
 
@@ -33,7 +33,7 @@
 
 
 
-之后，在命令行执行`scons`即可开始编译。编译成功后，生成可执行文件test。
+之后，在命令行执行`scons`即可开始编译。编译成功后，生成可执行文件fspClientDemo。
 
 ## 运行
 
@@ -51,7 +51,7 @@ linux默认的库查找路径为：`/lib`和`/usr/lib`。另外，程序在编�
 
 
 
-如果要将libp2pnat.so放到其他地方，则通过导入环境变量实现
+要将libp2pnat.so放到其他地方，则通过导入环境变量实现
 
 如：`export LD_LIBRARY_PATH=/home/xxfan/p2pnat/lib/x64`
 
