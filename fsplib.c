@@ -11,7 +11,7 @@
 
    This is a free software.  Be creative.
    Let me know of any bugs and suggestions.
-   */                  
+   */
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -34,9 +34,9 @@
 #include "fsplib.h"
 #include "lock.h"
 
-//p2pnat 
+//p2pnat
 #include "p2p_api.h"
-/* ************ Internal functions **************** */ 
+/* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
 static int buildfilename(const FSP_SESSION *s,FSP_PKT *out,const char *dirname)
@@ -110,7 +110,7 @@ static char * directoryfromfilename(const char *filename)
     return NULL;
   memcpy(tmp,filename,pos);
   tmp[pos]='\0';
-  return tmp;         
+  return tmp;
 }
 
 /* ************  Packet encoding / decoding *************** */
@@ -216,7 +216,7 @@ int fsp_pkt_read(FSP_PKT *p,const void *space,size_t recv_len)
     /* bad length field, should not never happen */
     errno = EMSGSIZE;
     return -1;
-  }   
+  }
   p->xlen=recv_len - p->len - FSP_HSIZE;
   /* now copy data */
   memcpy(p->buf,ptr+FSP_HSIZE,recv_len - FSP_HSIZE);
@@ -256,7 +256,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
   if (s->seq == retry)
     s->seq ^= 0x1080;
   else
-    s->seq = retry; 
+    s->seq = retry;
   dupes = retry = 0;
   t_delay = 0;
   /* compute initial delay here */
@@ -281,7 +281,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
       w_delay=f_delay;
     else
     {
-      w_delay=l_delay*3/2; 
+      w_delay=l_delay*3/2;
     }
 
     l_delay=w_delay;
@@ -303,14 +303,14 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
       /* avoid wasting retry slot */
       retry--;
       t_delay += 1000;
-      continue; 
+      continue;
     }
 
     /* keep delay value within sane limits */
-    if (w_delay > (int) s->maxdelay) 
+    if (w_delay > (int) s->maxdelay)
       w_delay=s->maxdelay;
     else
-      if(w_delay < 1000 ) 
+      if(w_delay < 1000 )
         w_delay = 1000;
 
     t_delay += w_delay;
@@ -452,7 +452,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
         p2p_conn = new_rendezvous_connection(p2p_endpoint, tid, "FSP", "default" ,NULL);
         if(p2p_conn != NULL)
         {
-          printf("p2p conn create successful\n");
+          //printf("p2p conn create successful\n");
           continue;
         }
       }
@@ -462,7 +462,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
         //如果连接建立成功，则可以发送应用数据
         //private net address
         if(strlen(r_ed) > 0){
-          printf("send data to %s\n", r_ed);
+          //printf("send data to %s\n", r_ed);
           strcpy(server_addr, r_ed);
         }
         //public net address
@@ -485,8 +485,9 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
     //+
     rc = handle_rendezvous_packet(peer_fd,udp_message,&peer_addr);
 
+
     if(rc == 0){
-     //- by xxfan 2016-06-04 
+     //- by xxfan 2016-06-04
      //rendezvous_message_handle(peer_fd,&resp_packet);
       continue;
     }
@@ -539,7 +540,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
   s->maxdelay=60000; /* 1 minute  */
   s->seq=random() & 0xfff8;
   s->p2p_endpoint=p2p_endpoint;
-  if ( password ) 
+  if ( password )
     s->password = strdup(password);
   return s;
 
@@ -553,7 +554,7 @@ void fsp_close_session(FSP_SESSION *s)
   if( s == NULL)
     return;
   if ( s->fd == -1)
-    return; 
+    return;
   /* Send bye packet */
   bye.cmd=FSP_CC_BYE;
   bye.len=bye.xlen=0;
@@ -678,7 +679,6 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
   }
   if (dir->dirpos<0 || dir->dirpos % 4)
   {
-    printf("return ESPIPE\n");
     return -ESPIPE;
   }
 
@@ -708,7 +708,7 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
 
 #ifdef HAVE_DIRENT_FILENO
   entry->d_fileno = 10;
-#endif    
+#endif
   entry->d_reclen = fentry.reclen;
   strncpy(entry->d_name,fentry.name,MAXNAMLEN);
 
@@ -717,7 +717,8 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
     entry->d_name[MAXNAMLEN] = '\0';
 #ifdef HAVE_DIRENT_NAMLEN
     entry->d_namlen = MAXNAMLEN;
-  } else
+  }
+  else
   {
     entry->d_namlen = fentry.namlen;
 #endif
@@ -728,9 +729,9 @@ int fsp_readdir_r(FSP_DIR *dir,struct dirent *entry, struct dirent **result)
     *result = entry;
   }
   else
-    *result = NULL; 
+    *result = NULL;
 
-  return 0; 
+  return 0;
 }
 
 /* native FSP directory reader */
@@ -768,24 +769,34 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
       /* skip to next directory block */
       dir->dirpos = ( dir->dirpos / dir->blocksize + 1 ) * dir->blocksize;
 #ifdef MAINTAINER_MODE
-      printf("new block dirpos: %d\n",dir->dirpos);
+     // printf("new block dirpos: %d\n",dir->dirpos);
 #endif
       continue;
     }
     /* extract binary data */
     entry->lastmod=ntohl( *(const uint32_t *)( dir->data+ dir->dirpos ));
-	printf("entry->lastmod-%ld\n",entry->lastmod);
-	printf("entry->time-%s\n",ctime(&(entry->lastmod))); 
+	//printf("entry->time-%s\n",ctime(&(entry->lastmod)));
 	entry->size=ntohl( *(const uint32_t *)(dir->data+ dir->dirpos +4 ));
-	printf("entry->size-%ld\n",entry->size);
+	//printf("entry->size-%d\n",entry->size);
     entry->type=ftype;
-	printf("entry->type-%c\n",entry->type);
+   /* if(ftype==1)
+    {
+        printf("entry->type-file\n");
+    }
+    else if(ftype==2)
+    {
+        printf("entry-type-dir\n");
+    }
+
+	printf("entry->type-%d\n",(int)(entry->type));
+    */
 
     /* skip file date and file size */
     dir->dirpos += 9;
     /* read file name */
     entry->name[255] = '\0';
     strncpy(entry->name,(char *)( dir->data + dir->dirpos ),255);
+	//printf("entry->name-%s\n",entry->name);
     /* check for ASCIIZ encoded filename */
     if (memchr(dir->data + dir->dirpos,0,dir->datasize - dir->dirpos) != NULL)
     {
@@ -805,7 +816,7 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
       entry->namlen = 255;
     else
       entry->namlen = namelen;
-    /* set record length */     
+    /* set record length */
     entry->reclen = 10+namelen;
 
     /* pad to 4 byte boundary */
@@ -817,7 +828,7 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
 
     /* and return it */
     *result=entry;
-    return 0;  
+    return 0;
   }
 }
 
@@ -830,12 +841,11 @@ struct dirent * fsp_readdir(FSP_DIR *dirp)
   if (dirp == NULL) return NULL;
   if ( fsp_readdir_r(dirp,&entry.dirent,&result) )
   {
-    printf("NULL\n");
+   // printf("NULL\n");
     return NULL;
   }
   else
   {
-    printf("no NULL");
     return result;
   }
 }
@@ -857,7 +867,7 @@ void fsp_rewinddir(FSP_DIR *dirp)
 
 int fsp_closedir(FSP_DIR *dirp)
 {
-  if (dirp == NULL) 
+  if (dirp == NULL)
     return -1;
   if(dirp->dirname) free(dirp->dirname);
   free(dirp->data);
@@ -1120,7 +1130,7 @@ int fsp_fclose(FSP_FILE *file)
   if(file->writing)
   {
     if(fsp_fflush(file))
-    {  
+    {
       rc=-1;
     }
     else if(fsp_install(file->s,file->name,0))
@@ -1205,7 +1215,7 @@ int fsp_canupload(FSP_SESSION *s,const char *fname)
     return -1;
   }
 
-  if(dirpro & FSP_DIR_OWNER) 
+  if(dirpro & FSP_DIR_OWNER)
     return 0;
 
   if( ! (dirpro & FSP_DIR_ADD))
@@ -1394,7 +1404,7 @@ int fsp_rename(FSP_SESSION *s,const char *from, const char *to)
     return -1;
   }
 
-  errno = 0; 
+  errno = 0;
   return 0;
 }
 
@@ -1434,7 +1444,7 @@ int fsp_access(FSP_SESSION *s,const char *path, int mode)
   if(S_ISDIR(sb.st_mode))
     dir=NULL;
   else
-    dir=directoryfromfilename(path);        
+    dir=directoryfromfilename(path);
 
   rc=fsp_getpro(s,dir==NULL?path:dir,&dirpro);
   /* get pro failure */
@@ -1507,7 +1517,7 @@ int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)
 
 	//the password file is saved in  the root dir
 	//date format like: dir name\nold passwd\nnew passwd
-	int len=strlen("\n"); 
+	int len=strlen("\n");
 	memcpy(out->buf,"\n",len+1);
 	out->len=len;
 

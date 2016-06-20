@@ -17,12 +17,12 @@ env.Install(dir = PREFIX+'/include', source='fsplib.h')
 if SHARED:
     env.Install(dir = PREFIX+'/lib', source = libfspshared)
 
-#Build test program
-test=env.Program(target = 'test', source = ['test.c', 'comm.c', libfsp])
-env.Alias("build",test)
+#Build fspClientDemo program
+fspClientDemo=env.Program(target = 'fspClientDemo', source = ['fspClientDemo.c', 'comm.c', libfsp])
+env.Alias("build",fspClientDemo)
 if SHARED:
-    testshared=env.Program(target = 'test-shared', source = ['test.c', libfspshared])
-    env.Alias("build",testshared)
+    fspClientDemoshared=env.Program(target = 'fspClientDemo-shared', source = ['fspClientDemo.c', libfspshared])
+    env.Alias("build",fspClientDemoshared)
 
 # *************** Targets ****************
 
@@ -36,7 +36,7 @@ env.Default("build")
 #Add dist target
 TARBALL=PACKAGE+'-'+VERSION+'.tar.gz'
 env.Replace(TARFLAGS = '-c -z')
-env.Tar(TARBALL,Split("test.c fsplib.h lock.h lock.c fsplib.c"))
+env.Tar(TARBALL,Split("fspClientDemo.c fsplib.h lock.h lock.c fsplib.c"))
 env.Tar(TARBALL,Split("TODO NEWS README AUTHORS ChangeLog COPYING"))
 env.Tar(TARBALL,Split("SConstruct SConscript"))
 env.Alias("dist",TARBALL)

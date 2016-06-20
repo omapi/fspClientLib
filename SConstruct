@@ -4,16 +4,19 @@ import os
 # init Scons
 EnsureSConsVersion(0,96)
 PACKAGE='fsplib'
-VERSION='0.12_v2'
+VERSION='0.12_v3'
 
 #Defaults
 PREFIX='/usr/local'
 SHARED=0
+P2PLAB_PATH='p2pnat/lib/x64'
 
-env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH='#/p2pnat/lib/x64/',LIBS='p2pnat')
+env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH=os.path.join('#/',P2PLAB_PATH),LIBS='p2pnat')
 # Turn CPPFLAGS to list
 env.Append( CPPFLAGS = [])
-
+# Add by xxfan
+env.Append( LINKFLAGS = Split('-z origin') )
+env.Append( RPATH = env.Literal(os.path.join('\\$$ORIGIN',P2PLAB_PATH)))
 ############## Imports #################
 from maintainer import checkForMaintainerMode
 from compilertest import checkForCCOption
