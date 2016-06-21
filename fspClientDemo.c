@@ -282,6 +282,7 @@ int main (int argc, char *argv[])
     }
 
     s = fsp_open_session(g_device_id,NULL,g_fsp_password);
+    if(s==NULL) return 0;
     assert(s);
     s->timeout=9000;
 

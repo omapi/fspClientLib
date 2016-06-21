@@ -33,9 +33,10 @@
 
 #include "fsplib.h"
 #include "lock.h"
-
 //p2pnat
 #include "p2p_api.h"
+#include "error_code.h"
+
 /* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
@@ -435,9 +436,9 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
 
   if(p2p_endpoint == NULL)
   {
-    printf("create new p2p endpoint fail\n");
+    printf("Failed: code=%d reason=\"create new p2p endpoint fail\"\n",P2P_NEW_ENDPOINT_FAILED);
     close(peer_fd);
-    return 0;
+    return NULL;
   }
 
   rendezvous_endpoint_reg(p2p_endpoint);
@@ -456,6 +457,11 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
           continue;
         }
       }
+      else if(status == ENDPOINT_REGISTER_FAIL )
+      {
+          printf("Failed: code=%d reason=\"p2p endpoint register failed\"\n",P2P_ENDPOINT_REGISTER_FAILED);
+          return NULL;
+      }
     }
     if(get_rendezvous_connection(p2p_conn, &status, r_ed, r_ped) == 0){
       if(status == CONNECTION_OK) {
@@ -467,11 +473,16 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
         }
         //public net address
         else if(strlen(r_ped) > 0){
-          printf("send data to %s\n", r_ped);
+          //printf("send data to %s\n", r_ped);
           strcpy(server_addr, r_ped);
         }
 
         break;
+      }
+      else if(status == CONNECTION_FAILED)
+      {
+          printf("Failed: code=%d reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
+          return NULL;
       }
     }
     memset(udp_message, 0, sizeof(udp_message));
@@ -496,13 +507,14 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
   rc = endpoint_to_address(server_addr, &peer_addr);
   if(rc != 0)
   {
-    printf("invalid ip port:%s\n", server_addr);
-    return -1;
+    printf("Failed: reson=\"invalid ip port:%s\"\n", server_addr);
+    return NULL;
   }
   //?end p2pnat
 
   if( connect(peer_fd, &peer_addr, sizeof(struct sockaddr_in)))
   {
+      printf("Failed: code=%d ,reason=\"p2p connection failed\"\n",P2P_CONNECTION_FAILED);
     return NULL;
   }
 
