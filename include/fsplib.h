@@ -154,7 +154,7 @@ typedef union dirent_workaround {
 /* function prototypes */
 
 /* session management */
-FSP_SESSION * fsp_open_session(const char *tid,const char* key, const char *password);
+FSP_SESSION * fsp_open_session(const char *tid,const char* invite_code,const char* key, const char *password);
 
 void fsp_close_session(FSP_SESSION *s);
 

@@ -9,6 +9,7 @@
 #include "./p2pnat/include/p2p_api.h"
 
 char g_device_id[256]={0};
+char g_invite_code[256]={0};
 char g_fsp_password[60]={0};
 char g_new_fsp_password[60]={0};
 char g_get_url[512]={0};
@@ -16,7 +17,7 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
-char g_version[]="0.12_v3";
+char g_version[]="0.12_v4";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -25,6 +26,7 @@ static char g_usage[] =
 "      -v,--version          display the version of fspClinet and exit.\n"
 "      -h,--help             print this help.\n"
 "      -id,--device_id       client uses this id to find server\n"
+"      -ic,--invite_code     the invite code for p2p rendezvous server\n"
 "      -p,--password         the password of server\n"
 "      -g,--get              download a file or a dirent from the server of whose device_id is device_id\n"
 "      -s,--save             the local url for saving the download file or dirent \n"
@@ -109,7 +111,16 @@ int phrase_argv(int argc, char *argv[])
             else strcpy(g_dir_name,"");
             g_fsp_method=FSP_CC_GET_DIR;
         }
-        else
+        else if(strcasecmp(argv[i],"--invite_code")==0 || strcasecmp(argv[i],"-ic")==0)
+        {
+            if(i<argc-1 && argv[i+1]!='-')
+            {
+                strcpy(g_invite_code,argv[i+1]);
+                i++;
+            }
+            else strcpy(g_invite_code,"");
+
+        }else
         {
             printf("Unknown command: %s\n",argv[i]);
             return -1;
@@ -281,7 +292,7 @@ int main (int argc, char *argv[])
         return 0;
     }
 
-    s = fsp_open_session(g_device_id,NULL,g_fsp_password);
+    s = fsp_open_session(g_device_id,g_invite_code,NULL,g_fsp_password);
     if(s==NULL) return 0;
     assert(s);
     s->timeout=9000;

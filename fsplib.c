@@ -414,7 +414,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 
 /* initializes a session */
 
-FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *password)
+FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const char* key, const char *password)
 {
   FSP_SESSION *s;
   FSP_LOCK *lock;
@@ -432,7 +432,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* key, const char *pass
   struct sockaddr_in peer_addr;
 
   peer_fd = new_udp_socket(0,NULL);
-  p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,key,peer_fd);
+  p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,invite_code,key,peer_fd);
 
   if(p2p_endpoint == NULL)
   {
