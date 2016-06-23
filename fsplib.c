@@ -432,7 +432,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
   struct sockaddr_in peer_addr;
 
   peer_fd = new_udp_socket(0,NULL);
-  p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,invite_code,key,peer_fd);
+  p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,key,peer_fd);
 
   if(p2p_endpoint == NULL)
   {
@@ -450,7 +450,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
     {
       if( status == ENDPOINT_REGISTER_OK && p2p_conn == NULL)
       {
-        p2p_conn = new_rendezvous_connection(p2p_endpoint, tid, "FSP", "default" ,NULL);
+        p2p_conn = new_rendezvous_connection(p2p_endpoint, tid, "FSP", "default" ,invite_code);
         if(p2p_conn != NULL)
         {
           //printf("p2p conn create successful\n");
