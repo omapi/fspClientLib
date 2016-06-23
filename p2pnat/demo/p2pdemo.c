@@ -17,6 +17,7 @@ int server_port = 0;
 char server_address[24] = "";
 char client_id[41] = {0};
 char client_key[33] = {0};
+char client_ic[65] = {0};
 char client_service[20] = "SIP";
 int client_port = 0;
 char g_tid[41] = {0};
@@ -28,6 +29,7 @@ static char Usage[] =
   "        -s server   P2PNAT server address to use\n"
   "        -p port     P2PNAT server port\n"
   "        -c tid      cid to connect\n"
+  "        -I ic       invite code\n"
   "        -i cid      client id\n"
   "        -k key      client key\n"
   "        -S service  client service\n"
@@ -37,22 +39,9 @@ static char Usage[] =
   "        -l level    log level\n"
   "        -N name     log app name\n";
 
-int ttest(void)
+int test_get_deviceId(void)
 {
-	int nr_of_bytes;
-	char fingprint[41] = {0};
 	char device_id[64], device_key[64];
-	unsigned char *key="12345678901234561234567890123456";
-	unsigned char *data="abcdefg1234567890abchello,are you ok.haha";
-	unsigned char *out, *out2;
-	out = (unsigned char *)malloc(strlen(data)/16*16+16);
-	out2 = (unsigned char *)malloc(strlen(data)/16*16+16);
-	nr_of_bytes = p2p_message_encrypt(key, 32, data, strlen(data), out);
-
-	p2p_message_decrypt(key, 32, out, nr_of_bytes, out2);
-	printf("out2:%s\n", out2);
-	p2p_generate_fingprint("somedata somedata", "somekeysomekey", fingprint, 41);
-	printf("fingprint:%s\n", fingprint);
 	memset(device_id, 0, sizeof(device_id));
 	memset(device_key, 0, sizeof(device_key));
 	get_deviceId_key(device_id, device_key);
@@ -60,11 +49,53 @@ int ttest(void)
 	return 0;
 }
 
+void test_fingprint(void)
+{
+	char fingprint[41] = {0};
+	p2p_generate_fingprint("somedata somedata", "somekeysomekey", fingprint, 41);
+	printf("fingprint:%s\n", fingprint);
+	return;
+}
+
+int test_encrypt(char *key, char *data, char *enc_data, int len)
+{
+	int nr_of_bytes;
+	unsigned char *out;
+	out = (unsigned char *)malloc(strlen(data)/16*16+16);
+	nr_of_bytes = p2p_message_encrypt(key, 32, data, strlen(data), out);
+	p2p_base64_encode(out, nr_of_bytes, enc_data, len);
+	printf("===key:%s\n===src:%s\n===enc:%s\n", key, data, enc_data);
+	return 0;
+}
+
+int test_decrypt(char *key, char *enc_data)
+{
+	int total;
+	char message[1024] = {0};
+	char out_message[1024] = {0};
+	total = p2p_base64decode(message, enc_data, 1024);
+	p2p_message_decrypt((unsigned char *)key, 32, (unsigned char *)message, total, (unsigned char *)out_message);
+	printf("===key:%s\n===de_src:%s\n", key, out_message);
+	return 0;
+}
+
+int ttest(void)
+{
+	char message[1024] = {0};
+	unsigned char *key="ZGQyNTFiYzMtZjU0NC00NTY3LWIwYTUt";
+	unsigned char *data="service: SIP\r\ned: 192.168.130.157:5060\r\noid: default\r\nversion: 1.1.3";
+	test_encrypt(key, data, message, sizeof(message));
+	test_decrypt(key, message);
+	test_fingprint();
+	test_get_deviceId();
+	return 0;
+}
+
 int phrase_argv(int argc, char *argv[])
 {
 	int rc = 0;
 
-	while ((rc = getopt(argc, argv, "k:L:S:N:l:c:p:s:i:dtT")) != -1) {
+	while ((rc = getopt(argc, argv, "k:L:S:N:l:c:p:s:i:I:dtT")) != -1) {
 		switch(rc) {
 		case 'd':
 			if(debug_output < 1)
@@ -99,6 +130,9 @@ int phrase_argv(int argc, char *argv[])
 			random_cid = 0;
 			strncpy(client_id, optarg, sizeof(client_id) - 1);
 			break;
+		case 'I':
+			strncpy(client_ic, optarg, sizeof(client_ic) - 1);
+			break;
 		case 'k':
 			strncpy(client_key, optarg, sizeof(client_key) - 1);
 			break;
@@ -120,7 +154,7 @@ REND_CONN_HANDLE check_endpoint_and_connect(REND_EPT_HANDLE endpoint, char *tid)
 	REND_CONN_HANDLE conn = NULL;
 	if(get_rendezvous_endpoint(endpoint, &status, cid, NULL, ped) == 0){
 		if(status == ENDPOINT_REGISTER_OK)
-			conn = new_rendezvous_connection(endpoint, tid, client_service, "default", NULL);
+			conn = new_rendezvous_connection(endpoint, tid, client_service, "default", client_ic);
 		if(log_level>=5)
 			printf("cid:%s, status:%d, ped:%s\n", cid, status, ped);
 	}
@@ -193,9 +227,9 @@ int main(int argc, char *argv[])
 
 	//初始化约会客户端
 	if(random_cid == 1){
-		p2p_endpoint = new_rendezvous_endpoint(NULL, client_service, NULL, NULL, client_key, peer_fd);
+		p2p_endpoint = new_rendezvous_endpoint(NULL, client_service, NULL, client_ic, client_key, peer_fd);
 	}else{
-		p2p_endpoint = new_rendezvous_endpoint(client_id, client_service, NULL, NULL, client_key, peer_fd);
+		p2p_endpoint = new_rendezvous_endpoint(client_id, client_service, NULL, client_ic, client_key, peer_fd);
 	}
 	if(p2p_endpoint == NULL) {
 		close(peer_fd);

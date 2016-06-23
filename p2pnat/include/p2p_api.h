@@ -4,7 +4,7 @@
 #ifndef P2P_API
 #define P2P_API
 
-#define P2P_LIB_VERSION "1.1.3"
+#define P2P_LIB_VERSION "1.1.4"
 
 typedef void * REND_EPT_HANDLE;
 typedef void * REND_CONN_HANDLE;
