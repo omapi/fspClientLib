@@ -7,6 +7,7 @@
 
 #include "fsplib.h"
 #include "./p2pnat/include/p2p_api.h"
+#include "error_code.h"
 
 char g_device_id[256]={0};
 char g_invite_code[256]={0};
@@ -17,22 +18,24 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
-char g_version[]="0.12_v4";
+char g_version[]="0.12_v5";
 
 static char g_usage[] =
 "fsp client demo\n"
-"g_usage: fspClientDemo [options]... \n"
+"g_usage: fspClientDemo -id xxx -ic yyy -p zzz [options]... \n"
+"\n"
 "Option:\n"
-"      -v,--version                 display the version of fspClinet and exit.\n"
-"      -h,--help                    print this help.\n"
 "      -id,--device_id              client uses this id to find server\n"
 "      -ic,--invite_code            the invite code of FSP server for  p2pnat\n"
 "      -p,--password                the password of server\n"
 "      -g,--get                     download a file or a dirent from the server of whose device_id is device_id\n"
 "      -s,--save                    the local url for saving the download file or dirent \n"
 "      -np,--new_password           change the  password of server\n"
-"      -ls,--list                   display a list of files in the dirent\n";
-
+"      -ls,--list                   display a list of files in the dirent\n"
+"      -v,--version                 display the version of fspClinet and exit.\n"
+"      -h,--help                    print this help.\n"
+"\n"
+"for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/";
 
 int phrase_argv(int argc, char *argv[])
 {
@@ -56,7 +59,7 @@ int phrase_argv(int argc, char *argv[])
         }
         if(strcasecmp(argv[i],"--device_id")==0||strcasecmp(argv[i],"-id")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_device_id,argv[i+1]);
                 i++;
@@ -65,7 +68,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--password")==0||strcasecmp(argv[i],"-p")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_fsp_password,argv[i+1]);
                 i++;
@@ -74,7 +77,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--get")==0||strcasecmp(argv[i],"-g")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_get_url,argv[i+1]);
                 i++;
@@ -84,7 +87,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--save")==0||strcasecmp(argv[i],"-s")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_save_url,argv[i+1]);
                 i++;
@@ -93,7 +96,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--new_password")==0||strcasecmp(argv[i],"-np")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_new_fsp_password,argv[i+1]);
                 i++;
@@ -103,7 +106,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--list")==0||strcasecmp(argv[i],"-ls")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_dir_name,argv[i+1]);
                 i++;
@@ -113,7 +116,7 @@ int phrase_argv(int argc, char *argv[])
         }
         else if(strcasecmp(argv[i],"--invite_code")==0 || strcasecmp(argv[i],"-ic")==0)
         {
-            if(i<argc-1 && argv[i+1]!='-')
+            if(i<argc-1 && *argv[i+1]!='-')
             {
                 strcpy(g_invite_code,argv[i+1]);
                 i++;
@@ -173,16 +176,28 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 //get all of files in a dirent
 int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url)
 {
-	FSP_DIR *dir;
-	struct dirent *d;
+    FSP_DIR *dir;
+	FSP_RDENTRY entry;
+	FSP_RDENTRY *result;
+	int rc;
+
 	char save_dir_url[512];
 	char get_file_url[512];
 	char save_file_url[512];
-	if(f_get_dir_url==NULL || *f_get_dir_url=='\0') return -1;
+
+    if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
+    {
+        printf("Failed,code=%d,reason=\"miss get directory or file name\"\n",MISS_PARAMETER_VALUE);
+        return -1;
+    }
 
 	if(f_save_dir_url==NULL ||*f_save_dir_url == '\0')
 	{
-		strcpy(save_dir_url,f_get_dir_url);
+        if(*f_get_dir_url=='/') strcpy(save_dir_url,f_get_dir_url+1);//save at the curent dir
+        else  strcpy(save_dir_url,f_get_dir_url);
+
+        if(*(save_dir_url+strlen(save_dir_url)-1)!='/')
+            strcat(save_dir_url,"/");
 	}
 	else if(*(f_save_dir_url+strlen(f_save_dir_url)-1)!='/')
 	{
@@ -190,17 +205,39 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	}
 	else strcpy(save_dir_url,f_save_dir_url);
 
-	dir= fsp_opendir(s,f_get_dir_url);
-	while((d=fsp_readdir(dir))!=NULL)
+   	dir= fsp_opendir(s,f_get_dir_url);
+    if(dir == NULL)
+    {
+        printf("Failed, code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
+        return -2;
+    }
+	while(1)
 	{
-		if(*(d->d_name)=='.') continue;
+		if(dir ==NULL ) break;
+		if(dir->dirpos<0 || dir->dirpos % 4) break;
 
-		sprintf(get_file_url,"%s%s",f_get_dir_url,d->d_name);
-		sprintf(save_file_url,"%s%s",save_dir_url,d->d_name);
-		printf("get -%s ,save -%s\n",get_file_url,save_file_url);
-		get_file_method(s,get_file_url,save_file_url);
-	}
+		rc=fsp_readdir_native(dir,&entry,&result);
 
+		if(rc !=0) break;
+		if(result==NULL) break;
+
+		if(*(entry.name)=='.')  continue;
+		if((entry.type) == FSP_RDTYPE_FILE)
+		{
+            sprintf(get_file_url,"%s%s",f_get_dir_url,entry.name);
+	    	sprintf(save_file_url,"%s%s",save_dir_url,entry.name);
+		    get_file_method(s,get_file_url,save_file_url);
+		}
+		else if((entry.type) == FSP_RDTYPE_DIR)
+		{
+            printf("%s is directory ,jump downloading it\n",entry.name);
+            continue;
+		}
+		else if((entry.type) == FSP_RDTYPE_LINK)
+		{
+            printf("%s is link ,jump downloading it\n",entry.name);
+		}
+    }
 	fsp_closedir(dir);
 	return 0;
 }
@@ -213,6 +250,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	char* get_file_name;
 	char* get_url=f_get_url;
 	char save_url[512];
+    int error_flag=1;
 
 	//get file name
 	get_file_name=strrchr(get_url,'/');
@@ -257,18 +295,29 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	fp=fopen(save_url,"wb+");
 	if(fp==NULL)
 	{
-		//printf("open file-%s error\n",save_url);
+		printf("Failed,code=%d,reason=\"open file-%s error\"\n",FILE_OPEN_FAILED,save_url);
 		return -2;
 	}
 	//printf("open file for writing-%s\n",save_url);
 	f=fsp_fopen(s,get_url,"rb");
 	assert(f);
+    if(f==NULL)
+    {
+        printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
+        return -1;
+    }
 	while( ( i=fsp_fread(p.buf,1,1000,f) ) )
 	{
+        error_flag=0;
 		fwrite(p.buf,1,i,fp);
 	}
 	fsp_fclose(f);
 	fclose(fp);
+    if(error_flag==1)
+    {
+        remove(save_url);
+        printf("Failed,error=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+    }
 	//printf("write over\n");
 	return 0;
 }
@@ -316,6 +365,7 @@ int main (int argc, char *argv[])
 	/*change password*/
 	else if(g_fsp_method==FSP_CC_CH_PASSWD)
 	{
+        printf("new_password-%s\n",g_new_fsp_password);
 		fsp_ch_passwd(s,g_new_fsp_password);
 	}
 	//printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);

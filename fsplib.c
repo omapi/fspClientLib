@@ -386,6 +386,11 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
         continue;
       }
 
+      //Add by xxfan 2016-6-27
+      if(rpkt->cmd == FSP_CC_ERR)
+      {
+          printf("Failed,code=%d,reason=\"%s\"\n",FSP_CC_ERR,rpkt->buf);
+      }
       /* now we have a correct packet */
 
       /* compute rtt delay */
@@ -436,7 +441,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
 
   if(p2p_endpoint == NULL)
   {
-    printf("Failed: code=%d reason=\"create new p2p endpoint fail\"\n",P2P_NEW_ENDPOINT_FAILED);
+    printf("Failed,code=%d,reason=\"create new p2p endpoint fail\"\n",P2P_NEW_ENDPOINT_FAILED);
     close(peer_fd);
     return NULL;
   }
@@ -459,7 +464,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
       }
       else if(status == ENDPOINT_REGISTER_FAIL )
       {
-          printf("Failed: code=%d reason=\"p2p endpoint register failed\"\n",P2P_ENDPOINT_REGISTER_FAILED);
+          printf("Failed,code=%d,reason=\"p2p endpoint register failed\"\n",P2P_ENDPOINT_REGISTER_FAILED);
           return NULL;
       }
     }
@@ -481,7 +486,7 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
       }
       else if(status == CONNECTION_FAILED)
       {
-          printf("Failed: code=%d reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
+          printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
           return NULL;
       }
     }
@@ -507,14 +512,14 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
   rc = endpoint_to_address(server_addr, &peer_addr);
   if(rc != 0)
   {
-    printf("Failed: reson=\"invalid ip port:%s\"\n", server_addr);
+    printf("Failed,reson=\"invalid ip port:%s\"\n", server_addr);
     return NULL;
   }
   //?end p2pnat
 
   if( connect(peer_fd, &peer_addr, sizeof(struct sockaddr_in)))
   {
-      printf("Failed: code=%d ,reason=\"p2p connection failed\"\n",P2P_CONNECTION_FAILED);
+      printf("Failed,code=%d,reason=\"p2p connection failed\"\n",P2P_CONNECTION_FAILED);
     return NULL;
   }
 
@@ -1568,7 +1573,6 @@ int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)
 		out->len+=len;
 	}
 
-	printf("out->buf-%s\n",out->buf);
 	/* add terminating \0 */
 	out->len++;
 
