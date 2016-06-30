@@ -35,7 +35,7 @@ static char g_usage[] =
 "      -v,--version                 display the version of fspClinet and exit.\n"
 "      -h,--help                    print this help.\n"
 "\n"
-"for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/";
+"for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
 
 int phrase_argv(int argc, char *argv[])
 {
