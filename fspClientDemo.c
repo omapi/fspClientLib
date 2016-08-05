@@ -18,7 +18,7 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
-char g_version[]="0.12_v5";
+char g_version[]="0.12_v6";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -185,6 +185,8 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	char get_file_url[512];
 	char save_file_url[512];
 
+    struct stat file_stat;
+
     if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
     {
         printf("Failed,code=%d,reason=\"miss get directory or file name\"\n",MISS_PARAMETER_VALUE);
@@ -208,7 +210,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
    	dir= fsp_opendir(s,f_get_dir_url);
     if(dir == NULL)
     {
-        printf("Failed, code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
+        printf("Failed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
         return -2;
     }
 	while(1)
@@ -226,7 +228,13 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		{
             sprintf(get_file_url,"%s%s",f_get_dir_url,entry.name);
 	    	sprintf(save_file_url,"%s%s",save_dir_url,entry.name);
-		    get_file_method(s,get_file_url,save_file_url);
+            //check if the file has exited at local
+            if( stat(save_file_url,&file_stat) == 0 && file_stat.st_size == entry.size)
+            {
+                printf("%s has exited at local\n",save_file_url);
+                continue;
+            }
+            get_file_method(s,get_file_url,save_file_url);
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
 		{
@@ -256,7 +264,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	get_file_name=strrchr(get_url,'/');
 	if(get_file_name==NULL) get_file_name=get_url;
 	else get_file_name++;
-	printf("get_file_name-%s\n",get_file_name);
+	//printf("get_file_name-%s\n",get_file_name);
 
 	//save file url
 	if(f_save_url==NULL || *f_save_url=='\0')
@@ -269,7 +277,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	}
 	else strcpy(save_url,f_save_url);
 
-	printf("save_url-%s\n",save_url);
+	//printf("save_url-%s\n",save_url);
 	//mkdir if no exist
 	for(i=1;*(save_url+i)!='\0';i++)
 	{
@@ -316,7 +324,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
     if(error_flag==1)
     {
         remove(save_url);
-        printf("Failed,error=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+        printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
     }
 	//printf("write over\n");
 	return 0;
@@ -365,10 +373,10 @@ int main (int argc, char *argv[])
 	/*change password*/
 	else if(g_fsp_method==FSP_CC_CH_PASSWD)
 	{
-        printf("new_password-%s\n",g_new_fsp_password);
+        //printf("new_password-%s\n",g_new_fsp_password);
 		fsp_ch_passwd(s,g_new_fsp_password);
 	}
-	//printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
+	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
 	/* bye! */
 	fsp_close_session(s);
 	return 0;
