@@ -439,6 +439,10 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
   peer_fd = new_udp_socket(0,NULL);
   p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,key,peer_fd);
 
+  //
+  time_t do_p2p_reg_time;
+  time_t now;
+
   if(p2p_endpoint == NULL)
   {
     printf("Failed,code=%d,reason=\"create new p2p endpoint fail\"\n",P2P_NEW_ENDPOINT_FAILED);
@@ -448,8 +452,18 @@ FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const ch
 
   rendezvous_endpoint_reg(p2p_endpoint);
 
+  time(&do_p2p_reg_time);
+
   while(1)
   {
+      //check if reg timeout
+    time(&now);
+    if(now-do_p2p_reg_time>=60)//60s timeout
+    {
+        printf("Failed,code=%d,reason=\"p2p endpoint register timeout\"\n",P2P_ENDPOINT_REGISTER_FAILED);
+        return NULL;
+    }
+
     rendezvous_status_handle();
     if(get_rendezvous_endpoint(p2p_endpoint,&status,cid,NULL,ped) == 0)
     {

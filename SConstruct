@@ -4,7 +4,7 @@ import os
 # init Scons
 EnsureSConsVersion(0,96)
 PACKAGE='fsplib'
-VERSION='0.12_v5'
+VERSION='0.12_v6'
 
 #Defaults
 PREFIX='/usr/local'

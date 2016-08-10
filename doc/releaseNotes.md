@@ -4,6 +4,18 @@
 
 
 
+## fspClientLib 0.12_V6  ReleaseNotes 2016-08-10  by xxfan
+
+### 改进
+
+| 功能描述                                     | 注意事项 | 关注人     |
+| ---------------------------------------- | ---- | ------- |
+| 1. 错误码格式统一为“Failed,code=X,reason="YYYYY" |      | dmzhang |
+| 2. 下载文件夹时，如果文件在本地已经存在且完整，则不重复下载          |      | dmzhang |
+| 3. 增加p2p注册超时判断，如果注册超时则退出程序，防止死循环         |      | dmzhang |
+
+### 
+
 ## fspClientLib 0.12_V5  ReleaseNotes 2016-06-27  by xxfan
 
 ### 改进
