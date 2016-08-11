@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/fcntl.h>
+#include <time.h>
 
 #include "fsplib.h"
 #include "./p2pnat/include/p2p_api.h"
@@ -337,6 +338,10 @@ int main (int argc, char *argv[])
 	int rc;
 	int p2p_log_type=P2P_LOG_TYPE_FILE;
 
+	time_t now1;
+	time_t now2;
+	time_t now3;
+
 	phrase_argv(argc,argv);
 
 	if(*g_device_id=='\0')
@@ -344,6 +349,8 @@ int main (int argc, char *argv[])
 		fprintf(stderr,"\n",g_usage);
 		return 0;
 	}
+	time(&now1);
+	printf("start p2p time-%ld\n",now1);
 	rc = p2p_init(g_log_dir,"fspClient",p2p_log_type,5,NULL,0);
 	// for debug
 	//set_p2p_option(0,1);
@@ -357,7 +364,10 @@ int main (int argc, char *argv[])
 	if(s==NULL) return 0;
 	assert(s);
 	s->timeout=9000;
-
+	
+	time(&now2);
+	printf("p2p using time-%ds\n",now2-now1);
+	
 	/* diaplay a file list of dir*/
 	if(g_fsp_method==FSP_CC_GET_DIR)
 	{
@@ -377,6 +387,8 @@ int main (int argc, char *argv[])
 		//printf("new_password-%s\n",g_new_fsp_password);
 		fsp_ch_passwd(s,g_new_fsp_password);
 	}
+	time(&now3);
+	printf("fsp using time %ds\n",now3-now2);
 	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
 	/* bye! */
 	fsp_close_session(s);
