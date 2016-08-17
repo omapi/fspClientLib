@@ -19,7 +19,8 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
-char g_version[]="0.12_v6";
+unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
+char g_version[]="0.12_v7";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -34,6 +35,7 @@ static char g_usage[] =
 "      -np,--new_password           change the  password of server\n"
 "      -ls,--list                   display a list of files in the dirent\n"
 "      -v,--version                 display the version of fspClinet and exit.\n"
+"      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -124,6 +126,15 @@ int phrase_argv(int argc, char *argv[])
 			}
 			else strcpy(g_invite_code,"");
 
+		}
+		else if(strcasecmp(argv[i],"--preferred_size")==0 || strcasecmp(argv[i],"-ps")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='_')
+			{
+				g_preferred_size=(unsigned int)atoi(argv[i+1]);
+                if(g_preferred_size>FSP_SPACE) g_preferred_size=FSP_SPACE;
+				i++;
+			}
 		}
 		else
 		{
@@ -357,17 +368,18 @@ int main (int argc, char *argv[])
 	if(rc!=0)
 	{
 		//printf("p2p init fail\n");
-		return 0;
+	    printf("Failed,code=%d,reason=\"init p2p failed\"\n",P2P_INIT_FAILED);
+        return 0;
 	}
 
 	s = fsp_open_session(g_device_id,g_invite_code,NULL,g_fsp_password);
 	if(s==NULL) return 0;
 	assert(s);
 	s->timeout=9000;
-	
+
 	time(&now2);
 	printf("p2p using time-%ds\n",now2-now1);
-	
+
 	/* diaplay a file list of dir*/
 	if(g_fsp_method==FSP_CC_GET_DIR)
 	{

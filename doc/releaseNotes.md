@@ -2,6 +2,15 @@
 
 > **代码开源地址：**https://github.com/omapi/fspClientLib
 
+## fspClientLib 0.12_V7  ReleaseNotes 2016-08-17  by xxfan
+
+### 改进
+
+| 功能描述                                     | 注意事项                                     | 关注人     |
+| ---------------------------------------- | ---------------------------------------- | ------- |
+| 1. 支持可指定服务器发给客户端的包大小，参数-ps ，单位byte，默认7348，最大14708 | 1. 需要和fspd 1.0.5＋版本配合；2. 当ps值大于服务器设置的packet_size时，传输包大小会采用服务器配置的packet_size | dmzhang |
+| 2. 打印p2p约会耗时和下载文件的耗时                     |                                          | dmzhang |
+
 
 
 ## fspClientLib 0.12_V6  ReleaseNotes 2016-08-10  by xxfan

@@ -49,7 +49,9 @@
 
 /* FSP v2 packet size */
 #define FSP_HSIZE 12                           /* 12 bytes for v2 header */
-#define FSP_SPACE 1024                         /* maximum payload.       */
+//#define FSP_SPACE 1024
+//Changed by xxfan
+#define FSP_SPACE 14708                        /* maximum payload.       *//*MTU(max transmission Unit)=1500  FSP_SPACE=(1500-20-8)*10-FSP_HSIZE ,IP header=20,udp header=8*/
 #define FSP_MAXPACKET   FSP_HSIZE+FSP_SPACE    /* maximum packet size.   */
 
 /* byte offsets of fields in the FSP v2 header */

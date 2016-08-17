@@ -36,7 +36,7 @@
 //p2pnat
 #include "p2p_api.h"
 #include "error_code.h"
-
+extern unsigned int g_preferred_size;
 /* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
@@ -262,7 +262,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
   t_delay = 0;
   /* compute initial delay here */
   /* we are using hardcoded value for now */
-  f_delay = 1340;
+  f_delay = 1000;
   l_delay = 0;
   for(;;retry++)
   {
@@ -949,6 +949,7 @@ FSP_FILE * fsp_fopen(FSP_SESSION *session, const char *path,const char *modeflag
     return NULL;
   }
 
+  f->out.xlen=0;//add by xxfan
   /* build request packet */
   if(f->writing)
   {
@@ -963,8 +964,13 @@ FSP_FILE * fsp_fopen(FSP_SESSION *session, const char *path,const char *modeflag
     }
     f->bufpos=FSP_SPACE;
     f->out.cmd=FSP_CC_GET_FILE;
-  }
-  f->out.xlen=0;
+    //Add by xxfan 2016/08/16
+    *(unsigned int*)(f->out.buf+f->out.len)= htonl(g_preferred_size);
+    f->out.xlen=2;
+    f->out.len+=2;
+    //?end add
+    }
+ // f->out.xlen=0; //delete by xxfan
 
   /* setup control variables */
   f->s=session;
