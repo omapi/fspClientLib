@@ -20,7 +20,8 @@ char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
-char g_version[]="0.12_v7";
+unsigned int g_first_resend_time=1340;
+char g_version[]="0.12_v8";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -36,6 +37,7 @@ static char g_usage[] =
 "      -ls,--list                   display a list of files in the dirent\n"
 "      -v,--version                 display the version of fspClinet and exit.\n"
 "      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
+"      -frt,--first_resend_time     \n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -136,7 +138,16 @@ int phrase_argv(int argc, char *argv[])
 				i++;
 			}
 		}
-		else
+	    else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
+        {
+            if(i<argc-1 && *argv[i+1]!='_')
+            {
+                g_first_resend_time=(unsigned int)atoi(argv[i+1]);
+                if(g_first_resend_time<=1000) g_first_resend_time=1000;
+                i++;
+            }
+        }
+        else
 		{
 			printf("Unknown command: %s\n",argv[i]);
 			return -1;

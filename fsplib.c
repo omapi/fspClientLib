@@ -37,6 +37,7 @@
 #include "p2p_api.h"
 #include "error_code.h"
 extern unsigned int g_preferred_size;
+extern unsigned int g_first_resend_time;
 /* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
@@ -262,7 +263,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
   t_delay = 0;
   /* compute initial delay here */
   /* we are using hardcoded value for now */
-  f_delay = 1000;
+  f_delay = g_first_resend_time;//changed by xxfan
   l_delay = 0;
   for(;;retry++)
   {
@@ -270,6 +271,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
     {
       client_set_key((FSP_LOCK *)s->lock,p->key);
       errno = ETIMEDOUT;
+     //need error code//xxfan
       return -1;
     }
     /* make a packet */
