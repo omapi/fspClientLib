@@ -134,7 +134,7 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='_')
 			{
 				g_preferred_size=(unsigned int)atoi(argv[i+1]);
-                if(g_preferred_size>FSP_SPACE) g_preferred_size=FSP_SPACE;
+                if(g_preferred_size>FSP_SPACE||g_preferred_size==0) g_preferred_size=FSP_SPACE;
 				i++;
 			}
 		}
@@ -337,11 +337,21 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
 		return -1;
 	}
-	while( ( i=fsp_fread(p.buf,1,1000,f) ) )
+	printf("start get file %s\n",get_url);
+
+	 while( ( i=fsp_fread(p.buf,1,g_preferred_size,f) ) )
 	{
 		error_flag=0;
 		fwrite(p.buf,1,i,fp);
+		printf("=");
+		fflush(stdout);
 	}
+	if(f->err==1)	
+	{
+		remove(save_url);
+		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+	}
+
 	fsp_fclose(f);
 	fclose(fp);
 	if(error_flag==1)
@@ -349,7 +359,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		remove(save_url);
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 	}
-	printf("get file %s over\n",get_url);
+	printf("end get file %s\n",get_url);
 	//printf("write over\n");
 	return 0;
 }
