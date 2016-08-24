@@ -48,8 +48,8 @@ int recv_udp_packet(int udp_fd, char *udp_message, int message_len, struct socka
 	fd_set rset;
 	struct timeval tval;
 	socklen_t addr_len = sizeof(struct sockaddr_in);
-	tval.tv_sec = 1;
-	tval.tv_usec = 100*1000;
+	tval.tv_sec = 0;
+	tval.tv_usec = 10*1000;
 	FD_ZERO(&rset);
 	FD_SET(udp_fd, &rset);
 	rc = select(udp_fd+1, &rset, NULL, NULL, &tval);

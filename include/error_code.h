@@ -14,6 +14,8 @@ enum
     FILE_OPEN_FAILED=10,
     MISS_PARAMETER_VALUE=11,
     P2P_INIT_FAILED=12,
+    FSP_READ_DIR_FAILED=13,
+    FSP_READ_FILE_WARNING=100,
 };
 //#define FSP_CC_ERR          84    /* error response from server.          */
 

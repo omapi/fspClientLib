@@ -622,11 +622,16 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
   {
     return NULL;
   }
+
   pos=0;
   blocksize=0;
   dir=NULL;
   out.cmd = FSP_CC_GET_DIR;
-  out.xlen=0;
+
+  //out.xlen=0;
+  //Add by xxfan 2016/08/16
+  *(uint32_t*)(out.buf+out.len)= htons((uint32_t)1024);
+  out.xlen=2;
 
   /* load directory listing from the server */
   while(1)
@@ -967,7 +972,7 @@ FSP_FILE * fsp_fopen(FSP_SESSION *session, const char *path,const char *modeflag
     f->bufpos=FSP_SPACE;
     f->out.cmd=FSP_CC_GET_FILE;
     //Add by xxfan 2016/08/16
-    *(unsigned int*)(f->out.buf+f->out.len)= htonl(g_preferred_size);
+    *(int32_t*)(f->out.buf+f->out.len)= htonl((int32_t)g_preferred_size);
     f->out.xlen=2;
     f->out.len+=2;
     //?end add

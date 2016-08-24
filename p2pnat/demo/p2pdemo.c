@@ -18,8 +18,9 @@ char server_address[24] = "";
 char client_id[41] = {0};
 char client_key[33] = {0};
 char client_ic[65] = {0};
-char client_service[20] = "SIP";
+char client_service[20] = "DMO";
 int client_port = 0;
+int keep_reg_interval = 0;
 char g_tid[41] = {0};
 
 static char Usage[] =
@@ -37,6 +38,8 @@ static char Usage[] =
   "        -d          output log info to screen\n"
   "        -t          test mode, donn't crypt message\n"
   "        -l level    log level\n"
+  "        -T          test get device_id\n"
+  "        -K          keep nat interval\n"
   "        -N name     log app name\n";
 
 int test_get_deviceId(void)
@@ -46,6 +49,9 @@ int test_get_deviceId(void)
 	memset(device_key, 0, sizeof(device_key));
 	get_deviceId_key(device_id, device_key);
 	printf("get device_id:%s, device_key:%s\n", device_id, device_key);
+	memset(device_id, 0, sizeof(device_id));
+	get_deviceId_byMac("000EA9362200", device_id);
+	printf("get device_id %s for mac 000EA9362200\n", device_id);
 	return 0;
 }
 
@@ -95,7 +101,7 @@ int phrase_argv(int argc, char *argv[])
 {
 	int rc = 0;
 
-	while ((rc = getopt(argc, argv, "k:L:S:N:l:c:p:s:i:I:dtT")) != -1) {
+	while ((rc = getopt(argc, argv, "K:k:L:S:N:l:c:p:s:i:I:dtT")) != -1) {
 		switch(rc) {
 		case 'd':
 			if(debug_output < 1)
@@ -120,6 +126,9 @@ int phrase_argv(int argc, char *argv[])
 		case 's':
 			strncpy(server_address, optarg, sizeof(server_address) - 1);
 			break;
+		case 'K':
+			keep_reg_interval = atoi(optarg);
+			break;
 		case 'p':
 			server_port = atoi(optarg);
 			break;
@@ -143,6 +152,17 @@ int phrase_argv(int argc, char *argv[])
 			fprintf(stderr,"%s\n", Usage);
 			exit(1);
 		}
+	}
+	return 0;
+}
+
+int check_endpoint_event(REND_EPT_HANDLE endpoint, int event)
+{
+	int status;
+	char cid[41], ped[25];
+	REND_CONN_HANDLE conn = NULL;
+	if(get_rendezvous_endpoint(endpoint, &status, cid, NULL, ped) == 0){
+		printf("%s(%s) got event %x\n", cid, ped, event);
 	}
 	return 0;
 }
@@ -220,6 +240,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "init p2p failed\n");
 		return -1;
 	}
+	if(keep_reg_interval > 0)
+		set_p2p_reg_keep_interval(keep_reg_interval);
 	if(debug_output >= 2)
 		set_p2p_option(0, 1);
 
@@ -237,6 +259,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 	rendezvous_endpoint_reg(p2p_endpoint);
+	rendezvous_endpoint_eventCallbacks(p2p_endpoint, ENDPOINT_EVENT_NAT_CHANGE|ENDPOINT_EVENT_CONN_FAIL|ENDPOINT_EVENT_CONN_OK, check_endpoint_event);
 	while(1){
 		rendezvous_status_handle();
 

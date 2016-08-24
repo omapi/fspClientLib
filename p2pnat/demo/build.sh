@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export LD_LIBRARY_PATH=`pwd`/../
+echo -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
 Server="-s 192.168.130.80"
 if [ "$1" = "s" ];then
 	shift
@@ -14,6 +15,14 @@ elif [ "$1" = "r" ];then
 elif [ "$1" = "lib" ];then
 	cd ../; ./build.sh $2
 elif [ "$1" != "" ];then
+	if [ "$1" = "all" ];then
+		$0 wroc
+		$0 mx60
+		$0 mx8
+		$0 om400
+		exit
+	fi
+	echo -e "**********build $1*********"
 	if [ "$1" = "wroc" ];then
 		export PATH=/opt/buildroot-gcc342/bin:$PATH
 	elif [ "$1" = "om400" ];then

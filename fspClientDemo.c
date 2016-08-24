@@ -19,6 +19,7 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
+unsigned int g_max_wait_time=9;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
 unsigned int g_first_resend_time=1340;
 char g_version[]="0.12_v8";
@@ -38,6 +39,7 @@ static char g_usage[] =
 "      -v,--version                 display the version of fspClinet and exit.\n"
 "      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
 "      -frt,--first_resend_time     \n"
+"      -mwt,--max_wait_timeout           the maximum waiting time that doesn't recv response from server after serveral failed attempts\n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -166,15 +168,31 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 	struct tm* p;
 
 	dir= fsp_opendir(s,dir_name);
+	printf("[start]\n");
 	while(1)
 	{
-		if(dir ==NULL ) return -1;
-		if(dir->dirpos<0 || dir->dirpos % 4) return -2;
+		if(dir ==NULL ) 
+		{
+			printf("[end]\n");
+			return -1;
+		}
+		if(dir->dirpos<0 || dir->dirpos % 4) {
+			printf("[end]\n");
+			return -2;
+		}
 
 		rc=fsp_readdir_native(dir,&entry,&result);
 
-		if(rc !=0) return rc;
-		if(result==NULL) return 0;
+		if(rc !=0)
+		{
+			printf("[end]\n");
+			 return rc;
+		}
+		if(result==NULL)
+		{
+			printf("[end]\n");
+			 return 0;
+		}
 
 		if(*(entry.name)=='.')  continue;
 		if((entry.type) == FSP_RDTYPE_FILE)
@@ -192,6 +210,7 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		p=gmtime(&entry.lastmod);
 		printf("%10d %10d/%02d/%02d %02d:%02d:%02d  %s\n",entry.size,(1900+p->tm_year),(1+p->tm_mon),p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec,entry.name);
 	}
+	printf("[end]\n");
 
 	fsp_closedir(dir);
 	return 0;
@@ -335,7 +354,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	if(f==NULL)
 	{
 		printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
-		return -1;
+		 return -1;
 	}
 	printf("start get file %s\n",get_url);
 
@@ -346,10 +365,10 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		printf("=");
 		fflush(stdout);
 	}
-	if(f->err==1)	
+	if(f->err==1)
 	{
+		error_flag=1;
 		remove(save_url);
-		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 	}
 
 	fsp_fclose(f);
@@ -357,7 +376,23 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	if(error_flag==1)
 	{
 		remove(save_url);
+		if(g_preferred_size>1024)
+		{
+     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_READ_FILE_WARNING,g_preferred_size);
+			g_preferred_size=1024;
+			get_file_method(s,f_get_url,f_save_url);
+			return -3;
+		}
+		else if(g_preferred_size>768)
+		{
+     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_READ_FILE_WARNING,g_preferred_size);
+			g_preferred_size=768;
+			get_file_method(s,f_get_url,f_save_url);
+			return -3;
+		}
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+		return -4;
+		//printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 	}
 	printf("end get file %s\n",get_url);
 	//printf("write over\n");
@@ -396,7 +431,7 @@ int main (int argc, char *argv[])
 	s = fsp_open_session(g_device_id,g_invite_code,NULL,g_fsp_password);
 	if(s==NULL) return 0;
 	assert(s);
-	s->timeout=9000;
+	s->timeout=g_max_wait_time*1000;
 
 	time(&now2);
 	printf("p2p using time-%ds\n",now2-now1);
@@ -404,7 +439,8 @@ int main (int argc, char *argv[])
 	/* diaplay a file list of dir*/
 	if(g_fsp_method==FSP_CC_GET_DIR)
 	{
-		read_dir_method(s,g_dir_name);
+		rc=read_dir_method(s,g_dir_name);
+		if(rc!=0) printf("Failed,code=%d,reason=\"read dir-%s failed\"\n",FSP_READ_DIR_FAILED,g_dir_name);
 	}
 	/* get a file */
 	else if(g_fsp_method==FSP_CC_GET_FILE)
@@ -420,9 +456,10 @@ int main (int argc, char *argv[])
 		//printf("new_password-%s\n",g_new_fsp_password);
 		fsp_ch_passwd(s,g_new_fsp_password);
 	}
+
 	time(&now3);
 	printf("fsp using time %ds\n",now3-now2);
-	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
+	if(s!=NULL)	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
 	/* bye! */
 	fsp_close_session(s);
 	return 0;
