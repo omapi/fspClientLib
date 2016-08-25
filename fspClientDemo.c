@@ -168,10 +168,25 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 	struct tm* p;
 
 	dir= fsp_opendir(s,dir_name);
+  /*  if(dir==NULL)
+    {
+     	printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
+        g_preferred_size=1024;
+        dir = fsp_opendir(s,dir_name);
+        if(dir == NULL)
+        {
+     	    printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
+            g_preferred_size=768;
+            dir=fsp_opendir(s,dir_name);
+        }
+    }*/
+    if(dir==NULL)
+        return -1;
+
 	printf("[start]\n");
 	while(1)
 	{
-		if(dir ==NULL ) 
+		if(dir ==NULL )
 		{
 			printf("[end]\n");
 			return -1;
@@ -197,15 +212,19 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		if(*(entry.name)=='.')  continue;
 		if((entry.type) == FSP_RDTYPE_FILE)
 		{
-			printf("file ");
+			printf("file  ");
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
 		{
-			printf("dir  ");
+			printf("dir   ");
 		}
 		else if((entry.type) == FSP_RDTYPE_LINK)
 		{
-			printf("link ");
+			printf("link  ");
+		}
+		else {
+		//	printf("unkown ");
+			continue;
 		}
 		p=gmtime(&entry.lastmod);
 		printf("%10d %10d/%02d/%02d %02d:%02d:%02d  %s\n",entry.size,(1900+p->tm_year),(1+p->tm_mon),p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec,entry.name);
@@ -378,14 +397,14 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		remove(save_url);
 		if(g_preferred_size>1024)
 		{
-     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_READ_FILE_WARNING,g_preferred_size);
+     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
 			g_preferred_size=1024;
 			get_file_method(s,f_get_url,f_save_url);
 			return -3;
 		}
 		else if(g_preferred_size>768)
 		{
-     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_READ_FILE_WARNING,g_preferred_size);
+     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
 			g_preferred_size=768;
 			get_file_method(s,f_get_url,f_save_url);
 			return -3;
