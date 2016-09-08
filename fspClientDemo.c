@@ -19,11 +19,11 @@ char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
 int g_fsp_method;
-unsigned int g_max_wait_time=9;
+unsigned int g_max_wait_time=10;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
 unsigned int g_first_resend_time=1340;
-char g_version[]="0.12_v8";
-
+char g_version[]="0.12_v9";
+int g_tmp_num=0;
 static char g_usage[] =
 "fsp client demo\n"
 "g_usage: fspClientDemo -id xxx -ic yyy -p zzz [options]... \n"
@@ -136,20 +136,20 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='_')
 			{
 				g_preferred_size=(unsigned int)atoi(argv[i+1]);
-                if(g_preferred_size>FSP_SPACE||g_preferred_size==0) g_preferred_size=FSP_SPACE;
+				if(g_preferred_size>FSP_SPACE||g_preferred_size==0) g_preferred_size=FSP_SPACE;
 				i++;
 			}
 		}
-	    else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
-        {
-            if(i<argc-1 && *argv[i+1]!='_')
-            {
-                g_first_resend_time=(unsigned int)atoi(argv[i+1]);
-                if(g_first_resend_time<=1000) g_first_resend_time=1000;
-                i++;
-            }
-        }
-        else
+		else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='_')
+			{
+				g_first_resend_time=(unsigned int)atoi(argv[i+1]);
+				if(g_first_resend_time<=1000) g_first_resend_time=1000;
+				i++;
+			}
+		}
+		else
 		{
 			printf("Unknown command: %s\n",argv[i]);
 			return -1;
@@ -166,22 +166,16 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 	int rc;
 	struct dirent *d;
 	struct tm* p;
+	int num_file=0;
+	int num_link=0;
+	int num_unkown=0;
+	int num_dir=0;
+	int num_hide=0;
 
 	dir= fsp_opendir(s,dir_name);
-  /*  if(dir==NULL)
-    {
-     	printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-        g_preferred_size=1024;
-        dir = fsp_opendir(s,dir_name);
-        if(dir == NULL)
-        {
-     	    printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-            g_preferred_size=768;
-            dir=fsp_opendir(s,dir_name);
-        }
-    }*/
-    if(dir==NULL)
-        return -1;
+
+	if(dir==NULL)
+		return -1;
 
 	printf("[start]\n");
 	while(1)
@@ -189,10 +183,12 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		if(dir ==NULL )
 		{
 			printf("[end]\n");
+			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
 			return -1;
 		}
 		if(dir->dirpos<0 || dir->dirpos % 4) {
 			printf("[end]\n");
+			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
 			return -2;
 		}
 
@@ -201,36 +197,46 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		if(rc !=0)
 		{
 			printf("[end]\n");
-			 return rc;
+			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			return rc;
 		}
 		if(result==NULL)
 		{
 			printf("[end]\n");
-			 return 0;
+			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			return 0;
 		}
 
-		if(*(entry.name)=='.')  continue;
+		if(*(entry.name)=='.')
+		{
+			num_hide++;
+			continue;
+		}
 		if((entry.type) == FSP_RDTYPE_FILE)
 		{
+			num_file++;
 			printf("file  ");
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
 		{
+			num_dir++;
 			printf("dir   ");
 		}
 		else if((entry.type) == FSP_RDTYPE_LINK)
 		{
+			num_link++;
 			printf("link  ");
 		}
 		else {
-		//	printf("unkown ");
+			num_unkown++;
 			continue;
 		}
 		p=gmtime(&entry.lastmod);
+
 		printf("%10d %10d/%02d/%02d %02d:%02d:%02d  %s\n",entry.size,(1900+p->tm_year),(1+p->tm_mon),p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec,entry.name);
 	}
 	printf("[end]\n");
-
+	printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
 	fsp_closedir(dir);
 	return 0;
 }
@@ -241,6 +247,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	FSP_RDENTRY entry;
 	FSP_RDENTRY *result;
 	int rc;
+
 
 	char save_dir_url[512];
 	char get_file_url[512];
@@ -254,7 +261,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		return -1;
 	}
 
-	if(f_save_dir_url==NULL ||*f_save_dir_url == '\0')
+	if(f_save_dir_url==NULL || *f_save_dir_url == '\0')
 	{
 		if(*f_get_dir_url=='/') strcpy(save_dir_url,f_get_dir_url+1);//save at the curent dir
 		else  strcpy(save_dir_url,f_get_dir_url);
@@ -274,10 +281,15 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		printf("Failed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
 		return -2;
 	}
+	printf("the initial preferred packet size-%d\n",g_preferred_size);
 	while(1)
 	{
 		if(dir ==NULL ) break;
-		if(dir->dirpos<0 || dir->dirpos % 4) break;
+		if(dir->dirpos<0 || dir->dirpos % 4)
+		{
+			rc=-1;
+			break;
+		}
 
 		rc=fsp_readdir_native(dir,&entry,&result);
 
@@ -290,11 +302,11 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 			sprintf(get_file_url,"%s%s",f_get_dir_url,entry.name);
 			sprintf(save_file_url,"%s%s",save_dir_url,entry.name);
 			//check if the file has exited at local
-			if( stat(save_file_url,&file_stat) == 0 && file_stat.st_size == entry.size)
-			{
+				if( stat(save_file_url,&file_stat) == 0 && file_stat.st_size == entry.size)
+				{
 				printf("%s has exited at local\n",save_file_url);
 				continue;
-			}
+				}
 			get_file_method(s,get_file_url,save_file_url);
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
@@ -373,11 +385,11 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	if(f==NULL)
 	{
 		printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
-		 return -1;
+		return -1;
 	}
 	printf("start get file %s\n",get_url);
 
-	 while( ( i=fsp_fread(p.buf,1,g_preferred_size,f) ) )
+	while( ( i=fsp_fread(p.buf,1,g_preferred_size,f) ) )
 	{
 		error_flag=0;
 		fwrite(p.buf,1,i,fp);
@@ -395,20 +407,23 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	if(error_flag==1)
 	{
 		remove(save_url);
-		if(g_preferred_size>1024)
+		if(g_preferred_size>56)
 		{
-     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-			g_preferred_size=1024;
+		//if(g_preferred_size>1024)
+	//	{
+			g_preferred_size=g_preferred_size/2;
+			printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to %d  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size*2,g_preferred_size);
+			//g_preferred_size=1024;
 			get_file_method(s,f_get_url,f_save_url);
 			return -3;
 		}
-		else if(g_preferred_size>768)
+	/*	else if(g_preferred_size>768)
 		{
-     			 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
+			printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
 			g_preferred_size=768;
 			get_file_method(s,f_get_url,f_save_url);
 			return -3;
-		}
+		}*/
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 		return -4;
 		//printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
@@ -432,7 +447,7 @@ int main (int argc, char *argv[])
 
 	if(*g_device_id=='\0')
 	{
-		fprintf(stderr,"\n",g_usage);
+		fprintf("stderr-%s\n",g_usage);
 		return 0;
 	}
 	time(&now1);
@@ -443,8 +458,8 @@ int main (int argc, char *argv[])
 	if(rc!=0)
 	{
 		//printf("p2p init fail\n");
-	    printf("Failed,code=%d,reason=\"init p2p failed\"\n",P2P_INIT_FAILED);
-        return 0;
+		printf("Failed,code=%d,reason=\"init p2p failed\"\n",P2P_INIT_FAILED);
+		return 0;
 	}
 
 	s = fsp_open_session(g_device_id,g_invite_code,NULL,g_fsp_password);

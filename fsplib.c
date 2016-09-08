@@ -38,6 +38,7 @@
 #include "error_code.h"
 extern unsigned int g_preferred_size;
 extern unsigned int g_first_resend_time;
+extern int g_tmp_num;
 /* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
@@ -630,7 +631,8 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
 
     //out.xlen=0;
     //Add by xxfan 2016/08/25
-    *(uint32_t*)(out.buf+out.len)= htons((uint32_t)g_preferred_size);
+    //*(uint32_t*)(out.buf+out.len)= htons((uint32_t)g_preferred_size);
+    *(uint32_t*)(out.buf+out.len)= htons((uint32_t)768);
     out.xlen=2;
 
     /* load directory listing from the server */
@@ -639,7 +641,7 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
         out.pos=pos;
         if ( fsp_transaction(s,&out,&in) )
         {
-            if(g_preferred_size>1024)
+/*        if(g_preferred_size>1024)
             {
                 printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
                 g_preferred_size=1024;
@@ -650,13 +652,14 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
                 g_preferred_size=768;
             }
             else
+*/
             {
                 pos = -1;
                 break;
             }
-            dir = fsp_opendir(s,dirname);
-            return dir;
-            //	printf("transaction error\n");
+         //	printf("transaction error\n");
+        //    dir = fsp_opendir(s,dirname);
+        //  return dir;
         }
         if ( in.cmd == FSP_CC_ERR )
         {
@@ -667,10 +670,17 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
         }
         /* End of directory? */
         if ( in.len == 0)
+        {
+            //printf("in.len=0\n");
             break;
+        }
         /* set blocksize */
         if (blocksize == 0 )
+        {
             blocksize = in.len;
+            //printf("in.len-%d\n",blocksize);
+        }
+
         /* alloc directory */
         if (dir == NULL)
         {
@@ -681,20 +691,7 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
                 break;
             }
         }
-        /* append data */
-        tmp=realloc(dir->data,pos+in.len);
-        if(tmp == NULL)
-        {
-            pos = -1;
-            break;
-        }
-        dir->data=tmp;
-        memcpy(dir->data + pos, in.buf,in.len);
-        pos += in.len;
-        if (in.len < blocksize)
-            /* last block is smaller */
-            break;
-    }
+        //printf("pos-%d\n",pos);
     if (pos == -1)
     {
         /* failure */
@@ -708,6 +705,24 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
         return NULL;
     }
 
+
+        /* append data */
+        tmp=realloc(dir->data,pos+in.len);
+        if(tmp == NULL)
+        {
+            pos = -1;
+            break;
+        }
+        dir->data=tmp;
+        memcpy(dir->data + pos, in.buf,in.len);
+        pos += in.len;
+        if (in.len < blocksize)
+        {
+            //printf("in.len-%d < blocksize-%d ,break\n",in.len,blocksize);
+            /* last block is smaller */
+            break;
+        }
+    }
     dir->inuse=1;
     dir->blocksize=blocksize;
     dir->dirname=strdup(dirname);
@@ -792,28 +807,42 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
 {
     unsigned char ftype;
     int namelen;
-
+    g_tmp_num++;
+    int old_dir_pos;
     if (dir == NULL || entry == NULL || result == NULL)
+    {
+        //printf("dir ==NULL,entry==NULL,result==NULL\n");
         return -EINVAL;
+    }
     if (dir->dirpos<0 || dir->dirpos % 4)
+    {
+        //printf("dir->dirpos-%d,error\n",dir->dirpos);
         return -ESPIPE;
-
+    }
+    //printf("dir_pos-%d\n",dir->dirpos);
+    old_dir_pos=dir->dirpos;
+    //printf("dir->blocksize-%d\n",dir->blocksize);
     while(1)
     {
         if ( dir->dirpos >= (int)dir->datasize )
         {
             /* end of the directory */
             *result = NULL;
+            //printf("dir->dirp-%d > = dir -> datasize-%d \n",dir->dirpos,dir->datasize);
             return 0;
         }
         if (dir->blocksize - (dir->dirpos % dir->blocksize) < 9)
+        {
+            //printf("file type FSP_RDTYPE_SKIP\n");
             ftype= FSP_RDTYPE_SKIP;
+        }
         else
             /* get the file type */
             ftype=dir->data[dir->dirpos+8];
 
         if (ftype == FSP_RDTYPE_END )
         {
+            //printf("dir->dirpos-%d,dir->datasize-%d\n",dir->dirpos,dir->datasize);
             dir->dirpos=dir->datasize;
             continue;
         }
@@ -821,9 +850,10 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
         {
             /* skip to next directory block */
             dir->dirpos = ( dir->dirpos / dir->blocksize + 1 ) * dir->blocksize;
-#ifdef MAINTAINER_MODE
-            // printf("new block dirpos: %d\n",dir->dirpos);
-#endif
+//#ifdef MAINTAINER_MODE
+            //dir->dirpos +=12;
+//#ifdef MAINTAINER_MODE
+//#endif
             continue;
         }
         /* extract binary data */
@@ -858,6 +888,7 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
         else
         {
             /* \0 terminator not found at end of filename */
+            printf("\0 terminator not found\n");
             *result = NULL;
             return 0;
         }
@@ -873,12 +904,22 @@ int fsp_readdir_native(FSP_DIR *dir,FSP_RDENTRY *entry, FSP_RDENTRY **result)
         entry->reclen = 10+namelen;
 
         /* pad to 4 byte boundary */
+        /* Del by xxfan
         while( dir->dirpos & 0x3 )
         {
             dir->dirpos++;
             entry->reclen++;
+        }*/
+        int n;
+        //printf("entry->reclen=%d,dirpos-%d\n",entry->reclen);
+        if(entry->reclen%4!=0){
+
+         n=4-(entry->reclen)%4;
+         entry->reclen+=n;
+         dir->dirpos+=n;
         }
 
+         //printf("old_dir_pos-%d,new_dirpos-%d, len=%d\n",old_dir_pos,dir->dirpos,dir->dirpos-old_dir_pos);
         /* and return it */
         *result=entry;
         return 0;
