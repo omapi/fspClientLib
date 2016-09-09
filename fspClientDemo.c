@@ -18,6 +18,7 @@ char g_get_url[512]={0};
 char g_save_url[512]={0};
 char g_dir_name[256]={0};
 char g_log_dir[256]=".";
+int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int g_fsp_method;
 unsigned int g_max_wait_time=10;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
@@ -39,7 +40,8 @@ static char g_usage[] =
 "      -v,--version                 display the version of fspClinet and exit.\n"
 "      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
 "      -frt,--first_resend_time     \n"
-"      -mwt,--max_wait_timeout           the maximum waiting time that doesn't recv response from server after serveral failed attempts\n"
+"      -mwt,--max_wait_timeout      the maximum waiting time that doesn't recv response from server after serveral failed attempts\n"
+"      -d,--debug		    yes,no\n" 
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -133,7 +135,7 @@ int phrase_argv(int argc, char *argv[])
 		}
 		else if(strcasecmp(argv[i],"--preferred_size")==0 || strcasecmp(argv[i],"-ps")==0)
 		{
-			if(i<argc-1 && *argv[i+1]!='_')
+			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				g_preferred_size=(unsigned int)atoi(argv[i+1]);
 				if(g_preferred_size>FSP_SPACE||g_preferred_size==0) g_preferred_size=FSP_SPACE;
@@ -142,13 +144,23 @@ int phrase_argv(int argc, char *argv[])
 		}
 		else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
 		{
-			if(i<argc-1 && *argv[i+1]!='_')
+			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				g_first_resend_time=(unsigned int)atoi(argv[i+1]);
 				if(g_first_resend_time<=1000) g_first_resend_time=1000;
 				i++;
 			}
 		}
+		else if(strcasecmp(argv[i],"--debug")==0 || strcasecmp(argv[i],"-d")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				if(strcmp(argv[i+1],"yes")==0)
+					g_p2p_log_type=P2P_LOG_TYPE_FILE;
+				i++;
+			}
+		}
+
 		else
 		{
 			printf("Unknown command: %s\n",argv[i]);
@@ -183,12 +195,12 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		if(dir ==NULL )
 		{
 			printf("[end]\n");
-			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			printf("file-%d ,link-%d ,dir-%d\n",num_file,num_link,num_dir);
 			return -1;
 		}
 		if(dir->dirpos<0 || dir->dirpos % 4) {
 			printf("[end]\n");
-			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			printf("file-%d ,link-%d ,dir-%d \n",num_file,num_link,num_dir);
 			return -2;
 		}
 
@@ -197,13 +209,13 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		if(rc !=0)
 		{
 			printf("[end]\n");
-			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			printf("file-%d ,link-%d ,dir-%d \n",num_file,num_link,num_dir);
 			return rc;
 		}
 		if(result==NULL)
 		{
 			printf("[end]\n");
-			printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+			printf("file-%d ,link-%d ,dir-%d \n",num_file,num_link,num_dir);
 			return 0;
 		}
 
@@ -236,7 +248,7 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 		printf("%10d %10d/%02d/%02d %02d:%02d:%02d  %s\n",entry.size,(1900+p->tm_year),(1+p->tm_mon),p->tm_mday,p->tm_hour,p->tm_min,p->tm_sec,entry.name);
 	}
 	printf("[end]\n");
-	printf("file-%d ,link-%d ,dir-%d ,unkown-%d\n",num_file,num_link,num_dir,num_unkown);
+	printf("file-%d ,dir-%d\n",num_file,num_dir);
 	fsp_closedir(dir);
 	return 0;
 }
@@ -396,9 +408,9 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		printf("=");
 		fflush(stdout);
 	}
-	if(f->err==1)
+	if(f->err!=0)
 	{
-		error_flag=1;
+		error_flag=f->err;
 		remove(save_url);
 	}
 
@@ -437,8 +449,6 @@ int main (int argc, char *argv[])
 {
 	FSP_SESSION* s;
 	int rc;
-	int p2p_log_type=P2P_LOG_TYPE_FILE;
-
 	time_t now1;
 	time_t now2;
 	time_t now3;
@@ -452,7 +462,7 @@ int main (int argc, char *argv[])
 	}
 	time(&now1);
 	printf("start p2p time-%ld\n",now1);
-	rc = p2p_init(g_log_dir,"fspClient",p2p_log_type,5,NULL,0);
+	rc = p2p_init(g_log_dir,"fspClient",g_p2p_log_type,5,NULL,0);
 	// for debug
 	//set_p2p_option(0,1);
 	if(rc!=0)
@@ -495,6 +505,7 @@ int main (int argc, char *argv[])
 	printf("fsp using time %ds\n",now3-now2);
 	if(s!=NULL)	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
 	/* bye! */
+	if(s!=NULL)
 	fsp_close_session(s);
 	return 0;
 }

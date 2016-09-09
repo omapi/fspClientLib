@@ -723,11 +723,14 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
             break;
         }
     }
+    
+   if(dir!=NULL)
+   {
     dir->inuse=1;
     dir->blocksize=blocksize;
     dir->dirname=strdup(dirname);
     dir->datasize=pos;
-
+   }
     errno = 0;
     return dir;
 }
@@ -1074,7 +1077,7 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
             if(file->in.cmd == FSP_CC_ERR)
             {
                 errno = EIO;
-                file->err=1;
+                file->err=2;
                 return done/size;
             }
             file->bufpos=FSP_SPACE-file->in.len;
