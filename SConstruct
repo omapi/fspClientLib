@@ -9,7 +9,7 @@ VERSION='0.12_v9'
 #Defaults
 PREFIX='/usr/local'
 SHARED=0
-P2PLAB_PATH='p2pnat/lib/x64'
+P2PLAB_PATH='p2pnat/lib/x86'
 
 env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH=os.path.join('#/',P2PLAB_PATH),LIBS='p2pnat')
 # Turn CPPFLAGS to list

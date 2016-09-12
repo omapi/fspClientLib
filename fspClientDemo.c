@@ -59,12 +59,12 @@ int phrase_argv(int argc, char *argv[])
 		if(strcasecmp(argv[i],"--help")==0 || strcasecmp(argv[i],"-h")==0)
 		{
 			printf("%s",g_usage);
-			return 0;
+			return -3;
 		}
 		else if(strcasecmp(argv[i],"--version")==0 || strcasecmp(argv[i],"-v")==0)
 		{
 			printf("%s\n",g_version);
-			return 0;
+			return -4;
 		}
 		if(strcasecmp(argv[i],"--device_id")==0||strcasecmp(argv[i],"-id")==0)
 		{
@@ -453,13 +453,15 @@ int main (int argc, char *argv[])
 	time_t now2;
 	time_t now3;
 
-	phrase_argv(argc,argv);
+	rc=phrase_argv(argc,argv);
 
+	if(rc<0) return 0;
 	if(*g_device_id=='\0')
 	{
-		fprintf("stderr-%s\n",g_usage);
+		printf("stderr-%s\n",g_usage);
 		return 0;
 	}
+	if(*g_device_id=='\0')
 	time(&now1);
 	printf("start p2p time-%ld\n",now1);
 	rc = p2p_init(g_log_dir,"fspClient",g_p2p_log_type,5,NULL,0);
