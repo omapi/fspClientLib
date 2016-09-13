@@ -249,6 +249,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
     if(p == rpkt)
     {
         errno = EINVAL;
+	printf("EINVAL\n");
         return -2;
     }
     FD_ZERO(&mask);
@@ -272,8 +273,9 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
         {
             client_set_key((FSP_LOCK *)s->lock,p->key);
             errno = ETIMEDOUT;
+	    printf("ETIMEOUT\n");
             //need error code//xxfan
-            return -1;
+            return -3;
         }
         /* make a packet */
         p->seq = (s->seq) | (retry & 0x7);
@@ -300,6 +302,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             {
                 client_set_key((FSP_LOCK *)s->lock,p->key);
                 errno = EBADF;
+		printf("EBADF\n");
                 return -1;
             }
             /* io terror */
@@ -348,6 +351,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             {
                 /* serious recv error */
                 client_set_key((FSP_LOCK *)s->lock,p->key);
+		printf("RECV Error\n");
                 return -1;
             }
 
@@ -1055,10 +1059,12 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
 {
     size_t total,done,havebytes;
     char *ptr;
+    int rc=0;
 
     total=count*size;
     done=0;
     ptr=dest;
+	
 
     if(file->eof) return 0;
 
@@ -1069,9 +1075,11 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
         {
             /* fill the buffer */
             file->out.pos=file->pos;
-            if(fsp_transaction(file->s,&file->out,&file->in))
+            if((rc=fsp_transaction(file->s,&file->out,&file->in))!=0)
             {
-                file->err=1;
+		if(rc==-3)//timeout
+		   file->err=3;
+                else file->err=1;
                 return done/size;
             }
             if(file->in.cmd == FSP_CC_ERR)

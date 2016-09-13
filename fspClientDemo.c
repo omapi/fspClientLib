@@ -416,32 +416,31 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 
 	fsp_fclose(f);
 	fclose(fp);
-	if(error_flag==1)
+	if(error_flag==3)//timeout
 	{
 		remove(save_url);
-		if(g_preferred_size>56)
+		if(g_preferred_size==768)
 		{
-		//if(g_preferred_size>1024)
-	//	{
-			g_preferred_size=g_preferred_size/2;
-			printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to %d  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size*2,g_preferred_size);
-			//g_preferred_size=1024;
-			get_file_method(s,f_get_url,f_save_url);
-			return -3;
+			printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+			return -4;
 		}
-	/*	else if(g_preferred_size>768)
+
+		if(g_preferred_size/2>768)
 		{
-			printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-			g_preferred_size=768;
-			get_file_method(s,f_get_url,f_save_url);
-			return -3;
-		}*/
+			g_preferred_size=g_preferred_size/2;
+		}
+		else  g_preferred_size=768;
+	
+		printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to %d  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size*2,g_preferred_size);
+		get_file_method(s,f_get_url,f_save_url);
+		return -3;
+	}
+	else if(error_flag!=0) 
+	{
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
-		return -4;
-		//printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+		return -5;
 	}
 	printf("end get file %s\n",get_url);
-	//printf("write over\n");
 	return 0;
 }
 
