@@ -22,6 +22,7 @@ int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int g_fsp_method;
 unsigned int g_max_wait_time=10;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
+unsigned int g_min_packet_size=512;
 unsigned int g_first_resend_time=1340;
 char g_version[]="0.12_v9";
 int g_tmp_num=0;
@@ -138,7 +139,12 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				g_preferred_size=(unsigned int)atoi(argv[i+1]);
-				if(g_preferred_size>FSP_SPACE||g_preferred_size==0) g_preferred_size=FSP_SPACE;
+				if(g_preferred_size>FSP_SPACE||g_preferred_size==0)
+				{
+					printf("the value-%d of ps is illegal.It must between 0-%d\n",g_preferred_size,FSP_SPACE);
+					g_preferred_size=FSP_SPACE;
+					return -1;
+				}
 				i++;
 			}
 		}
@@ -151,6 +157,16 @@ int phrase_argv(int argc, char *argv[])
 				i++;
 			}
 		}
+		else if(strcasecmp(argv[i],"--max_wait_timeout")==0 || strcasecmp(argv[i],"-mwt")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				g_max_wait_time=(unsigned int)atoi(argv[i+1]);
+				if(g_max_wait_time<0) g_max_wait_time=5;	
+				i++;
+			}
+		}
+
 		else if(strcasecmp(argv[i],"--debug")==0 || strcasecmp(argv[i],"-d")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
@@ -440,7 +456,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 		return -5;
 	}
-	printf("end get file %s\n",get_url);
+	printf("end\n");
 	return 0;
 }
 

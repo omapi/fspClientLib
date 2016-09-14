@@ -37,8 +37,11 @@
 #include "p2p_api.h"
 #include "error_code.h"
 extern unsigned int g_preferred_size;
+extern unsigned int g_min_packet_size;
 extern unsigned int g_first_resend_time;
 extern int g_tmp_num;
+
+int g_no_retry_count=0;
 /* ************ Internal functions **************** */
 
 /* builds filename in packet output buffer, appends password if needed */
@@ -269,11 +272,12 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
     l_delay = 0;
     for(;;retry++)
     {
+		//if(retry!=0) printf("retry-%d\n",retry);
         if(t_delay >= s->timeout)
         {
             client_set_key((FSP_LOCK *)s->lock,p->key);
             errno = ETIMEDOUT;
-	    printf("ETIMEOUT\n");
+	    	//printf("ETIMEOUT\n");
             //need error code//xxfan
             return -3;
         }
@@ -291,7 +295,6 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
         }
 
         l_delay=w_delay;
-
         /* send packet */
         if( send(s->fd,buf,l,0) < 0 )
         {
@@ -302,7 +305,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             {
                 client_set_key((FSP_LOCK *)s->lock,p->key);
                 errno = EBADF;
-		printf("EBADF\n");
+				//printf("EBADF\n");
                 return -1;
             }
             /* io terror */
@@ -312,6 +315,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             t_delay += 1000;
             continue;
         }
+		//printf("resend\n");
 
         /* keep delay value within sane limits */
         if (w_delay > (int) s->maxdelay)
@@ -351,7 +355,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             {
                 /* serious recv error */
                 client_set_key((FSP_LOCK *)s->lock,p->key);
-		printf("RECV Error\n");
+				printf("RECV Error\n");
                 return -1;
             }
 
@@ -363,15 +367,16 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             if ( fsp_pkt_read(rpkt,buf,r) < 0)
             {
                 /* unpack failed */
+				//printf("unpack error\n");
                 continue;
             }
 
             /* check sequence number */
             if( (rpkt->seq & 0xfff8) != s->seq )
             {
-#ifdef MAINTAINER_MODE
+//#ifdef MAINTAINER_MODE
                 printf("dupe\n");
-#endif
+//#endif
                 /* duplicate */
                 dupes++;
                 continue;
@@ -417,6 +422,28 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
             /* grab a next key */
             client_set_key((FSP_LOCK *)s->lock,rpkt->key);
             errno = 0;
+			//Add by xxfan
+			if(retry==0) g_no_retry_count++;
+			else
+			{
+				g_no_retry_count=0;
+				if(g_preferred_size>=g_min_packet_size)
+				 	g_preferred_size-=100;
+			}
+			if(g_no_retry_count==1000)
+			{
+				if(g_preferred_size*0.5+g_preferred_size<FSP_SPACE)
+				{
+					g_preferred_size+=g_preferred_size*0.5;
+					printf("It hasn't lost packets  1000 times.So increasing the  prefered size of packet to-%d and try again\n",g_preferred_size);
+				}
+		
+		/*		if(g_preferred_size+100<FSP_SPACE)
+					g_preferred_size+=100;
+		*/		
+				g_no_retry_count=0;
+			}
+			//?end
             return 0;
         }
     }
@@ -645,25 +672,7 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
         out.pos=pos;
         if ( fsp_transaction(s,&out,&in) )
         {
-/*        if(g_preferred_size>1024)
-            {
-                printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 1024 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-                g_preferred_size=1024;
-            }
-            else if(g_preferred_size>768)
-            {
-                printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to 768 bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size);
-                g_preferred_size=768;
-            }
-            else
-*/
-            {
-                pos = -1;
-                break;
-            }
-         //	printf("transaction error\n");
-        //    dir = fsp_opendir(s,dirname);
-        //  return dir;
+               pos = -1;
         }
         if ( in.cmd == FSP_CC_ERR )
         {
@@ -1067,9 +1076,9 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
 	
 
     if(file->eof) return 0;
-
     while(1)
     {
+
         /* need more data? */
         if(file->bufpos>=FSP_SPACE)
         {
@@ -1104,7 +1113,7 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
             return done/size;
         }
         /* copy ready data to output buffer */
-        if(havebytes <= total )
+        if(havebytes < total )
         {
             /* copy all we have */
             memcpy(ptr,file->in.buf+file->bufpos,havebytes);
@@ -1112,7 +1121,8 @@ size_t fsp_fread(void *dest,size_t size,size_t count,FSP_FILE *file)
             file->bufpos=FSP_SPACE;
             done+=havebytes;
             total-=havebytes;
-        } else
+        }
+		else
         {
             /* copy bytes left */
             memcpy(ptr,file->in.buf+file->bufpos,total);
