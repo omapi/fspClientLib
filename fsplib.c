@@ -431,11 +431,16 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 			client_set_key((FSP_LOCK *)s->lock,rpkt->key);
 			errno = 0;
 			//Add by xxfan
+			/*
+			g_transfer_size_count+=g_preferred_size;
 			if(retry==0) g_no_retry_count++;
-			else if(retry==1)
+			else
 			{
-				printf("lost one packet,try again,size-%d\n",g_preferred_size);
-			}
+			        g_retry_count+=retry;
+				else if(retry==1)
+				{
+					printf("lost one packet,try again,size-%d\n",g_preferred_size);
+				}
 			else if(retry>=2)
 			{
 				g_no_retry_count=0;
@@ -455,6 +460,15 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 				}
 				g_no_retry_count=0;
 			}
+			}
+			if(g_transfer_times==100)
+			{
+			  g_cur_transfer_speed=g_transfer_size_count/g_transfer_use_time;
+			  if(g_cur_transfer_speed<g_last_transfer_speed)
+			  {
+			  }
+			  else g_preferred_size=g_last_preferred_size;
+			}*/
 			//?end
 			return 0;
 		}

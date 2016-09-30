@@ -84,6 +84,30 @@
 #define FSP_DIR_LIST    0x40    /* public can list directory              */
 #define FSP_DIR_RENAME  0x80    /* can files be renamed in this dir       */
 
+//add by xxfan
+typedef struct FSP_TRANSFER_UNIT {
+	time_t 		start_time;
+	time_t 		end_time;
+	
+	unsigned int	pkt_size;//one packet size
+	unsigned long    total_size;//the total size of transferred packets
+	unsigned int	lost_pkt[10];//save the count of lost packet.the index is the retry time;
+	unsigned double avg_tsf_speed;
+	unsigned int 	limit_tsf_times;
+} FSP_TSF_UNIT;
+
+
+typedef struct FSP_TRANSFER_CONTROLLER {
+	time_t		start_time;
+	time_t 		end_time;
+	unsigned long	total_tsf_size;
+	unsigned double avg_tsf_speed;
+	FSP_TRANS_UNIT	max_speed_tsf;  //the max transferred speed of the unit
+	FSP_TRANS_UNIT	cur_tsf;	//the current transferred unit
+	unsigned int 	unit_tsf_times;//the transfered times of one unit
+} FSP_TSF_CONTR;
+
+//? end add
 /* decoded FSP packet */
 typedef struct FSP_PKT {
 	unsigned char       cmd; /* message code.             */

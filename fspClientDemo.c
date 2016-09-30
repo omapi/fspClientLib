@@ -10,6 +10,8 @@
 #include "./p2pnat/include/p2p_api.h"
 #include "error_code.h"
 
+FSP_TSF_UNIT	g_tsf_unit;
+
 char g_device_id[256]={0};
 char g_invite_code[256]={0};
 char g_fsp_password[60]={0};
@@ -322,7 +324,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		printf("Failed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
 		return -2;
 	}
-	printf("the initial preferred packet size-%d\n",g_preferred_size);
+	//printf("the initial preferred packet size-%d\n",g_preferred_size);
 	while(1)
 	{
 		if(dir ==NULL ) break;
