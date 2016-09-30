@@ -22,7 +22,7 @@ int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int g_fsp_method;
 unsigned int g_max_wait_time=10;
 unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
-unsigned int g_min_packet_size=512;
+unsigned int g_min_packet_size=768;
 unsigned int g_first_resend_time=1340;
 char g_version[]="0.12_v9";
 int g_tmp_num=0;
@@ -42,7 +42,7 @@ static char g_usage[] =
 "      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
 "      -frt,--first_resend_time     \n"
 "      -mwt,--max_wait_timeout      the maximum waiting time that doesn't recv response from server after serveral failed attempts\n"
-"      -d,--debug		    yes,no\n" 
+"      -d,--debug		    yes,no\n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -142,12 +142,25 @@ int phrase_argv(int argc, char *argv[])
 				if(g_preferred_size>FSP_SPACE||g_preferred_size==0)
 				{
 					printf("the value-%d of ps is illegal.It must between 0-%d\n",g_preferred_size,FSP_SPACE);
-					g_preferred_size=FSP_SPACE;
 					return -1;
 				}
 				i++;
 			}
 		}
+		else if(strcasecmp(argv[i],"--min_allow_size")==0 || strcasecmp(argv[i],"-min")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				g_min_packet_size==(unsigned int)atoi(argv[i+1]);
+				if(g_min_packet_size>FSP_SPACE||g_min_packet_size<=0||g_min_packet_size<g_preferred_size)
+				{
+					printf("the value-%d of ps is illegal.It must between 0-%d\n",g_min_packet_size,FSP_SPACE);
+					return -1;
+				}
+				i++;
+			}
+		}
+
 		else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
@@ -162,7 +175,7 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				g_max_wait_time=(unsigned int)atoi(argv[i+1]);
-				if(g_max_wait_time<0) g_max_wait_time=5;	
+				if(g_max_wait_time<0) g_max_wait_time=5;
 				i++;
 			}
 		}
@@ -426,6 +439,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	}
 	if(f->err!=0)
 	{
+        printf("\n");
 		error_flag=f->err;
 		remove(save_url);
 	}
@@ -446,12 +460,12 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 			g_preferred_size=g_preferred_size/2;
 		}
 		else  g_preferred_size=768;
-	
+
 		printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to %d  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size*2,g_preferred_size);
 		get_file_method(s,f_get_url,f_save_url);
 		return -3;
 	}
-	else if(error_flag!=0) 
+	else if(error_flag!=0)
 	{
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 		return -5;
