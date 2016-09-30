@@ -10,7 +10,7 @@
 #include "./p2pnat/include/p2p_api.h"
 #include "error_code.h"
 
-FSP_TSF_UNIT	g_tsf_unit;
+FSP_TSF_CONTR	g_tsf_controller;
 
 char g_device_id[256]={0};
 char g_invite_code[256]={0};
@@ -23,10 +23,11 @@ char g_log_dir[256]=".";
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int g_fsp_method;
 unsigned int g_max_wait_time=10;
-unsigned int g_preferred_size=7348;//(1500-20-8)*5-12=7348
 unsigned int g_min_packet_size=768;
 unsigned int g_first_resend_time=1340;
-char g_version[]="0.12_v9";
+unsigned int g_limit_tsf_times=200;
+unsigned int g_pkt_change_range=256;
+char g_version[]="0.12_v10";
 int g_tmp_num=0;
 static char g_usage[] =
 "fsp client demo\n"
@@ -136,27 +137,15 @@ int phrase_argv(int argc, char *argv[])
 			else strcpy(g_invite_code,"");
 
 		}
-		else if(strcasecmp(argv[i],"--preferred_size")==0 || strcasecmp(argv[i],"-ps")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				g_preferred_size=(unsigned int)atoi(argv[i+1]);
-				if(g_preferred_size>FSP_SPACE||g_preferred_size==0)
-				{
-					printf("the value-%d of ps is illegal.It must between 0-%d\n",g_preferred_size,FSP_SPACE);
-					return -1;
-				}
-				i++;
-			}
-		}
 		else if(strcasecmp(argv[i],"--min_allow_size")==0 || strcasecmp(argv[i],"-min")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
-				g_min_packet_size==(unsigned int)atoi(argv[i+1]);
-				if(g_min_packet_size>FSP_SPACE||g_min_packet_size<=0||g_min_packet_size<g_preferred_size)
+				g_min_packet_size=(unsigned int)atoi(argv[i+1]);
+				printf("g_min_packet_size-%d\n",g_min_packet_size);
+				if(g_min_packet_size>FSP_SPACE||g_min_packet_size<=0)
 				{
-					printf("the value-%d of ps is illegal.It must between 0-%d\n",g_min_packet_size,FSP_SPACE);
+					printf("the value-%d of min is illegal.It must between 0-%d\n",g_min_packet_size,FSP_SPACE);
 					return -1;
 				}
 				i++;
@@ -290,13 +279,16 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	FSP_RDENTRY entry;
 	FSP_RDENTRY *result;
 	int rc;
-
+	
 
 	char save_dir_url[512];
 	char get_file_url[512];
 	char save_file_url[512];
 
 	struct stat file_stat;
+	
+	int used_time;
+	float avg_tsf_speed;
 
 	if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
 	{
@@ -324,7 +316,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		printf("Failed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
 		return -2;
 	}
-	//printf("the initial preferred packet size-%d\n",g_preferred_size);
+
 	while(1)
 	{
 		if(dir ==NULL ) break;
@@ -350,7 +342,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 				printf("%s has exited at local\n",save_file_url);
 				continue;
 				}
-			get_file_method(s,get_file_url,save_file_url);
+			get_file_method(s,get_file_url,save_file_url,3);
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
 		{
@@ -363,9 +355,10 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		}
 	}
 	fsp_closedir(dir);
+	
 	return 0;
 }
-int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
+int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 {
 	FSP_FILE *f;
 	FSP_PKT p;
@@ -432,7 +425,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 	}
 	printf("start get file %s\n",get_url);
 
-	while( ( i=fsp_fread(p.buf,1,g_preferred_size,f) ) )
+	while( ( i=fsp_fread(p.buf,1,g_tsf_controller.cur_unit.pkt_size,f) ) )
 	{
 		error_flag=0;
 		fwrite(p.buf,1,i,fp);
@@ -448,23 +441,14 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)
 
 	fsp_fclose(f);
 	fclose(fp);
-	if(error_flag==3)//timeout
+	if(error_flag==3&&f_retry>0)//timeout
 	{
 		remove(save_url);
-		if(g_preferred_size==768)
-		{
-			printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
-			return -4;
-		}
-
-		if(g_preferred_size/2>768)
-		{
-			g_preferred_size=g_preferred_size/2;
-		}
-		else  g_preferred_size=768;
-
-		printf("Warning,code=%d,reason=\"the packet size-%d bytes maybe too bigger,decrease to %d  bytes,and try again\"\n",FSP_WAITING_TIMEOUT_WARNING,g_preferred_size*2,g_preferred_size);
-		get_file_method(s,f_get_url,f_save_url);
+		printf("Warning,code=%d,reason=\"waiting timeout,try again\n",FSP_WAITING_TIMEOUT_WARNING);
+		g_tsf_controller.init_pkt_size=g_tsf_controller.max_speed_unit.avg_tsf_speed;
+		init_tsf_unit(&g_tsf_controller.cur_unit,g_tsf_controller.init_pkt_size,g_tsf_controller.limit_tsf_times);	
+		f_retry--;
+		get_file_method(s,f_get_url,f_save_url,f_retry);
 		return -3;
 	}
 	else if(error_flag!=0)
@@ -513,7 +497,9 @@ int main (int argc, char *argv[])
 	time(&now2);
 	printf("p2p using time-%ds\n",now2-now1);
 
+	init_tsf_controller(&g_tsf_controller);
 	/* diaplay a file list of dir*/
+
 	if(g_fsp_method==FSP_CC_GET_DIR)
 	{
 		rc=read_dir_method(s,g_dir_name);
@@ -525,7 +511,7 @@ int main (int argc, char *argv[])
 		if(*(g_get_url+strlen(g_get_url)-1)=='/')
 			get_dir_files_method(s,g_get_url,g_save_url);
 		else
-			get_file_method(s,g_get_url,g_save_url);
+			get_file_method(s,g_get_url,g_save_url,3);
 	}
 	/*change password*/
 	else if(g_fsp_method==FSP_CC_CH_PASSWD)
@@ -534,6 +520,7 @@ int main (int argc, char *argv[])
 		fsp_ch_passwd(s,g_new_fsp_password);
 	}
 
+	stop_tsf_controller(&g_tsf_controller);
 	time(&now3);
 	printf("fsp using time %ds\n",now3-now2);
 	if(s!=NULL)	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);

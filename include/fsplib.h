@@ -89,22 +89,28 @@ typedef struct FSP_TRANSFER_UNIT {
 	time_t 		start_time;
 	time_t 		end_time;
 	
-	unsigned int	pkt_size;//one packet size
-	unsigned long    total_size;//the total size of transferred packets
+	unsigned int	pkt_size;//one packet size,the unit is byte.
+	unsigned long   total_size;//the total size of transferred packets
 	unsigned int	lost_pkt[10];//save the count of lost packet.the index is the retry time;
-	unsigned double avg_tsf_speed;
-	unsigned int 	limit_tsf_times;
+	unsigned int    avg_tsf_speed;// xxx kb/s
+	unsigned int    tsf_times;
+	unsigned int    limit_tsf_times;
 } FSP_TSF_UNIT;
 
 
 typedef struct FSP_TRANSFER_CONTROLLER {
 	time_t		start_time;
 	time_t 		end_time;
-	unsigned long	total_tsf_size;
-	unsigned double avg_tsf_speed;
-	FSP_TRANS_UNIT	max_speed_tsf;  //the max transferred speed of the unit
-	FSP_TRANS_UNIT	cur_tsf;	//the current transferred unit
-	unsigned int 	unit_tsf_times;//the transfered times of one unit
+	unsigned long	total_size;
+	unsigned int avg_tsf_speed;
+	FSP_TSF_UNIT	max_speed_unit;  //the max transferred speed of the unit
+	FSP_TSF_UNIT	cur_unit;	//the current transferred unit
+	FSP_TSF_UNIT	last_unit;	//the last  transferred unit
+	unsigned int 	limit_tsf_times;//the transfered times of one unit
+	unsigned int 	pkt_ch_range;
+	unsigned int 	init_pkt_size;
+	unsigned int    down_flag;
+	unsigned int    best_flag;
 } FSP_TSF_CONTR;
 
 //? end add
@@ -221,4 +227,10 @@ int fsp_access(FSP_SESSION *s,const char *path, int mode);
 int fsp_getpro(FSP_SESSION *s,const char *directory,unsigned char *result);
 int fsp_install(FSP_SESSION *s,const char *fname,time_t timestamp);
 int fsp_canupload(FSP_SESSION *s,const char *fname);
+//Add by xxfan
+void init_tsf_controller(FSP_TSF_CONTR* f_controller);
+void stop_tsf_controller(FSP_TSF_CONTR* f_controller);
+void init_tsf_unit(FSP_TSF_UNIT* f_unit,unsigned int f_pkt_size,unsigned int f_limit_fsp_times);
+void update_tsf_unit(unsigned int f_retry);
+
 #endif

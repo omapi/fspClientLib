@@ -4,53 +4,26 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.6	//
-BOOL	p2pnat/include/p2p_log.h	/^typedef unsigned char   BOOL;$/;"	t
-BOOL	p2pnat_old/include/log.h	/^typedef unsigned char   BOOL;$/;"	t
-BOOL8	p2pnat/include/p2p_log.h	/^typedef unsigned char   BOOL8;$/;"	t
-BOOL8	p2pnat_old/include/log.h	/^typedef unsigned char   BOOL8;$/;"	t
-BYTE	p2pnat/include/p2p_log.h	/^typedef unsigned char   BYTE;$/;"	t
-BYTE	p2pnat_old/include/log.h	/^typedef unsigned char   BYTE;$/;"	t
 CC	p2pnat/demo/Makefile	/^CC = ${CROSS_COMPILE}-gcc$/;"	m
 CFLAGS	p2pnat/demo/Makefile	/^CFLAGS = -O2 -fomit-frame-pointer -pipe -I..\/include -I$(PWD)\/lib$/;"	m
-COMMON_UTIL_H	p2pnat/include/common_util.h	6;"	d
-CONNECTION_FAILED	p2pnat/include/rendezvous_endpoint.h	/^	CONNECTION_FAILED,$/;"	e	enum:__anon30
-CONNECTION_FAILED	p2pnat_old/include/rendezvous_endpoint.h	/^	CONNECTION_FAILED,$/;"	e	enum:__anon14
-CONNECTION_INIT	p2pnat/include/rendezvous_endpoint.h	/^	CONNECTION_INIT,$/;"	e	enum:__anon30
-CONNECTION_INIT	p2pnat_old/include/rendezvous_endpoint.h	/^	CONNECTION_INIT,$/;"	e	enum:__anon14
-CONNECTION_OK	p2pnat/include/rendezvous_endpoint.h	/^	CONNECTION_OK,$/;"	e	enum:__anon30
-CONNECTION_OK	p2pnat_old/include/rendezvous_endpoint.h	/^	CONNECTION_OK,$/;"	e	enum:__anon14
-CONNECTION_PING	p2pnat/include/rendezvous_endpoint.h	/^	CONNECTION_PING,$/;"	e	enum:__anon30
-CONNECTION_PING	p2pnat_old/include/rendezvous_endpoint.h	/^	CONNECTION_PING,$/;"	e	enum:__anon14
-CONNECTION_REQUEST	p2pnat/include/rendezvous_endpoint.h	/^	CONNECTION_REQUEST,$/;"	e	enum:__anon30
-CONNECTION_REQUEST	p2pnat_old/include/rendezvous_endpoint.h	/^	CONNECTION_REQUEST,$/;"	e	enum:__anon14
+CONNECTION_FAILED	p2pnat/include/p2p_api.h	/^	CONNECTION_FAILED,$/;"	e	enum:__anon4
+CONNECTION_INIT	p2pnat/include/p2p_api.h	/^	CONNECTION_INIT,$/;"	e	enum:__anon4
+CONNECTION_OK	p2pnat/include/p2p_api.h	/^	CONNECTION_OK,$/;"	e	enum:__anon4
+CONNECTION_PING	p2pnat/include/p2p_api.h	/^	CONNECTION_PING,$/;"	e	enum:__anon4
+CONNECTION_REQUEST	p2pnat/include/p2p_api.h	/^	CONNECTION_REQUEST,$/;"	e	enum:__anon4
 CROSS_COMPILE	p2pnat/demo/Makefile	/^CROSS_COMPILE = \/opt\/arm\/usr\/bin\/arm$/;"	m
 CROSS_COMPILE	p2pnat/demo/Makefile	/^CROSS_COMPILE = \/opt\/buildroot-gcc342\/bin\/mipsel-linux-uclibc$/;"	m
 CROSS_COMPILE	p2pnat/demo/Makefile	/^CROSS_COMPILE = \/opt\/eldk3\/usr\/bin\/ppc_8xx$/;"	m
 CROSS_COMPILE	p2pnat/demo/Makefile	/^CROSS_COMPILE = arm-none-linux-gnueabi$/;"	m
-DEFAULT_P2P_SERVER	p2pnat/include/common_util.h	8;"	d
-DEFAULT_P2P_SERVER	p2pnat_old/include/common_util.h	7;"	d
-DEFINE_DL_LIST	p2pnat/include/list.h	92;"	d
-DEFINE_DL_LIST	p2pnat_old/include/list.h	92;"	d
-ED_BIT	p2pnat/include/rendezvous_endpoint.h	60;"	d
-ED_BIT	p2pnat_old/include/rendezvous_endpoint.h	57;"	d
-ENDPOINT_INITIAL	p2pnat/include/rendezvous_endpoint.h	/^	ENDPOINT_INITIAL,$/;"	e	enum:__anon29
-ENDPOINT_INITIAL	p2pnat_old/include/rendezvous_endpoint.h	/^	ENDPOINT_INITIAL,$/;"	e	enum:__anon13
-ENDPOINT_REGISTERING	p2pnat/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTERING,$/;"	e	enum:__anon29
-ENDPOINT_REGISTERING	p2pnat_old/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTERING,$/;"	e	enum:__anon13
-ENDPOINT_REGISTER_FAIL	p2pnat/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTER_FAIL,$/;"	e	enum:__anon29
-ENDPOINT_REGISTER_FAIL	p2pnat_old/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTER_FAIL,$/;"	e	enum:__anon13
-ENDPOINT_REGISTER_OK	p2pnat/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTER_OK,$/;"	e	enum:__anon29
-ENDPOINT_REGISTER_OK	p2pnat_old/include/rendezvous_endpoint.h	/^	ENDPOINT_REGISTER_OK,$/;"	e	enum:__anon13
-E_LOG_COMP	p2pnat/include/p2p_log.h	/^} E_LOG_COMP;$/;"	t	typeref:enum:__anon24
-E_LOG_COMP	p2pnat_old/include/log.h	/^} E_LOG_COMP;$/;"	t	typeref:enum:__anon8
-E_LOG_DUMP	p2pnat/include/p2p_log.h	/^} E_LOG_DUMP;$/;"	t	typeref:enum:__anon23
-E_LOG_DUMP	p2pnat_old/include/log.h	/^} E_LOG_DUMP;$/;"	t	typeref:enum:__anon7
-E_LOG_INFO	p2pnat/include/p2p_log.h	/^} E_LOG_INFO;$/;"	t	typeref:enum:__anon27
-E_LOG_INFO	p2pnat_old/include/log.h	/^} E_LOG_INFO;$/;"	t	typeref:enum:__anon11
-E_LOG_SEVERITY	p2pnat/include/p2p_log.h	/^} E_LOG_SEVERITY;$/;"	t	typeref:enum:__anon25
-E_LOG_SEVERITY	p2pnat_old/include/log.h	/^} E_LOG_SEVERITY;$/;"	t	typeref:enum:__anon9
-E_LOG_TYPE	p2pnat/include/p2p_log.h	/^} E_LOG_TYPE;$/;"	t	typeref:enum:__anon22
-E_LOG_TYPE	p2pnat_old/include/log.h	/^} E_LOG_TYPE;$/;"	t	typeref:enum:__anon6
+ENDPOINT_EVENT_CONN_FAIL	p2pnat/include/p2p_api.h	/^	ENDPOINT_EVENT_CONN_FAIL = 0x2,$/;"	e	enum:__anon5
+ENDPOINT_EVENT_CONN_OK	p2pnat/include/p2p_api.h	/^	ENDPOINT_EVENT_CONN_OK = 0x4,$/;"	e	enum:__anon5
+ENDPOINT_EVENT_NAT_CHANGE	p2pnat/include/p2p_api.h	/^	ENDPOINT_EVENT_NAT_CHANGE = 0x1,$/;"	e	enum:__anon5
+ENDPOINT_INITIAL	p2pnat/include/p2p_api.h	/^	ENDPOINT_INITIAL,$/;"	e	enum:__anon3
+ENDPOINT_REGISTERING	p2pnat/include/p2p_api.h	/^	ENDPOINT_REGISTERING,$/;"	e	enum:__anon3
+ENDPOINT_REGISTER_FAIL	p2pnat/include/p2p_api.h	/^	ENDPOINT_REGISTER_FAIL,$/;"	e	enum:__anon3
+ENDPOINT_REGISTER_OK	p2pnat/include/p2p_api.h	/^	ENDPOINT_REGISTER_OK,$/;"	e	enum:__anon3
+FILE_NOT_EXISTED	include/error_code.h	/^    FILE_NOT_EXISTED=9,$/;"	e	enum:__anon1
+FILE_OPEN_FAILED	include/error_code.h	/^    FILE_OPEN_FAILED=10,$/;"	e	enum:__anon1
 FSP_CC_BYE	include/fsplib.h	41;"	d
 FSP_CC_CH_PASSWD	include/fsplib.h	46;"	d
 FSP_CC_DEL_DIR	include/fsplib.h	37;"	d
@@ -73,119 +46,80 @@ FSP_CC_UP_LOAD	include/fsplib.h	34;"	d
 FSP_CC_VERSION	include/fsplib.h	29;"	d
 FSP_DIR	include/fsplib.h	/^typedef struct FSP_DIR {$/;"	s
 FSP_DIR	include/fsplib.h	/^} FSP_DIR;$/;"	t	typeref:struct:FSP_DIR
-FSP_DIR_ADD	include/fsplib.h	78;"	d
-FSP_DIR_DEL	include/fsplib.h	77;"	d
-FSP_DIR_GET	include/fsplib.h	80;"	d
-FSP_DIR_LIST	include/fsplib.h	82;"	d
-FSP_DIR_MKDIR	include/fsplib.h	79;"	d
-FSP_DIR_OWNER	include/fsplib.h	76;"	d
-FSP_DIR_README	include/fsplib.h	81;"	d
-FSP_DIR_RENAME	include/fsplib.h	83;"	d
+FSP_DIR_ADD	include/fsplib.h	80;"	d
+FSP_DIR_DEL	include/fsplib.h	79;"	d
+FSP_DIR_GET	include/fsplib.h	82;"	d
+FSP_DIR_LIST	include/fsplib.h	84;"	d
+FSP_DIR_MKDIR	include/fsplib.h	81;"	d
+FSP_DIR_OWNER	include/fsplib.h	78;"	d
+FSP_DIR_README	include/fsplib.h	83;"	d
+FSP_DIR_RENAME	include/fsplib.h	85;"	d
 FSP_FILE	include/fsplib.h	/^typedef struct FSP_FILE {$/;"	s
 FSP_FILE	include/fsplib.h	/^} FSP_FILE;$/;"	t	typeref:struct:FSP_FILE
+FSP_GET_FILE_FAILED	include/error_code.h	/^    FSP_GET_FILE_FAILED=7,$/;"	e	enum:__anon1
 FSP_HSIZE	include/fsplib.h	51;"	d
 FSP_KEY_PREFIX	include/lock.h	7;"	d
 FSP_LOCK	include/lock.h	/^typedef struct FSP_LOCK {  $/;"	s
 FSP_LOCK	include/lock.h	/^typedef struct FSP_LOCK {$/;"	s
 FSP_LOCK	include/lock.h	/^} FSP_LOCK;$/;"	t	typeref:struct:FSP_LOCK
-FSP_MAXPACKET	include/fsplib.h	53;"	d
-FSP_OFFSET_CMD	include/fsplib.h	56;"	d
-FSP_OFFSET_KEY	include/fsplib.h	58;"	d
-FSP_OFFSET_LEN	include/fsplib.h	60;"	d
-FSP_OFFSET_POS	include/fsplib.h	61;"	d
-FSP_OFFSET_SEQ	include/fsplib.h	59;"	d
-FSP_OFFSET_SUM	include/fsplib.h	57;"	d
+FSP_MAXPACKET	include/fsplib.h	55;"	d
+FSP_OFFSET_CMD	include/fsplib.h	58;"	d
+FSP_OFFSET_KEY	include/fsplib.h	60;"	d
+FSP_OFFSET_LEN	include/fsplib.h	62;"	d
+FSP_OFFSET_POS	include/fsplib.h	63;"	d
+FSP_OFFSET_SEQ	include/fsplib.h	61;"	d
+FSP_OFFSET_SUM	include/fsplib.h	59;"	d
+FSP_OPEN_DIR_FAILED	include/error_code.h	/^    FSP_OPEN_DIR_FAILED=6,$/;"	e	enum:__anon1
+FSP_OPEN_FILE_FAILED	include/error_code.h	/^    FSP_OPEN_FILE_FAILED=5,$/;"	e	enum:__anon1
 FSP_PKT	include/fsplib.h	/^typedef struct FSP_PKT {$/;"	s
 FSP_PKT	include/fsplib.h	/^} FSP_PKT;$/;"	t	typeref:struct:FSP_PKT
-FSP_PRO_BYTES	include/fsplib.h	75;"	d
+FSP_PRO_BYTES	include/fsplib.h	77;"	d
 FSP_RDENTRY	include/fsplib.h	/^typedef struct FSP_RDENTRY  {$/;"	s
 FSP_RDENTRY	include/fsplib.h	/^} FSP_RDENTRY;$/;"	t	typeref:struct:FSP_RDENTRY
-FSP_RDTYPE_DIR	include/fsplib.h	66;"	d
-FSP_RDTYPE_END	include/fsplib.h	64;"	d
-FSP_RDTYPE_FILE	include/fsplib.h	65;"	d
-FSP_RDTYPE_LINK	include/fsplib.h	67;"	d
-FSP_RDTYPE_SKIP	include/fsplib.h	68;"	d
+FSP_RDTYPE_DIR	include/fsplib.h	68;"	d
+FSP_RDTYPE_END	include/fsplib.h	66;"	d
+FSP_RDTYPE_FILE	include/fsplib.h	67;"	d
+FSP_RDTYPE_LINK	include/fsplib.h	69;"	d
+FSP_RDTYPE_SKIP	include/fsplib.h	70;"	d
+FSP_READ_DIR_FAILED	include/error_code.h	/^    FSP_READ_DIR_FAILED=13,$/;"	e	enum:__anon1
+FSP_READ_FILE_FAILED	include/error_code.h	/^    FSP_READ_FILE_FAILED=8,$/;"	e	enum:__anon1
 FSP_SESSION	include/fsplib.h	/^typedef struct FSP_SESSION {$/;"	s
 FSP_SESSION	include/fsplib.h	/^} FSP_SESSION;$/;"	t	typeref:struct:FSP_SESSION
-FSP_SPACE	include/fsplib.h	52;"	d
-FUNC_ENT	p2pnat/include/p2p_log.h	118;"	d
-FUNC_ENT	p2pnat_old/include/log.h	118;"	d
-FUNC_EXIT	p2pnat/include/p2p_log.h	119;"	d
-FUNC_EXIT	p2pnat_old/include/log.h	119;"	d
-FUNC_MARK	p2pnat/include/p2p_log.h	120;"	d
-FUNC_MARK	p2pnat_old/include/log.h	120;"	d
-INT16	p2pnat/include/p2p_log.h	/^typedef short           INT16;$/;"	t
-INT16	p2pnat_old/include/log.h	/^typedef short           INT16;$/;"	t
-INT32	p2pnat/include/p2p_log.h	/^typedef int             INT32;$/;"	t
-INT32	p2pnat_old/include/log.h	/^typedef int             INT32;$/;"	t
-INT8	p2pnat/include/p2p_log.h	/^typedef char            INT8;$/;"	t
-INT8	p2pnat_old/include/log.h	/^typedef char            INT8;$/;"	t
-LDFLAGS	p2pnat/demo/Makefile	/^LDFLAGS = -L$(PWD)\/..\/$/;"	m
+FSP_SPACE	include/fsplib.h	54;"	d
+FSP_TRANSFER_CONTROLLER	include/fsplib.h	/^typedef struct FSP_TRANSFER_CONTROLLER {$/;"	s
+FSP_TRANSFER_UNIT	include/fsplib.h	/^typedef struct FSP_TRANSFER_UNIT {$/;"	s
+FSP_TSF_CONTR	include/fsplib.h	/^} FSP_TSF_CONTR;$/;"	t	typeref:struct:FSP_TRANSFER_CONTROLLER
+FSP_TSF_UNIT	include/fsplib.h	/^} FSP_TSF_UNIT;$/;"	t	typeref:struct:FSP_TRANSFER_UNIT
+FSP_WAITING_TIMEOUT_WARNING	include/error_code.h	/^    FSP_WAITING_TIMEOUT_WARNING=100,$/;"	e	enum:__anon1
+LDFLAGS	p2pnat/demo/Makefile	/^LDFLAGS = -Wl,-rpath,\/var\/lib$/;"	m
 LDLIBS	p2pnat/demo/Makefile	/^LDLIBS = -lp2pnat$/;"	m
-LIST_H	p2pnat/include/list.h	10;"	d
-LIST_H	p2pnat_old/include/list.h	10;"	d
-LOCAL	p2pnat/include/p2p_log.h	32;"	d
-LOCAL	p2pnat_old/include/log.h	32;"	d
-LONG	p2pnat/include/p2p_log.h	/^typedef long            LONG;$/;"	t
-LONG	p2pnat_old/include/log.h	/^typedef long            LONG;$/;"	t
+MISS_PARAMETER_VALUE	include/error_code.h	/^    MISS_PARAMETER_VALUE=11,$/;"	e	enum:__anon1
 P2P_API	p2pnat/include/p2p_api.h	5;"	d
-P2P_CONNECT	p2pnat/include/rendezvous_packet.h	/^	P2P_CONNECT,$/;"	e	enum:__anon18
-P2P_CONNECT	p2pnat_old/include/rendezvous_packet.h	/^	P2P_CONNECT,$/;"	e	enum:__anon2
-P2P_FORWARD	p2pnat/include/rendezvous_packet.h	/^	P2P_FORWARD,$/;"	e	enum:__anon18
-P2P_FORWARD	p2pnat_old/include/rendezvous_packet.h	/^	P2P_FORWARD,$/;"	e	enum:__anon2
+P2P_CONNECTION_FAILED	include/error_code.h	/^    P2P_CONNECTION_FAILED=4,$/;"	e	enum:__anon1
+P2P_ENDPOINT_REGISTER_FAILED	include/error_code.h	/^    P2P_ENDPOINT_REGISTER_FAILED=2,$/;"	e	enum:__anon1
+P2P_ENDPOINT_REGISTER_TIMEOUT	include/error_code.h	/^    P2P_ENDPOINT_REGISTER_TIMEOUT=3,$/;"	e	enum:__anon1
+P2P_INIT_FAILED	include/error_code.h	/^    P2P_INIT_FAILED=12,$/;"	e	enum:__anon1
 P2P_LIB_VERSION	p2pnat/include/p2p_api.h	7;"	d
-P2P_LIB_VERSION	p2pnat_old/include/common_util.h	5;"	d
-P2P_NONE_CLASS	p2pnat/include/rendezvous_packet.h	/^	P2P_NONE_CLASS,$/;"	e	enum:__anon17
-P2P_NONE_CLASS	p2pnat_old/include/rendezvous_packet.h	/^	P2P_NONE_CLASS,$/;"	e	enum:__anon1
-P2P_NONE_TYPE	p2pnat/include/rendezvous_packet.h	/^	P2P_NONE_TYPE,$/;"	e	enum:__anon18
-P2P_NONE_TYPE	p2pnat_old/include/rendezvous_packet.h	/^	P2P_NONE_TYPE,$/;"	e	enum:__anon2
-P2P_PING	p2pnat/include/rendezvous_packet.h	/^	P2P_PING,$/;"	e	enum:__anon18
-P2P_PING	p2pnat_old/include/rendezvous_packet.h	/^	P2P_PING,$/;"	e	enum:__anon2
-P2P_PONG	p2pnat/include/rendezvous_packet.h	/^	P2P_PONG,$/;"	e	enum:__anon18
-P2P_PONG	p2pnat_old/include/rendezvous_packet.h	/^	P2P_PONG,$/;"	e	enum:__anon2
-P2P_REGISTER	p2pnat/include/rendezvous_packet.h	/^	P2P_REGISTER,$/;"	e	enum:__anon18
-P2P_REGISTER	p2pnat_old/include/rendezvous_packet.h	/^	P2P_REGISTER,$/;"	e	enum:__anon2
-P2P_REQUEST	p2pnat/include/rendezvous_packet.h	/^	P2P_REQUEST,$/;"	e	enum:__anon17
-P2P_REQUEST	p2pnat_old/include/rendezvous_packet.h	/^	P2P_REQUEST,$/;"	e	enum:__anon1
-P2P_RESPONSE	p2pnat/include/rendezvous_packet.h	/^	P2P_RESPONSE,$/;"	e	enum:__anon17
-P2P_RESPONSE	p2pnat_old/include/rendezvous_packet.h	/^	P2P_RESPONSE,$/;"	e	enum:__anon1
-PED_BIT	p2pnat/include/rendezvous_endpoint.h	61;"	d
-PED_BIT	p2pnat_old/include/rendezvous_endpoint.h	58;"	d
+P2P_LOG_TYPE	p2pnat/include/p2p_api.h	/^}P2P_LOG_TYPE;$/;"	t	typeref:enum:__anon2
+P2P_LOG_TYPE_FILE	p2pnat/include/p2p_api.h	/^    P2P_LOG_TYPE_FILE,$/;"	e	enum:__anon2
+P2P_LOG_TYPE_MAX	p2pnat/include/p2p_api.h	/^    P2P_LOG_TYPE_MAX,$/;"	e	enum:__anon2
+P2P_LOG_TYPE_NONE	p2pnat/include/p2p_api.h	/^    P2P_LOG_TYPE_NONE,$/;"	e	enum:__anon2
+P2P_LOG_TYPE_SCREEN	p2pnat/include/p2p_api.h	/^    P2P_LOG_TYPE_SCREEN,$/;"	e	enum:__anon2
+P2P_NEW_ENDPOINT_FAILED	include/error_code.h	/^    P2P_NEW_ENDPOINT_FAILED= 1,$/;"	e	enum:__anon1
+P2P_endpoint_event	p2pnat/include/p2p_api.h	/^typedef int P2P_endpoint_event(REND_EPT_HANDLE endpoint, int event);$/;"	t
 PWD	p2pnat/demo/Makefile	/^PWD :=$(shell pwd)$/;"	m
-RENDEZVOUS_ENDPOINT_H	p2pnat/include/rendezvous_endpoint.h	6;"	d
-RENDEZVOUS_PACKET_H	p2pnat/include/rendezvous_packet.h	9;"	d
-REND_CONN_HANDLE	p2pnat/include/rendezvous_endpoint.h	/^typedef rendezvous_connection_t * REND_CONN_HANDLE;$/;"	t
-REND_CONN_HANDLE	p2pnat_old/include/rendezvous_endpoint.h	/^typedef rendezvous_connection_t * REND_CONN_HANDLE;$/;"	t
-REND_EPT_HANDLE	p2pnat/include/rendezvous_endpoint.h	/^typedef rendezvous_endpoint_t * REND_EPT_HANDLE;$/;"	t
-REND_EPT_HANDLE	p2pnat_old/include/rendezvous_endpoint.h	/^typedef rendezvous_endpoint_t * REND_EPT_HANDLE;$/;"	t
+REND_CONN_HANDLE	p2pnat/include/p2p_api.h	/^typedef void * REND_CONN_HANDLE;$/;"	t
+REND_EPT_HANDLE	p2pnat/include/p2p_api.h	/^typedef void * REND_EPT_HANDLE;$/;"	t
 STRIP	p2pnat/demo/Makefile	/^STRIP = ${CROSS_COMPILE}-strip$/;"	m
 STRIPFLAGS	p2pnat/demo/Makefile	/^STRIPFLAGS = --remove-section=.note --remove-section=.comment$/;"	m
-S_EVENT_LOG_GLOBAL	p2pnat/include/p2p_log.h	/^} S_EVENT_LOG_GLOBAL;$/;"	t	typeref:struct:__anon28
-S_EVENT_LOG_GLOBAL	p2pnat_old/include/log.h	/^} S_EVENT_LOG_GLOBAL;$/;"	t	typeref:struct:__anon12
-S_LOG_INFO	p2pnat/include/p2p_log.h	/^} S_LOG_INFO;$/;"	t	typeref:struct:__anon26
-S_LOG_INFO	p2pnat_old/include/log.h	/^} S_LOG_INFO;$/;"	t	typeref:struct:__anon10
-T_CONNECTION	p2pnat/include/rendezvous_packet.h	/^	T_CONNECTION,$/;"	e	enum:__anon19
-T_CONNECTION	p2pnat_old/include/rendezvous_packet.h	/^	T_CONNECTION,$/;"	e	enum:__anon3
-T_ENDPOINT	p2pnat/include/rendezvous_packet.h	/^	T_ENDPOINT,$/;"	e	enum:__anon19
-T_ENDPOINT	p2pnat_old/include/rendezvous_packet.h	/^	T_ENDPOINT,$/;"	e	enum:__anon3
-UINT16	p2pnat/include/p2p_log.h	/^typedef unsigned short  UINT16;$/;"	t
-UINT16	p2pnat_old/include/log.h	/^typedef unsigned short  UINT16;$/;"	t
-UINT32	p2pnat/include/p2p_log.h	/^typedef unsigned int    UINT32;$/;"	t
-UINT32	p2pnat_old/include/log.h	/^typedef unsigned int    UINT32;$/;"	t
-UINT8	p2pnat/include/p2p_log.h	/^typedef unsigned char   UINT8;$/;"	t
-UINT8	p2pnat_old/include/log.h	/^typedef unsigned char   UINT8;$/;"	t
 Usage	p2pnat/demo/p2pdemo.c	/^static char Usage[] =$/;"	v	file:
 VERSION	p2pnat/demo/p2pdemo.c	10;"	d	file:
-VOID	p2pnat/include/p2p_log.h	/^typedef void            VOID;$/;"	t
-VOID	p2pnat_old/include/log.h	/^typedef void            VOID;$/;"	t
-WORD	p2pnat/include/p2p_log.h	/^typedef unsigned short  WORD;$/;"	t
-WORD	p2pnat_old/include/log.h	/^typedef unsigned short  WORD;$/;"	t
 _FSPLIB_H	include/fsplib.h	2;"	d
 _FSPLIB_H_LOCK	include/lock.h	2;"	d
-_LOG_H	p2pnat_old/include/log.h	12;"	d
-_P2P_LOG_H	p2pnat/include/p2p_log.h	12;"	d
 __buf	lock.c	/^  struct seminfo *__buf;$/;"	m	union:semun	typeref:struct:semun::seminfo	file:
 array	lock.c	/^  unsigned short int *array;$/;"	m	union:semun	file:
+avg_tsf_speed	include/fsplib.h	/^	unsigned double avg_tsf_speed;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+avg_tsf_speed	include/fsplib.h	/^	unsigned double avg_tsf_speed;$/;"	m	struct:FSP_TRANSFER_UNIT
 blocksize	include/fsplib.h	/^	unsigned short blocksize; \/* size of directory block *\/$/;"	m	struct:FSP_DIR
 buf	include/fsplib.h	/^	unsigned char   buf[FSP_SPACE];   \/* packet payload *\/$/;"	m	struct:FSP_PKT
 buf	lock.c	/^  struct semid_ds *buf;$/;"	m	union:semun	typeref:struct:semun::semid_ds	file:
@@ -200,64 +134,31 @@ checkForMaintainerMode	site_scons/maintainer.py	/^def checkForMaintainerMode(con
 checkForUserPrefix	site_scons/prefix.py	/^def checkForUserPrefix(conf,oldprefix=None):$/;"	f
 check_connection_and_send	p2pnat/demo/p2pdemo.c	/^void check_connection_and_send(int peer_fd, REND_CONN_HANDLE conn)$/;"	f
 check_endpoint_and_connect	p2pnat/demo/p2pdemo.c	/^REND_CONN_HANDLE check_endpoint_and_connect(REND_EPT_HANDLE endpoint, char *tid)$/;"	f
-cid	p2pnat/include/rendezvous_endpoint.h	/^	char cid[41];$/;"	m	struct:__anon31
-cid	p2pnat/include/rendezvous_packet.h	/^	char cid[41];$/;"	m	struct:__anon20
-cid	p2pnat_old/include/rendezvous_endpoint.h	/^	char cid[41];$/;"	m	struct:__anon15
-cid	p2pnat_old/include/rendezvous_packet.h	/^	char cid[41];$/;"	m	struct:__anon4
+check_endpoint_event	p2pnat/demo/p2pdemo.c	/^int check_endpoint_event(REND_EPT_HANDLE endpoint, int event)$/;"	f
 client_destroy_key	lock.c	/^client_destroy_key(FSP_LOCK *lock)$/;"	f
 client_destroy_key	lock.c	/^void client_destroy_key(FSP_LOCK *lock)$/;"	f
 client_get_key	lock.c	/^unsigned short client_get_key (FSP_LOCK *lock)$/;"	f
+client_ic	p2pnat/demo/p2pdemo.c	/^char client_ic[65] = {0};$/;"	v
 client_id	p2pnat/demo/p2pdemo.c	/^char client_id[41] = {0};$/;"	v
 client_init_key	lock.c	/^int client_init_key (FSP_LOCK *lock,$/;"	f
+client_key	p2pnat/demo/p2pdemo.c	/^char client_key[33] = {0};$/;"	v
+client_port	p2pnat/demo/p2pdemo.c	/^int client_port = 0;$/;"	v
+client_service	p2pnat/demo/p2pdemo.c	/^char client_service[20] = "DMO";$/;"	v
 client_set_key	lock.c	/^void client_set_key (FSP_LOCK *lock,unsigned short key)$/;"	f
 client_set_key	lock.c	/^void client_set_key (FSP_LOCK *lock,unsigned short nkey)$/;"	f
 cmd	include/fsplib.h	/^	unsigned char       cmd; \/* message code.             *\/$/;"	m	struct:FSP_PKT
-code	p2pnat/include/rendezvous_packet.h	/^	char code[4];$/;"	m	struct:__anon20
-code	p2pnat_old/include/rendezvous_packet.h	/^	char code[4];$/;"	m	struct:__anon4
 code_str	lock.c	/^static char code_str[] =$/;"	v	file:
-conn_info	p2pnat/include/rendezvous_endpoint.h	/^	int conn_info;$/;"	m	struct:__anon32
-conn_info	p2pnat_old/include/rendezvous_endpoint.h	/^	int conn_info;$/;"	m	struct:__anon16
-context	p2pnat/include/rendezvous_packet.h	/^	void *context;$/;"	m	struct:__anon21
-context	p2pnat_old/include/rendezvous_packet.h	/^	void *context;$/;"	m	struct:__anon5
-context_type	p2pnat/include/rendezvous_packet.h	/^}context_type;$/;"	t	typeref:enum:__anon19
-context_type	p2pnat_old/include/rendezvous_packet.h	/^}context_type;$/;"	t	typeref:enum:__anon3
-current_index	p2pnat/include/p2p_log.h	/^    unsigned long  current_index;$/;"	m	struct:__anon26
-current_index	p2pnat_old/include/log.h	/^    unsigned long  current_index;$/;"	m	struct:__anon10
+cur_tsf	include/fsplib.h	/^	FSP_TRANS_UNIT	cur_tsf;	\/\/the current transferred unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 data	include/fsplib.h	/^	unsigned char  *data;     \/* raw directory data *\/$/;"	m	struct:FSP_DIR
 datasize	include/fsplib.h	/^	unsigned int   datasize;  \/* size of raw dir. data *\/$/;"	m	struct:FSP_DIR
 debug_output	p2pnat/demo/p2pdemo.c	/^int debug_output = 0;$/;"	v
+demo_log_name	p2pnat/demo/p2pdemo.c	/^char demo_log_name[128] = {0};$/;"	v
 directoryfromfilename	fsplib.c	/^static char * directoryfromfilename(const char *filename)$/;"	f	file:
 dirent	include/fsplib.h	/^	struct dirent dirent;$/;"	m	union:dirent_workaround	typeref:struct:dirent_workaround::dirent
 dirent_workaround	include/fsplib.h	/^typedef union dirent_workaround {$/;"	u
 dirent_workaround	include/fsplib.h	/^} dirent_workaround;$/;"	t	typeref:union:dirent_workaround
 dirname	include/fsplib.h	/^	char   *dirname;          \/* directory name *\/$/;"	m	struct:FSP_DIR
 dirpos	include/fsplib.h	/^	int     dirpos;           \/* current directory pos. *\/$/;"	m	struct:FSP_DIR
-dl_list	p2pnat/include/list.h	/^struct dl_list {$/;"	s
-dl_list	p2pnat_old/include/list.h	/^struct dl_list {$/;"	s
-dl_list_add	p2pnat/include/list.h	/^static inline void dl_list_add(struct dl_list *list, struct dl_list *item)$/;"	f
-dl_list_add	p2pnat_old/include/list.h	/^static inline void dl_list_add(struct dl_list *list, struct dl_list *item)$/;"	f
-dl_list_add_tail	p2pnat/include/list.h	/^static inline void dl_list_add_tail(struct dl_list *list, struct dl_list *item)$/;"	f
-dl_list_add_tail	p2pnat_old/include/list.h	/^static inline void dl_list_add_tail(struct dl_list *list, struct dl_list *item)$/;"	f
-dl_list_del	p2pnat/include/list.h	/^static inline void dl_list_del(struct dl_list *item)$/;"	f
-dl_list_del	p2pnat_old/include/list.h	/^static inline void dl_list_del(struct dl_list *item)$/;"	f
-dl_list_empty	p2pnat/include/list.h	/^static inline int dl_list_empty(struct dl_list *list)$/;"	f
-dl_list_empty	p2pnat_old/include/list.h	/^static inline int dl_list_empty(struct dl_list *list)$/;"	f
-dl_list_entry	p2pnat/include/list.h	65;"	d
-dl_list_entry	p2pnat_old/include/list.h	65;"	d
-dl_list_first	p2pnat/include/list.h	68;"	d
-dl_list_first	p2pnat_old/include/list.h	68;"	d
-dl_list_for_each	p2pnat/include/list.h	76;"	d
-dl_list_for_each	p2pnat_old/include/list.h	76;"	d
-dl_list_for_each_reverse	p2pnat/include/list.h	87;"	d
-dl_list_for_each_reverse	p2pnat_old/include/list.h	87;"	d
-dl_list_for_each_safe	p2pnat/include/list.h	81;"	d
-dl_list_for_each_safe	p2pnat_old/include/list.h	81;"	d
-dl_list_init	p2pnat/include/list.h	/^static inline void dl_list_init(struct dl_list *list)$/;"	f
-dl_list_init	p2pnat_old/include/list.h	/^static inline void dl_list_init(struct dl_list *list)$/;"	f
-dl_list_last	p2pnat/include/list.h	72;"	d
-dl_list_last	p2pnat_old/include/list.h	72;"	d
-dl_list_len	p2pnat/include/list.h	/^static inline unsigned int dl_list_len(struct dl_list *list)$/;"	f
-dl_list_len	p2pnat_old/include/list.h	/^static inline unsigned int dl_list_len(struct dl_list *list)$/;"	f
 dummy	.sconf_temp/conftest_0.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_1.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_10.c	/^void dummy(void) {}$/;"	f
@@ -293,72 +194,16 @@ dummy	.sconf_temp/conftest_7.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_8.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_9.c	/^void dummy(void) {}$/;"	f
 dupes	include/fsplib.h	/^	unsigned int dupes;       \/* total pkt. dupes    *\/$/;"	m	struct:FSP_SESSION
-eLOG_COMP_API	p2pnat/include/p2p_log.h	/^    eLOG_COMP_API,$/;"	e	enum:__anon24
-eLOG_COMP_API	p2pnat_old/include/log.h	/^    eLOG_COMP_API,$/;"	e	enum:__anon8
-eLOG_COMP_MAX	p2pnat/include/p2p_log.h	/^    eLOG_COMP_MAX,$/;"	e	enum:__anon24
-eLOG_COMP_MAX	p2pnat_old/include/log.h	/^    eLOG_COMP_MAX,$/;"	e	enum:__anon8
-eLOG_COMP_MSG	p2pnat/include/p2p_log.h	/^    eLOG_COMP_MSG,$/;"	e	enum:__anon24
-eLOG_COMP_MSG	p2pnat_old/include/log.h	/^    eLOG_COMP_MSG,$/;"	e	enum:__anon8
-eLOG_DUMP_FILE	p2pnat/include/p2p_log.h	/^    eLOG_DUMP_FILE,$/;"	e	enum:__anon23
-eLOG_DUMP_FILE	p2pnat_old/include/log.h	/^    eLOG_DUMP_FILE,$/;"	e	enum:__anon7
-eLOG_DUMP_SCREEN	p2pnat/include/p2p_log.h	/^    eLOG_DUMP_SCREEN,$/;"	e	enum:__anon23
-eLOG_DUMP_SCREEN	p2pnat_old/include/log.h	/^    eLOG_DUMP_SCREEN,$/;"	e	enum:__anon7
-eLOG_INFO_DEBUG	p2pnat/include/p2p_log.h	/^    eLOG_INFO_DEBUG,$/;"	e	enum:__anon27
-eLOG_INFO_DEBUG	p2pnat_old/include/log.h	/^    eLOG_INFO_DEBUG,$/;"	e	enum:__anon11
-eLOG_INFO_ERROR	p2pnat/include/p2p_log.h	/^    eLOG_INFO_ERROR,$/;"	e	enum:__anon27
-eLOG_INFO_ERROR	p2pnat_old/include/log.h	/^    eLOG_INFO_ERROR,$/;"	e	enum:__anon11
-eLOG_INFO_MAX	p2pnat/include/p2p_log.h	/^    eLOG_INFO_MAX$/;"	e	enum:__anon27
-eLOG_INFO_MAX	p2pnat_old/include/log.h	/^    eLOG_INFO_MAX$/;"	e	enum:__anon11
-eLOG_INFO_MSG	p2pnat/include/p2p_log.h	/^    eLOG_INFO_MSG,$/;"	e	enum:__anon27
-eLOG_INFO_MSG	p2pnat_old/include/log.h	/^    eLOG_INFO_MSG,$/;"	e	enum:__anon11
-eLOG_SEVERITY_DEBUG	p2pnat/include/p2p_log.h	/^    eLOG_SEVERITY_DEBUG,$/;"	e	enum:__anon25
-eLOG_SEVERITY_DEBUG	p2pnat_old/include/log.h	/^    eLOG_SEVERITY_DEBUG,$/;"	e	enum:__anon9
-eLOG_SEVERITY_ERROR	p2pnat/include/p2p_log.h	/^    eLOG_SEVERITY_ERROR,$/;"	e	enum:__anon25
-eLOG_SEVERITY_ERROR	p2pnat_old/include/log.h	/^    eLOG_SEVERITY_ERROR,$/;"	e	enum:__anon9
-eLOG_SEVERITY_INFO	p2pnat/include/p2p_log.h	/^    eLOG_SEVERITY_INFO = 6,$/;"	e	enum:__anon25
-eLOG_SEVERITY_INFO	p2pnat_old/include/log.h	/^    eLOG_SEVERITY_INFO = 6,$/;"	e	enum:__anon9
-eLOG_SEVERITY_TRACE	p2pnat/include/p2p_log.h	/^    eLOG_SEVERITY_TRACE,$/;"	e	enum:__anon25
-eLOG_SEVERITY_TRACE	p2pnat_old/include/log.h	/^    eLOG_SEVERITY_TRACE,$/;"	e	enum:__anon9
-eLOG_SEVERITY_TRAP	p2pnat/include/p2p_log.h	/^    eLOG_SEVERITY_TRAP,$/;"	e	enum:__anon25
-eLOG_SEVERITY_TRAP	p2pnat_old/include/log.h	/^    eLOG_SEVERITY_TRAP,$/;"	e	enum:__anon9
-eLOG_TYPE_FILE	p2pnat/include/p2p_log.h	/^    eLOG_TYPE_FILE,$/;"	e	enum:__anon22
-eLOG_TYPE_FILE	p2pnat_old/include/log.h	/^    eLOG_TYPE_FILE,$/;"	e	enum:__anon6
-eLOG_TYPE_MAX	p2pnat/include/p2p_log.h	/^    eLOG_TYPE_MAX,$/;"	e	enum:__anon22
-eLOG_TYPE_MAX	p2pnat_old/include/log.h	/^    eLOG_TYPE_MAX,$/;"	e	enum:__anon6
-eLOG_TYPE_NONE	p2pnat/include/p2p_log.h	/^    eLOG_TYPE_NONE,$/;"	e	enum:__anon22
-eLOG_TYPE_NONE	p2pnat_old/include/log.h	/^    eLOG_TYPE_NONE,$/;"	e	enum:__anon6
-eLOG_TYPE_SCREEN	p2pnat/include/p2p_log.h	/^    eLOG_TYPE_SCREEN,$/;"	e	enum:__anon22
-eLOG_TYPE_SCREEN	p2pnat_old/include/log.h	/^    eLOG_TYPE_SCREEN,$/;"	e	enum:__anon6
-ed	p2pnat/include/rendezvous_endpoint.h	/^	char ed[25];$/;"	m	struct:__anon31
-ed	p2pnat/include/rendezvous_packet.h	/^	char ed[25];$/;"	m	struct:__anon20
-ed	p2pnat_old/include/rendezvous_endpoint.h	/^	char ed[25];$/;"	m	struct:__anon15
-ed	p2pnat_old/include/rendezvous_packet.h	/^	char ed[25];$/;"	m	struct:__anon4
-emsg	p2pnat/include/rendezvous_packet.h	/^	char emsg[256];$/;"	m	struct:__anon20
-emsg	p2pnat_old/include/rendezvous_packet.h	/^	char emsg[256];$/;"	m	struct:__anon4
-endpoint_status	p2pnat/include/rendezvous_endpoint.h	/^}endpoint_status;$/;"	t	typeref:enum:__anon29
-endpoint_status	p2pnat_old/include/rendezvous_endpoint.h	/^}endpoint_status;$/;"	t	typeref:enum:__anon13
+end_time	include/fsplib.h	/^	time_t 		end_time;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+end_time	include/fsplib.h	/^	time_t 		end_time;$/;"	m	struct:FSP_TRANSFER_UNIT
+endpoint_status	p2pnat/include/p2p_api.h	/^}endpoint_status;$/;"	t	typeref:enum:__anon3
 eof	include/fsplib.h	/^	unsigned char eof;         \/* EOF reached? *\/$/;"	m	struct:FSP_FILE
 err	include/fsplib.h	/^	unsigned char err;         \/* i\/o error? *\/$/;"	m	struct:FSP_FILE
 fd	include/fsplib.h	/^	int fd;                   \/* i\/o descriptor      *\/$/;"	m	struct:FSP_SESSION
-fd	p2pnat/include/p2p_log.h	/^    FILE          *fd;$/;"	m	struct:__anon26
-fd	p2pnat_old/include/log.h	/^    FILE          *fd;$/;"	m	struct:__anon10
-file_size	p2pnat/include/p2p_log.h	/^    unsigned short file_size;    \/\/ K$/;"	m	struct:__anon26
-file_size	p2pnat_old/include/log.h	/^    unsigned short file_size;    \/\/ K$/;"	m	struct:__anon10
-filename	p2pnat/include/p2p_log.h	/^    char           filename[128];$/;"	m	struct:__anon26
-filename	p2pnat_old/include/log.h	/^    char           filename[128];$/;"	m	struct:__anon10
 fill	include/fsplib.h	/^	char fill[offsetof (struct dirent, d_name) + MAXNAMLEN + 1];$/;"	m	union:dirent_workaround
-flag_logging	p2pnat/include/p2p_log.h	/^    unsigned char  flag_logging;$/;"	m	struct:__anon26
-flag_logging	p2pnat_old/include/log.h	/^    unsigned char  flag_logging;$/;"	m	struct:__anon10
-flag_rotate	p2pnat/include/p2p_log.h	/^    unsigned char  flag_rotate;$/;"	m	struct:__anon26
-flag_rotate	p2pnat_old/include/log.h	/^    unsigned char  flag_rotate;$/;"	m	struct:__anon10
-flag_rotating	p2pnat/include/p2p_log.h	/^    unsigned char  flag_rotating;$/;"	m	struct:__anon26
-flag_rotating	p2pnat_old/include/log.h	/^    unsigned char  flag_rotating;$/;"	m	struct:__anon10
-flag_to_file	p2pnat/include/p2p_log.h	/^    unsigned char  flag_to_file;$/;"	m	struct:__anon26
-flag_to_file	p2pnat_old/include/log.h	/^    unsigned char  flag_to_file;$/;"	m	struct:__anon10
-fp	p2pnat/include/rendezvous_packet.h	/^	char fp[41];$/;"	m	struct:__anon20
-fp	p2pnat_old/include/rendezvous_packet.h	/^	char fp[41];$/;"	m	struct:__anon4
 fsp_access	fsplib.c	/^int fsp_access(FSP_SESSION *s,const char *path, int mode)$/;"	f
 fsp_canupload	fsplib.c	/^int fsp_canupload(FSP_SESSION *s,const char *fname)$/;"	f
+fsp_ch_passwd	fsplib.c	/^int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)$/;"	f
 fsp_close_session	fsplib.c	/^void fsp_close_session(FSP_SESSION *s)$/;"	f
 fsp_closedir	fsplib.c	/^int fsp_closedir(FSP_DIR *dirp)$/;"	f
 fsp_fclose	fsplib.c	/^int fsp_fclose(FSP_FILE *file)$/;"	f
@@ -372,7 +217,7 @@ fsp_fwrite	fsplib.c	/^size_t fsp_fwrite(const void * source, size_t size, size_t
 fsp_getpro	fsplib.c	/^int fsp_getpro(FSP_SESSION *s,const char *directory,unsigned char *result)$/;"	f
 fsp_install	fsplib.c	/^int fsp_install(FSP_SESSION *s,const char *fname,time_t timestamp)$/;"	f
 fsp_mkdir	fsplib.c	/^int fsp_mkdir(FSP_SESSION *s,const char *directory)$/;"	f
-fsp_open_session	fsplib.c	/^FSP_SESSION * fsp_open_session(const char* tid, const char *password)$/;"	f
+fsp_open_session	fsplib.c	/^FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const char* key, const char *password)$/;"	f
 fsp_opendir	fsplib.c	/^FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)$/;"	f
 fsp_pkt_read	fsplib.c	/^int fsp_pkt_read(FSP_PKT *p,const void *space,size_t recv_len)$/;"	f
 fsp_pkt_write	fsplib.c	/^size_t fsp_pkt_write(const FSP_PKT *p,void *space)$/;"	f
@@ -388,178 +233,109 @@ fsp_stat	fsplib.c	/^int fsp_stat(FSP_SESSION *s,const char *path,struct stat *sb
 fsp_telldir	fsplib.c	/^long fsp_telldir(FSP_DIR *dirp)$/;"	f
 fsp_transaction	fsplib.c	/^int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)$/;"	f
 fsp_unlink	fsplib.c	/^int fsp_unlink(FSP_SESSION *s,const char *directory)$/;"	f
+g_device_id	fspClientDemo.c	/^char g_device_id[256]={0};$/;"	v
+g_dir_name	fspClientDemo.c	/^char g_dir_name[256]={0};$/;"	v
+g_first_resend_time	fspClientDemo.c	/^unsigned int g_first_resend_time=1340;$/;"	v
+g_fsp_method	fspClientDemo.c	/^int g_fsp_method;$/;"	v
+g_fsp_password	fspClientDemo.c	/^char g_fsp_password[60]={0};$/;"	v
+g_get_url	fspClientDemo.c	/^char g_get_url[512]={0};$/;"	v
+g_invite_code	fspClientDemo.c	/^char g_invite_code[256]={0};$/;"	v
+g_last_preferred_size	fsplib.c	/^int g_last_preferred_size=FSP_SPACE;$/;"	v
+g_log_dir	fspClientDemo.c	/^char g_log_dir[256]=".";$/;"	v
+g_lost_packet_rate	fsplib.c	/^double  g_lost_packet_rate=0;$/;"	v
+g_max_wait_time	fspClientDemo.c	/^unsigned int g_max_wait_time=10;$/;"	v
+g_min_lost_packet_rate	fsplib.c	/^double  g_min_lost_packet_rate=0;$/;"	v
+g_min_lost_packet_size	fsplib.c	/^double g_min_lost_packet_size=512;$/;"	v
+g_min_packet_size	fspClientDemo.c	/^unsigned int g_min_packet_size=768;$/;"	v
+g_new_fsp_password	fspClientDemo.c	/^char g_new_fsp_password[60]={0};$/;"	v
+g_no_retry_count	fsplib.c	/^int g_no_retry_count=0;$/;"	v
+g_p2p_log_type	fspClientDemo.c	/^int g_p2p_log_type=P2P_LOG_TYPE_NONE;$/;"	v
+g_preferred_size	fspClientDemo.c	/^unsigned int g_preferred_size=7348;\/\/(1500-20-8)*5-12=7348$/;"	v
+g_save_url	fspClientDemo.c	/^char g_save_url[512]={0};$/;"	v
+g_send_packet_count	fsplib.c	/^int g_send_packet_count=0;$/;"	v
 g_tid	p2pnat/demo/p2pdemo.c	/^char g_tid[41] = {0};$/;"	v
-ic	p2pnat/include/rendezvous_endpoint.h	/^	char ic[65];$/;"	m	struct:__anon31
-ic	p2pnat/include/rendezvous_endpoint.h	/^	char ic[65];$/;"	m	struct:__anon32
-ic	p2pnat/include/rendezvous_packet.h	/^	char ic[65];$/;"	m	struct:__anon20
-ic	p2pnat_old/include/rendezvous_endpoint.h	/^	char ic[65];$/;"	m	struct:__anon15
-ic	p2pnat_old/include/rendezvous_endpoint.h	/^	char ic[65];$/;"	m	struct:__anon16
-ic	p2pnat_old/include/rendezvous_packet.h	/^	char ic[65];$/;"	m	struct:__anon4
+g_tmp_num	fspClientDemo.c	/^int g_tmp_num=0;$/;"	v
+g_tsf_unit	fspClientDemo.c	/^FSP_TSF_UNIT	g_tsf_unit;$/;"	v
+g_usage	fspClientDemo.c	/^static char g_usage[] =$/;"	v	file:
+g_version	fspClientDemo.c	/^char g_version[]="0.12_v9";$/;"	v
+get_dir_files_method	fspClientDemo.c	/^int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url)$/;"	f
+get_file_method	fspClientDemo.c	/^int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)$/;"	f
 in	include/fsplib.h	/^	FSP_PKT in,out;            \/* io packets *\/$/;"	m	struct:FSP_FILE
 inuse	include/fsplib.h	/^	short   inuse;            \/* in use counter *\/$/;"	m	struct:FSP_DIR
+keep_reg_interval	p2pnat/demo/p2pdemo.c	/^int keep_reg_interval = 0;$/;"	v
 key	include/fsplib.h	/^	unsigned short      key; \/* message key.              *\/$/;"	m	struct:FSP_PKT
-key	p2pnat/include/rendezvous_endpoint.h	/^	char key[33];$/;"	m	struct:__anon31
-key	p2pnat/include/rendezvous_packet.h	/^	char key[33];$/;"	m	struct:__anon20
-key	p2pnat_old/include/rendezvous_endpoint.h	/^	char key[33];$/;"	m	struct:__anon15
-key	p2pnat_old/include/rendezvous_packet.h	/^	char key[33];$/;"	m	struct:__anon4
 key_string	include/lock.h	/^		char key_string[sizeof(FSP_KEY_PREFIX)+32];$/;"	m	struct:FSP_LOCK
 key_string	include/lock.h	/^	       char key_string[sizeof(FSP_KEY_PREFIX)+32];$/;"	m	struct:FSP_LOCK
 last_delay	include/fsplib.h	/^	unsigned int last_delay;  \/* last delay time     *\/$/;"	m	struct:FSP_SESSION
 last_dupes	include/fsplib.h	/^	unsigned int last_dupes;  \/* last dupes          *\/$/;"	m	struct:FSP_SESSION
-last_register	p2pnat/include/rendezvous_endpoint.h	/^	time_t last_register;$/;"	m	struct:__anon31
-last_register	p2pnat_old/include/rendezvous_endpoint.h	/^	time_t last_register;$/;"	m	struct:__anon15
-last_request	p2pnat/include/rendezvous_endpoint.h	/^	time_t last_request;$/;"	m	struct:__anon31
-last_request	p2pnat/include/rendezvous_endpoint.h	/^	time_t last_request;$/;"	m	struct:__anon32
-last_request	p2pnat/include/rendezvous_packet.h	/^	time_t last_request;$/;"	m	struct:__anon21
-last_request	p2pnat_old/include/rendezvous_endpoint.h	/^	time_t last_request;$/;"	m	struct:__anon15
-last_request	p2pnat_old/include/rendezvous_endpoint.h	/^	time_t last_request;$/;"	m	struct:__anon16
-last_request	p2pnat_old/include/rendezvous_packet.h	/^	time_t last_request;$/;"	m	struct:__anon5
 last_resends	include/fsplib.h	/^	unsigned int last_resends;\/* last resends        *\/$/;"	m	struct:FSP_SESSION
 last_rtt	include/fsplib.h	/^	unsigned int last_rtt;    \/* last rtt            *\/$/;"	m	struct:FSP_SESSION
 lastmod	include/fsplib.h	/^	unsigned int  lastmod;$/;"	m	struct:FSP_RDENTRY
 len	include/fsplib.h	/^	unsigned short      len; \/* number of bytes in buf 1. *\/$/;"	m	struct:FSP_PKT
-list	p2pnat/include/rendezvous_endpoint.h	/^	struct dl_list list;$/;"	m	struct:__anon31	typeref:struct:__anon31::dl_list
-list	p2pnat/include/rendezvous_endpoint.h	/^	struct dl_list list;$/;"	m	struct:__anon32	typeref:struct:__anon32::dl_list
-list	p2pnat/include/rendezvous_packet.h	/^	struct dl_list list;$/;"	m	struct:__anon21	typeref:struct:__anon21::dl_list
-list	p2pnat_old/include/rendezvous_endpoint.h	/^	struct dl_list list;$/;"	m	struct:__anon15	typeref:struct:__anon15::dl_list
-list	p2pnat_old/include/rendezvous_endpoint.h	/^	struct dl_list list;$/;"	m	struct:__anon16	typeref:struct:__anon16::dl_list
-list	p2pnat_old/include/rendezvous_packet.h	/^	struct dl_list list;$/;"	m	struct:__anon5	typeref:struct:__anon5::dl_list
+limit_tsf_times	include/fsplib.h	/^	unsigned int 	limit_tsf_times;$/;"	m	struct:FSP_TRANSFER_UNIT
 lock	include/fsplib.h	/^	void *   lock;            \/* key locking         *\/$/;"	m	struct:FSP_SESSION
 lock_fd	include/lock.h	/^	       int lock_fd;$/;"	m	struct:FSP_LOCK
 lock_sem	include/lock.h	/^		int   lock_sem;$/;"	m	struct:FSP_LOCK
 lock_shm	include/lock.h	/^		int   lock_shm;$/;"	m	struct:FSP_LOCK
-log_info	p2pnat/include/p2p_log.h	/^    S_LOG_INFO  log_info[eLOG_INFO_MAX];$/;"	m	struct:__anon28
-log_info	p2pnat_old/include/log.h	/^    S_LOG_INFO  log_info[eLOG_INFO_MAX];$/;"	m	struct:__anon12
-log_level	p2pnat/include/p2p_log.h	/^    char          log_level[eLOG_COMP_MAX];$/;"	m	struct:__anon28
-log_level	p2pnat_old/include/log.h	/^    char          log_level[eLOG_COMP_MAX];$/;"	m	struct:__anon12
-log_type	p2pnat/include/p2p_log.h	/^    unsigned char log_type;  \/\/ file \/ ram \/ remote ...$/;"	m	struct:__anon28
-log_type	p2pnat_old/include/log.h	/^    unsigned char log_type;  \/\/ file \/ ram \/ remote ...$/;"	m	struct:__anon12
+log_level	p2pnat/demo/p2pdemo.c	/^int log_level = 0;$/;"	v
+lost_pkt	include/fsplib.h	/^	unsigned int	lost_pkt[10];\/\/save the count of lost packet.the index is the retry time;$/;"	m	struct:FSP_TRANSFER_UNIT
 main	.sconf_temp/conftest_31.c	/^int main() {$/;"	f
 main	.sconf_temp/conftest_36.c	/^int main() {$/;"	f
 main	.sconf_temp/conftest_37.c	/^int main() {$/;"	f
 main	.sconf_temp/conftest_38.c	/^int main() {$/;"	f
 main	.sconf_temp/conftest_39.c	/^int main() {$/;"	f
+main	fspClientDemo.c	/^int main (int argc, char *argv[])$/;"	f
 main	p2pnat/demo/p2pdemo.c	/^int main(int argc, char *argv[])$/;"	f
-main	test.c	/^int main (int argc, char *argv[])$/;"	f
+main	test_of_sys_func.c	/^int main()$/;"	f
 make_key_string	lock.c	/^static void make_key_string(	FSP_LOCK *lock,$/;"	f	file:
+max_speed_tsf	include/fsplib.h	/^	FSP_TRANS_UNIT	max_speed_tsf;  \/\/the max transferred speed of the unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 maxdelay	include/fsplib.h	/^	unsigned int   maxdelay;  \/* maximum recv. delay *\/$/;"	m	struct:FSP_SESSION
-message_request_t	p2pnat/include/rendezvous_packet.h	/^}message_request_t;$/;"	t	typeref:struct:__anon21
-message_request_t	p2pnat_old/include/rendezvous_packet.h	/^}message_request_t;$/;"	t	typeref:struct:__anon5
-mid	p2pnat/include/rendezvous_packet.h	/^	char mid[9]; \/* length 8 *\/$/;"	m	struct:__anon20
-mid	p2pnat/include/rendezvous_packet.h	/^	char mid[9];$/;"	m	struct:__anon21
-mid	p2pnat_old/include/rendezvous_packet.h	/^	char mid[9]; \/* length 8 *\/$/;"	m	struct:__anon4
-mid	p2pnat_old/include/rendezvous_packet.h	/^	char mid[9];$/;"	m	struct:__anon5
-miss_event_counter	p2pnat/include/p2p_log.h	/^    unsigned short miss_event_counter;$/;"	m	struct:__anon26
-miss_event_counter	p2pnat_old/include/log.h	/^    unsigned short miss_event_counter;$/;"	m	struct:__anon10
-my_endpoint	p2pnat/include/rendezvous_endpoint.h	/^	rendezvous_endpoint_t *my_endpoint;$/;"	m	struct:__anon32
-my_endpoint	p2pnat_old/include/rendezvous_endpoint.h	/^	rendezvous_endpoint_t *my_endpoint;$/;"	m	struct:__anon16
-nMAX_EVENT_LOG	p2pnat/include/p2p_log.h	34;"	d
-nMAX_EVENT_LOG	p2pnat_old/include/log.h	34;"	d
-nMAX_EVENT_LOG_LEVEL	p2pnat/include/p2p_log.h	35;"	d
-nMAX_EVENT_LOG_LEVEL	p2pnat_old/include/log.h	35;"	d
 name	include/fsplib.h	/^	char *name;                \/* filename for upload *\/$/;"	m	struct:FSP_FILE
 name	include/fsplib.h	/^	char name[255 + 1];        \/* entry name *\/$/;"	m	struct:FSP_RDENTRY
 namlen	include/fsplib.h	/^	unsigned short namlen;     \/* length     *\/$/;"	m	struct:FSP_RDENTRY
 new_udp_socket	comm.c	/^int new_udp_socket(int local_port, char *local_address)$/;"	f
 new_udp_socket	p2pnat/demo/comm.c	/^int new_udp_socket(int local_port, char *local_address)$/;"	f
-next	p2pnat/include/list.h	/^	struct dl_list *next;$/;"	m	struct:dl_list	typeref:struct:dl_list::dl_list
-next	p2pnat_old/include/list.h	/^	struct dl_list *next;$/;"	m	struct:dl_list	typeref:struct:dl_list::dl_list
-num_backup_file	p2pnat/include/p2p_log.h	/^    unsigned char  num_backup_file;$/;"	m	struct:__anon26
-num_backup_file	p2pnat_old/include/log.h	/^    unsigned char  num_backup_file;$/;"	m	struct:__anon10
-offsetof	p2pnat/include/list.h	62;"	d
-offsetof	p2pnat_old/include/list.h	62;"	d
-oid	p2pnat/include/rendezvous_endpoint.h	/^	char oid[41];$/;"	m	struct:__anon31
-oid	p2pnat/include/rendezvous_packet.h	/^	char oid[25];$/;"	m	struct:__anon20
-oid	p2pnat_old/include/rendezvous_endpoint.h	/^	char oid[41];$/;"	m	struct:__anon15
-oid	p2pnat_old/include/rendezvous_packet.h	/^	char oid[25];$/;"	m	struct:__anon4
 out	include/fsplib.h	/^	FSP_PKT in,out;            \/* io packets *\/$/;"	m	struct:FSP_FILE
-p2p_endpoint	include/fsplib.h	/^	REND_EPT_HANDLE p2p_endpoint;\/*p2p nat struct*\/ $/;"	m	struct:FSP_SESSION
-p_class	p2pnat/include/rendezvous_packet.h	/^	rendezvous_class p_class; \/* P2PNAT00, P2PNAT01 *\/$/;"	m	struct:__anon20
-p_class	p2pnat_old/include/rendezvous_packet.h	/^	rendezvous_class p_class; \/* P2PNAT00, P2PNAT01 *\/$/;"	m	struct:__anon4
-p_type	p2pnat/include/rendezvous_packet.h	/^	rendezvous_type p_type; \/* REG, CON, FWD, PING, PONG *\/$/;"	m	struct:__anon20
-p_type	p2pnat_old/include/rendezvous_packet.h	/^	rendezvous_type p_type; \/* REG, CON, FWD, PING, PONG *\/$/;"	m	struct:__anon4
+p2p_endpoint	include/fsplib.h	/^	REND_EPT_HANDLE p2p_endpoint;\/*p2p nat struct*\/$/;"	m	struct:FSP_SESSION
+p2p_endpoint_event_bit	p2pnat/include/p2p_api.h	/^}p2p_endpoint_event_bit;$/;"	t	typeref:enum:__anon5
 password	include/fsplib.h	/^	char *password;           \/* host acccess password *\/$/;"	m	struct:FSP_SESSION
-ped	p2pnat/include/rendezvous_endpoint.h	/^	char ped[25];$/;"	m	struct:__anon31
-ped	p2pnat/include/rendezvous_packet.h	/^	char ped[25];$/;"	m	struct:__anon20
-ped	p2pnat_old/include/rendezvous_endpoint.h	/^	char ped[25];$/;"	m	struct:__anon15
-ped	p2pnat_old/include/rendezvous_packet.h	/^	char ped[25];$/;"	m	struct:__anon4
-peer_addr	p2pnat/include/rendezvous_packet.h	/^	struct sockaddr_in peer_addr;$/;"	m	struct:__anon20	typeref:struct:__anon20::sockaddr_in
-peer_addr	p2pnat_old/include/rendezvous_packet.h	/^	struct sockaddr_in peer_addr;$/;"	m	struct:__anon4	typeref:struct:__anon4::sockaddr_in
+phrase_argv	fspClientDemo.c	/^int phrase_argv(int argc, char *argv[])$/;"	f
 phrase_argv	p2pnat/demo/p2pdemo.c	/^int phrase_argv(int argc, char *argv[])$/;"	f
-pos	include/fsplib.h	/^	unsigned int        pos; \/* location in the file.     *\/                       $/;"	m	struct:FSP_PKT
+pkt_size	include/fsplib.h	/^	unsigned int	pkt_size;\/\/one packet size$/;"	m	struct:FSP_TRANSFER_UNIT
+pos	include/fsplib.h	/^	unsigned int        pos; \/* location in the file.     *\/$/;"	m	struct:FSP_PKT
 pos	include/fsplib.h	/^	unsigned int pos;          \/* position of next packet *\/$/;"	m	struct:FSP_FILE
-prev	p2pnat/include/list.h	/^	struct dl_list *prev;$/;"	m	struct:dl_list	typeref:struct:dl_list::dl_list
-prev	p2pnat_old/include/list.h	/^	struct dl_list *prev;$/;"	m	struct:dl_list	typeref:struct:dl_list::dl_list
-r_ed	p2pnat/include/rendezvous_endpoint.h	/^	char r_ed[25];$/;"	m	struct:__anon32
-r_ed	p2pnat_old/include/rendezvous_endpoint.h	/^	char r_ed[25];$/;"	m	struct:__anon16
-r_ped	p2pnat/include/rendezvous_endpoint.h	/^	char r_ped[25];$/;"	m	struct:__anon32
-r_ped	p2pnat_old/include/rendezvous_endpoint.h	/^	char r_ped[25];$/;"	m	struct:__anon16
 random_cid	p2pnat/demo/p2pdemo.c	/^int random_cid = 1;$/;"	v
+read_dir_method	fspClientDemo.c	/^int read_dir_method(FSP_SESSION* s,char* dir_name)$/;"	f
 reclen	include/fsplib.h	/^	unsigned short reclen;     \/* directory record length *\/$/;"	m	struct:FSP_RDENTRY
 recv_udp_packet	comm.c	/^int recv_udp_packet(int udp_fd, char *udp_message, int message_len, struct sockaddr_in *peer_addr)$/;"	f
 recv_udp_packet	p2pnat/demo/comm.c	/^int recv_udp_packet(int udp_fd, char *udp_message, int message_len, struct sockaddr_in *peer_addr)$/;"	f
-rendezvous_class	p2pnat/include/rendezvous_packet.h	/^}rendezvous_class;$/;"	t	typeref:enum:__anon17
-rendezvous_class	p2pnat_old/include/rendezvous_packet.h	/^}rendezvous_class;$/;"	t	typeref:enum:__anon1
-rendezvous_connection_status	p2pnat/include/rendezvous_endpoint.h	/^}rendezvous_connection_status;$/;"	t	typeref:enum:__anon30
-rendezvous_connection_status	p2pnat_old/include/rendezvous_endpoint.h	/^}rendezvous_connection_status;$/;"	t	typeref:enum:__anon14
-rendezvous_connection_t	p2pnat/include/rendezvous_endpoint.h	/^}rendezvous_connection_t;$/;"	t	typeref:struct:__anon32
-rendezvous_connection_t	p2pnat_old/include/rendezvous_endpoint.h	/^}rendezvous_connection_t;$/;"	t	typeref:struct:__anon16
-rendezvous_endpoint_t	p2pnat/include/rendezvous_endpoint.h	/^}rendezvous_endpoint_t;$/;"	t	typeref:struct:__anon31
-rendezvous_endpoint_t	p2pnat_old/include/rendezvous_endpoint.h	/^}rendezvous_endpoint_t;$/;"	t	typeref:struct:__anon15
-rendezvous_packet_t	p2pnat/include/rendezvous_packet.h	/^}rendezvous_packet_t;$/;"	t	typeref:struct:__anon20
-rendezvous_packet_t	p2pnat_old/include/rendezvous_packet.h	/^}rendezvous_packet_t;$/;"	t	typeref:struct:__anon4
-rendezvous_type	p2pnat/include/rendezvous_packet.h	/^}rendezvous_type;$/;"	t	typeref:enum:__anon18
-rendezvous_type	p2pnat_old/include/rendezvous_packet.h	/^}rendezvous_type;$/;"	t	typeref:enum:__anon2
+rendezvous_connection_status	p2pnat/include/p2p_api.h	/^}rendezvous_connection_status;$/;"	t	typeref:enum:__anon4
 resends	include/fsplib.h	/^	unsigned int resends;     \/* total pkt. sends    *\/$/;"	m	struct:FSP_SESSION
-retry_count	p2pnat/include/rendezvous_endpoint.h	/^	int retry_count;$/;"	m	struct:__anon32
-retry_count	p2pnat_old/include/rendezvous_endpoint.h	/^	int retry_count;$/;"	m	struct:__anon16
 rtts	include/fsplib.h	/^	unsigned long rtts;       \/* cumul. rtt          *\/$/;"	m	struct:FSP_SESSION
 s	include/fsplib.h	/^	FSP_SESSION *s;            \/* master session *\/$/;"	m	struct:FSP_FILE
 semun	lock.c	/^union semun$/;"	u	file:
 seq	include/fsplib.h	/^	unsigned short      seq; \/* message sequence number.  *\/$/;"	m	struct:FSP_PKT
 seq	include/fsplib.h	/^	unsigned short seq;       \/* sequence number     *\/$/;"	m	struct:FSP_SESSION
 server_address	p2pnat/demo/p2pdemo.c	/^char server_address[24] = "";$/;"	v
-server_ip	p2pnat/include/rendezvous_endpoint.h	/^	char server_ip[25];$/;"	m	struct:__anon31
-server_ip	p2pnat_old/include/rendezvous_endpoint.h	/^	char server_ip[25];$/;"	m	struct:__anon15
 server_port	p2pnat/demo/p2pdemo.c	/^int server_port = 0;$/;"	v
-server_port	p2pnat/include/rendezvous_endpoint.h	/^	int server_port;$/;"	m	struct:__anon31
-server_port	p2pnat_old/include/rendezvous_endpoint.h	/^	int server_port;$/;"	m	struct:__anon15
-service	p2pnat/include/rendezvous_endpoint.h	/^	char service[65];$/;"	m	struct:__anon31
-service	p2pnat/include/rendezvous_endpoint.h	/^	char service[65];$/;"	m	struct:__anon32
-service	p2pnat/include/rendezvous_packet.h	/^	char service[65];$/;"	m	struct:__anon20
-service	p2pnat_old/include/rendezvous_endpoint.h	/^	char service[65];$/;"	m	struct:__anon15
-service	p2pnat_old/include/rendezvous_endpoint.h	/^	char service[65];$/;"	m	struct:__anon16
-service	p2pnat_old/include/rendezvous_packet.h	/^	char service[65];$/;"	m	struct:__anon4
 share_key	include/lock.h	/^		unsigned int *share_key;$/;"	m	struct:FSP_LOCK
 share_key	include/lock.h	/^               unsigned short share_key;$/;"	m	struct:FSP_LOCK
 simplecommand	fsplib.c	/^static int simplecommand(FSP_SESSION *s,const char *directory,unsigned char command)$/;"	f	file:
 size	include/fsplib.h	/^	unsigned int  size;$/;"	m	struct:FSP_RDENTRY
-status	p2pnat/include/rendezvous_endpoint.h	/^	endpoint_status status;$/;"	m	struct:__anon31
-status	p2pnat/include/rendezvous_endpoint.h	/^	rendezvous_connection_status status;$/;"	m	struct:__anon32
-status	p2pnat_old/include/rendezvous_endpoint.h	/^	endpoint_status status;$/;"	m	struct:__anon15
-status	p2pnat_old/include/rendezvous_endpoint.h	/^	rendezvous_connection_status status;$/;"	m	struct:__anon16
+start_time	include/fsplib.h	/^	time_t		start_time;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+start_time	include/fsplib.h	/^	time_t 		start_time;$/;"	m	struct:FSP_TRANSFER_UNIT
 sum	include/fsplib.h	/^	unsigned char       sum; \/* message checksum.         *\/$/;"	m	struct:FSP_PKT
-tid	p2pnat/include/rendezvous_endpoint.h	/^	char tid[41];$/;"	m	struct:__anon32
-tid	p2pnat/include/rendezvous_packet.h	/^	char tid[41];$/;"	m	struct:__anon20
-tid	p2pnat_old/include/rendezvous_endpoint.h	/^	char tid[41];$/;"	m	struct:__anon16
-tid	p2pnat_old/include/rendezvous_packet.h	/^	char tid[41];$/;"	m	struct:__anon4
+test_decrypt	p2pnat/demo/p2pdemo.c	/^int test_decrypt(char *key, char *enc_data)$/;"	f
+test_encrypt	p2pnat/demo/p2pdemo.c	/^int test_encrypt(char *key, char *data, char *enc_data, int len)$/;"	f
+test_fingprint	p2pnat/demo/p2pdemo.c	/^void test_fingprint(void)$/;"	f
+test_get_deviceId	p2pnat/demo/p2pdemo.c	/^int test_get_deviceId(void)$/;"	f
 timeout	include/fsplib.h	/^	unsigned int   timeout;   \/* send timeout 1\/1000s*\/$/;"	m	struct:FSP_SESSION
-toid	p2pnat/include/rendezvous_endpoint.h	/^	char toid[41];$/;"	m	struct:__anon32
-toid	p2pnat/include/rendezvous_packet.h	/^	char toid[25];$/;"	m	struct:__anon20
-toid	p2pnat_old/include/rendezvous_endpoint.h	/^	char toid[41];$/;"	m	struct:__anon16
-toid	p2pnat_old/include/rendezvous_packet.h	/^	char toid[25];$/;"	m	struct:__anon4
-total_miss_event_counter	p2pnat/include/p2p_log.h	/^    unsigned long  total_miss_event_counter;$/;"	m	struct:__anon26
-total_miss_event_counter	p2pnat_old/include/log.h	/^    unsigned long  total_miss_event_counter;$/;"	m	struct:__anon10
+total_size	include/fsplib.h	/^	unsigned long    total_size;\/\/the total size of transferred packets$/;"	m	struct:FSP_TRANSFER_UNIT
+total_tsf_size	include/fsplib.h	/^	unsigned long	total_tsf_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 trips	include/fsplib.h	/^	unsigned int trips;       \/* total pkt trips     *\/$/;"	m	struct:FSP_SESSION
+ttest	p2pnat/demo/p2pdemo.c	/^int ttest(void)$/;"	f
 type	include/fsplib.h	/^	unsigned char type;        \/* field type *\/$/;"	m	struct:FSP_RDENTRY
-type	p2pnat/include/rendezvous_packet.h	/^	context_type type;$/;"	m	struct:__anon21
-type	p2pnat_old/include/rendezvous_packet.h	/^	context_type type;$/;"	m	struct:__anon5
-udp_fd	p2pnat/include/rendezvous_endpoint.h	/^	int udp_fd;$/;"	m	struct:__anon31
-udp_fd	p2pnat_old/include/rendezvous_endpoint.h	/^	int udp_fd;$/;"	m	struct:__anon15
-vDbgBreak	p2pnat/include/p2p_log.h	116;"	d
-vDbgBreak	p2pnat_old/include/log.h	116;"	d
-vSysCrash	p2pnat/include/p2p_log.h	117;"	d
-vSysCrash	p2pnat_old/include/log.h	117;"	d
+unit_tsf_times	include/fsplib.h	/^	unsigned int 	unit_tsf_times;\/\/the transfered times of one unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 val	lock.c	/^  int val;$/;"	m	union:semun	file:
 writing	include/fsplib.h	/^	unsigned char writing;     \/* opened for writing *\/$/;"	m	struct:FSP_FILE
 xlen	include/fsplib.h	/^	unsigned short     xlen; \/* number of bytes in buf 2  *\/$/;"	m	struct:FSP_PKT

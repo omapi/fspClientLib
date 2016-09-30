@@ -36,11 +36,12 @@
 //p2pnat
 #include "p2p_api.h"
 #include "error_code.h"
-extern unsigned int g_preferred_size;
+extern unsigned int g_limit_tsf_times;
 extern unsigned int g_min_packet_size;
 extern unsigned int g_first_resend_time;
+extern unsigned int g_pkt_change_range;
 extern int g_tmp_num;
-
+extern FSP_TSF_CONTR g_tsf_controller;
 int g_no_retry_count=0;
 
 double  g_lost_packet_rate=0;
@@ -431,44 +432,7 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 			client_set_key((FSP_LOCK *)s->lock,rpkt->key);
 			errno = 0;
 			//Add by xxfan
-			/*
-			g_transfer_size_count+=g_preferred_size;
-			if(retry==0) g_no_retry_count++;
-			else
-			{
-			        g_retry_count+=retry;
-				else if(retry==1)
-				{
-					printf("lost one packet,try again,size-%d\n",g_preferred_size);
-				}
-			else if(retry>=2)
-			{
-				g_no_retry_count=0;
-				if(g_preferred_size-500>=g_min_packet_size)
-				{
-					g_preferred_size-=500;
-					printf("g_preferred_size--,%d\n",g_preferred_size);
-				}
-				g_last_preferred_size=g_preferred_size;
-			}
-			if(g_no_retry_count%100==0)
-			{
-				if(g_preferred_size+50<g_preferred_size)
-				{
-					g_preferred_size+=50;
-					printf("g_preferred_size++,%d\n",g_preferred_size);
-				}
-				g_no_retry_count=0;
-			}
-			}
-			if(g_transfer_times==100)
-			{
-			  g_cur_transfer_speed=g_transfer_size_count/g_transfer_use_time;
-			  if(g_cur_transfer_speed<g_last_transfer_speed)
-			  {
-			  }
-			  else g_preferred_size=g_last_preferred_size;
-			}*/
+			update_tsf_unit(retry);
 			//?end
 			return 0;
 		}
@@ -688,7 +652,6 @@ FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)
 
 	//out.xlen=0;
 	//Add by xxfan 2016/08/25
-	//*(uint32_t*)(out.buf+out.len)= htons((uint32_t)g_preferred_size);
 	*(uint32_t*)(out.buf+out.len)= htons((uint32_t)768);
 	out.xlen=2;
 
@@ -1070,7 +1033,7 @@ FSP_FILE * fsp_fopen(FSP_SESSION *session, const char *path,const char *modeflag
 		f->bufpos=FSP_SPACE;
 		f->out.cmd=FSP_CC_GET_FILE;
 		//Add by xxfan 2016/08/16
-		*(int32_t*)(f->out.buf+f->out.len)= htonl((int32_t)g_preferred_size);
+		*(int32_t*)(f->out.buf+f->out.len)= htonl((int32_t)g_tsf_controller.cur_unit.pkt_size);
 		f->out.xlen=2;
 		f->out.len+=2;
 		//?end add
@@ -1723,4 +1686,137 @@ int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)
 	return  0;
 }
 
+//Add by xxfan
+void init_tsf_controller(FSP_TSF_CONTR* f_controller)
+{
 
+	FSP_TSF_UNIT* cur_unit=&(f_controller->cur_unit);
+
+	memset(f_controller,0,sizeof(FSP_TSF_CONTR));
+
+	time(&(f_controller->start_time));
+	printf("start downloading,time-%ld\n",f_controller->start_time);
+	f_controller->limit_tsf_times=g_limit_tsf_times;	
+	printf("g_limit_tsf_times-%d\n",g_limit_tsf_times);
+	f_controller->pkt_ch_range=g_pkt_change_range;
+	f_controller->init_pkt_size=g_min_packet_size;
+	f_controller->down_flag=0;
+	f_controller->best_flag=0;
+
+	printf("fisrt packet size -%d\n",g_min_packet_size);
+	init_tsf_unit(cur_unit,f_controller->init_pkt_size,f_controller->limit_tsf_times);
+	return ;
+}
+void stop_tsf_controller(FSP_TSF_CONTR* f_controller)
+{
+	int used_time;
+	int avg_tsf_speed;
+
+	time(&(f_controller->end_time));
+	printf("end download dir, time-%ld\n",g_tsf_controller.end_time);
+	used_time=f_controller->end_time-f_controller->start_time;
+	f_controller->total_size+=f_controller->cur_unit.total_size;
+	printf("toltal used time-%d\n",used_time);
+
+	printf("toltal size-%d\n",g_tsf_controller.total_size);
+	if(used_time<=0) used_time=1;
+	avg_tsf_speed=g_tsf_controller.total_size/used_time;
+	printf("the average downloading speed is %lf KB/s\n",((double)avg_tsf_speed)/1024);
+	return;
+}
+
+void init_tsf_unit(FSP_TSF_UNIT* f_unit,unsigned int f_pkt_size,unsigned int f_limit_times)
+{
+	memset(f_unit,0,sizeof(FSP_TSF_UNIT));
+	time(&(f_unit->start_time));
+	f_unit->pkt_size=f_pkt_size;
+	f_unit->limit_tsf_times=f_limit_times;
+}
+void update_tsf_unit(unsigned int f_retry)
+{
+	int used_time;
+	FSP_TSF_UNIT* f_unit=&g_tsf_controller.cur_unit;
+	FSP_TSF_UNIT* f_max_speed_unit=&g_tsf_controller.max_speed_unit;
+	int cur_pkt_size=f_unit->pkt_size;
+
+	int max_speed;
+	int cur_speed;
+	int last_speed;
+	int extend=g_tsf_controller.pkt_ch_range;
+
+
+	f_unit->total_size+=cur_pkt_size;
+	if(f_retry<10)	f_unit->lost_pkt[f_retry]++;
+	f_unit->tsf_times+=f_retry+1;
+
+	if(f_unit->tsf_times<f_unit->limit_tsf_times)
+	{
+		return;
+	}
+
+	g_tsf_controller.total_size+=f_unit->total_size;
+
+	time(&(f_unit->end_time));
+	used_time=f_unit->end_time-f_unit->start_time;
+	if(used_time<=0) used_time=1;
+	f_unit->avg_tsf_speed=f_unit->total_size/used_time;
+
+	max_speed=g_tsf_controller.max_speed_unit.avg_tsf_speed;
+	cur_speed=f_unit->avg_tsf_speed;
+	last_speed=g_tsf_controller.last_unit.avg_tsf_speed;
+	if(cur_speed>last_speed) g_tsf_controller.down_flag=0;
+	else
+	{
+		g_tsf_controller.down_flag++;
+		printf("the speed down %d times\n",g_tsf_controller.down_flag);
+	}
+
+	if(g_tsf_controller.best_flag==0)
+	{
+		if(cur_speed>max_speed)
+		{
+
+			if(f_max_speed_unit->pkt_size<cur_pkt_size)
+			{
+				extend=g_tsf_controller.pkt_ch_range;
+			}
+			else if(f_max_speed_unit->pkt_size>f_unit->pkt_size)
+			{
+				extend=-g_tsf_controller.pkt_ch_range;
+			}
+			else extend=g_tsf_controller.pkt_ch_range;
+
+			cur_pkt_size+=extend;
+			if(cur_pkt_size>FSP_SPACE) cur_pkt_size=FSP_SPACE;
+			if(cur_pkt_size<g_min_packet_size) cur_pkt_size=g_min_packet_size;
+			memcpy(f_max_speed_unit,f_unit,sizeof(FSP_TSF_UNIT));
+		}
+		else if(cur_speed<max_speed) 
+		{
+			//begin down
+			if(g_tsf_controller.down_flag<2)
+			{
+				extend=g_tsf_controller.pkt_ch_range;
+				cur_pkt_size+=extend;
+				if(cur_pkt_size>FSP_SPACE) cur_pkt_size=FSP_SPACE;
+				if(cur_pkt_size<g_min_packet_size) cur_pkt_size=g_min_packet_size;
+			}
+			else
+			{
+				cur_pkt_size=f_max_speed_unit->pkt_size;
+				g_tsf_controller.best_flag=1;
+				printf("the best pkt size is %d\n",f_max_speed_unit->pkt_size);
+			}
+		}
+	}
+
+	memcpy(&g_tsf_controller.last_unit,f_unit,sizeof(FSP_TSF_UNIT));
+	init_tsf_unit(f_unit,cur_pkt_size,g_tsf_controller.limit_tsf_times);
+	if(g_tsf_controller.best_flag==0)
+		printf("max_speed-%lf KB/s,cur_speed-%lf KB/s,last_speed-%lf KB/s\n",((double)max_speed)/1024,((double)cur_speed)/1024,((double)last_speed/1024));
+	else
+		printf("best max_speed-%lf KB/s,cur_speed-%lf KB/s,last_speed-%lf KB/s\n",((double)max_speed)/1024,((double)cur_speed)/1024,((double)last_speed/1024));
+
+	printf("next pkt_size-%d bytes\n",cur_pkt_size);
+	return;
+}
