@@ -6,6 +6,7 @@
 #include <stddef.h>
 
 #include "p2p_api.h"
+#include "fspClientDemo.h"
 
 /* The FSP v2 protocol support library - public interface */
 
@@ -90,27 +91,35 @@ typedef struct FSP_TRANSFER_UNIT {
 	time_t 		end_time;
 	
 	unsigned int	pkt_size;//one packet size,the unit is byte.
-	unsigned long   total_size;//the total size of transferred packets
+	
+	unsigned int    done_times;
+	unsigned long   done_size;//the total size of packets which has transferred.
 	unsigned int	lost_pkt[10];//save the count of lost packet.the index is the retry time;
-	unsigned int    avg_tsf_speed;// xxx kb/s
-	unsigned int    tsf_times;
-	unsigned int    limit_tsf_times;
+	unsigned int    avg_speed;// xxx kb/s
 } FSP_TSF_UNIT;
 
 
 typedef struct FSP_TRANSFER_CONTROLLER {
 	time_t		start_time;
 	time_t 		end_time;
-	unsigned long	total_size;
-	unsigned int avg_tsf_speed;
-	FSP_TSF_UNIT	max_speed_unit;  //the max transferred speed of the unit
-	FSP_TSF_UNIT	cur_unit;	//the current transferred unit
-	FSP_TSF_UNIT	last_unit;	//the last  transferred unit
-	unsigned int 	limit_tsf_times;//the transfered times of one unit
-	unsigned int 	pkt_ch_range;
-	unsigned int 	init_pkt_size;
-	unsigned int    down_flag;
-	unsigned int    best_flag;
+
+	unsigned long	done_size;
+	unsigned int    avg_speed;
+
+	FSP_TSF_UNIT	max_speed_unit;  //the max transmission's speed of the unit
+	FSP_TSF_UNIT	cur_unit;	//the current transmission's unit
+	FSP_TSF_UNIT	last_unit;	//the last  transmission's unit
+
+	unsigned int 	circle_times;//one circle of transmissions  using times 
+	unsigned int 	circle_time;//one circle of transmissions  using time length 
+	
+	unsigned int 	min_pkt_size;
+	unsigned int    max_pkt_size;
+	unsigned int    cur_pkt_size;
+	int             pkt_ch_range;
+	
+	unsigned int    speed_down_flag;
+	unsigned int    max_speed_flag;
 } FSP_TSF_CONTR;
 
 //? end add
@@ -186,7 +195,7 @@ typedef union dirent_workaround {
 /* function prototypes */
 
 /* session management */
-FSP_SESSION * fsp_open_session(const char *tid,const char* invite_code,const char* key, const char *password);
+FSP_SESSION* fsp_open_session ( SERVER_INFO *f_server_info);
 
 void fsp_close_session(FSP_SESSION *s);
 
@@ -230,7 +239,7 @@ int fsp_canupload(FSP_SESSION *s,const char *fname);
 //Add by xxfan
 void init_tsf_controller(FSP_TSF_CONTR* f_controller);
 void stop_tsf_controller(FSP_TSF_CONTR* f_controller);
-void init_tsf_unit(FSP_TSF_UNIT* f_unit,unsigned int f_pkt_size,unsigned int f_limit_fsp_times);
-void update_tsf_unit(unsigned int f_retry);
+void init_tsf_unit(FSP_TSF_CONTR* f_controller);
+void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller);
 
 #endif

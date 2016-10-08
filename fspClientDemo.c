@@ -5,30 +5,20 @@
 #include <sys/stat.h>
 #include <sys/fcntl.h>
 #include <time.h>
+#include <string.h>
 
 #include "fsplib.h"
 #include "./p2pnat/include/p2p_api.h"
 #include "error_code.h"
 
+SERVER_INFO     g_server_info;
 FSP_TSF_CONTR	g_tsf_controller;
+FSP_METHOD_PARAMS g_fsp_method;
 
-char g_device_id[256]={0};
-char g_invite_code[256]={0};
-char g_fsp_password[60]={0};
-char g_new_fsp_password[60]={0};
-char g_get_url[512]={0};
-char g_save_url[512]={0};
-char g_dir_name[256]={0};
-char g_log_dir[256]=".";
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
-int g_fsp_method;
-unsigned int g_max_wait_time=10;
-unsigned int g_min_packet_size=768;
-unsigned int g_first_resend_time=1340;
-unsigned int g_limit_tsf_times=200;
-unsigned int g_pkt_change_range=256;
+
 char g_version[]="0.12_v10";
-int g_tmp_num=0;
+
 static char g_usage[] =
 "fsp client demo\n"
 "g_usage: fspClientDemo -id xxx -ic yyy -p zzz [options]... \n"
@@ -42,10 +32,9 @@ static char g_usage[] =
 "      -np,--new_password           change the  password of server\n"
 "      -ls,--list                   display a list of files in the dirent\n"
 "      -v,--version                 display the version of fspClinet and exit.\n"
-"      -ps,--prefered_size          preferred size of reply's data block.default is 7348 bytes.If you need higher transfer speed,please using  bigger block size.The max value is 14708 bytes.\n"
-"      -frt,--first_resend_time     \n"
-"      -mwt,--max_wait_timeout      the maximum waiting time that doesn't recv response from server after serveral failed attempts\n"
 "      -d,--debug		    yes,no\n"
+"      -min,--min_pkt_size    	    the min paket size of transmission\n"
+"      -max,--max_pkt_size    	    the max paket size of transmission\n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -53,6 +42,7 @@ static char g_usage[] =
 int phrase_argv(int argc, char *argv[])
 {
 	int i = 0;
+	int int_tmp;
 	if( argc == 1)
 	{
 		printf("Missing parameter:\n%s",g_usage);
@@ -70,107 +60,122 @@ int phrase_argv(int argc, char *argv[])
 			printf("%s\n",g_version);
 			return -4;
 		}
+
+		//server info
 		if(strcasecmp(argv[i],"--device_id")==0||strcasecmp(argv[i],"-id")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
-				strcpy(g_device_id,argv[i+1]);
+				strcpy(g_server_info.device_id,argv[i+1]);
 				i++;
 			}
-			else strcpy(g_device_id,"");
-		}
-		else if(strcasecmp(argv[i],"--password")==0||strcasecmp(argv[i],"-p")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				strcpy(g_fsp_password,argv[i+1]);
-				i++;
-			}
-			else strcpy(g_fsp_password,"");
-		}
-		else if(strcasecmp(argv[i],"--get")==0||strcasecmp(argv[i],"-g")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				strcpy(g_get_url,argv[i+1]);
-				i++;
-			}
-			else strcpy(g_get_url,"");
-			g_fsp_method=FSP_CC_GET_FILE;
-		}
-		else if(strcasecmp(argv[i],"--save")==0||strcasecmp(argv[i],"-s")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				strcpy(g_save_url,argv[i+1]);
-				i++;
-			}
-			else strcpy(g_save_url,"");
-		}
-		else if(strcasecmp(argv[i],"--new_password")==0||strcasecmp(argv[i],"-np")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				strcpy(g_new_fsp_password,argv[i+1]);
-				i++;
-			}
-			else strcpy(g_new_fsp_password,"");
-			g_fsp_method=FSP_CC_CH_PASSWD;
-		}
-		else if(strcasecmp(argv[i],"--list")==0||strcasecmp(argv[i],"-ls")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				strcpy(g_dir_name,argv[i+1]);
-				i++;
-			}
-			else strcpy(g_dir_name,"");
-			g_fsp_method=FSP_CC_GET_DIR;
+			else strcpy(g_server_info.device_id,"");
 		}
 		else if(strcasecmp(argv[i],"--invite_code")==0 || strcasecmp(argv[i],"-ic")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
-				strcpy(g_invite_code,argv[i+1]);
+				strcpy(g_server_info.invite_code,argv[i+1]);
 				i++;
 			}
-			else strcpy(g_invite_code,"");
+			else strcpy(g_server_info.invite_code,"");
 
 		}
-		else if(strcasecmp(argv[i],"--min_allow_size")==0 || strcasecmp(argv[i],"-min")==0)
+		else if(strcasecmp(argv[i],"--password")==0||strcasecmp(argv[i],"-p")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
-				g_min_packet_size=(unsigned int)atoi(argv[i+1]);
-				printf("g_min_packet_size-%d\n",g_min_packet_size);
-				if(g_min_packet_size>FSP_SPACE||g_min_packet_size<=0)
-				{
-					printf("the value-%d of min is illegal.It must between 0-%d\n",g_min_packet_size,FSP_SPACE);
-					return -1;
-				}
+				strcpy(g_server_info.password,argv[i+1]);
+				i++;
+			}
+			else strcpy(g_server_info.password,"");
+		}
+		//get file or dir method
+		else if(strcasecmp(argv[i],"--get")==0||strcasecmp(argv[i],"-g")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_fsp_method.get_url,argv[i+1]);
+				i++;
+			}
+			g_fsp_method.type_flag=FSP_CC_GET_FILE;
+		}
+		else if(strcasecmp(argv[i],"--save")==0||strcasecmp(argv[i],"-s")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_fsp_method.save_url,argv[i+1]);
+				i++;
+			}
+		}
+		//change password method
+		else if(strcasecmp(argv[i],"--new_password")==0||strcasecmp(argv[i],"-np")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_fsp_method.new_password,argv[i+1]);
+				i++;
+			}
+			g_fsp_method.type_flag=FSP_CC_CH_PASSWD;
+		}
+		//ls method
+		else if(strcasecmp(argv[i],"--list")==0||strcasecmp(argv[i],"-ls")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_fsp_method.dir_name,argv[i+1]);
+				i++;
+			}
+			g_fsp_method.type_flag=FSP_CC_GET_DIR;
+		}
+		//options
+		else if(strcasecmp(argv[i],"--min_pkt_size")==0 || strcasecmp(argv[i],"-min")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				int_tmp=(unsigned  int)atoi(argv[i+1]);
+				if(int_tmp>0 && int_tmp<=g_tsf_controller.max_pkt_size) g_tsf_controller.min_pkt_size=int_tmp;
+				i++;
+			}
+		}
+		else if(strcasecmp(argv[i],"--max_packet_size")==0 || strcasecmp(argv[i],"-max")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				int_tmp=(unsigned int)atoi(argv[i+1]);
+				if(int_tmp> g_tsf_controller.min_pkt_size && int_tmp <= FSP_SPACE) g_tsf_controller.max_pkt_size=int_tmp;
+				i++;
+			}
+		}
+		else if(strcasecmp(argv[i],"--tsf_cicrcle_times")==0 || strcasecmp(argv[i],"-tcts")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				int_tmp=(unsigned int)atoi(argv[i+1]);
+				if(int_tmp>0) g_tsf_controller.circle_times=int_tmp;
+				i++;
+			}
+		}
+		else if(strcasecmp(argv[i],"--tsf_cicrcle_time")==0 || strcasecmp(argv[i],"-tct")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				int_tmp=(unsigned int)atoi(argv[i+1]);
+				if(int_tmp>0) g_tsf_controller.circle_time=int_tmp;
+				i++;
+			}
+		}
+		else if(strcasecmp(argv[i],"--pkt_ch_range")==0 || strcasecmp(argv[i],"-pcr")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				int_tmp=(unsigned int)atoi(argv[i+1]);
+				if(int_tmp>0) g_tsf_controller.pkt_ch_range=int_tmp;
 				i++;
 			}
 		}
 
-		else if(strcasecmp(argv[i],"--first_resend_time")==0 || strcasecmp(argv[i],"-frt")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				g_first_resend_time=(unsigned int)atoi(argv[i+1]);
-				if(g_first_resend_time<=1000) g_first_resend_time=1000;
-				i++;
-			}
-		}
-		else if(strcasecmp(argv[i],"--max_wait_timeout")==0 || strcasecmp(argv[i],"-mwt")==0)
-		{
-			if(i<argc-1 && *argv[i+1]!='-')
-			{
-				g_max_wait_time=(unsigned int)atoi(argv[i+1]);
-				if(g_max_wait_time<0) g_max_wait_time=5;
-				i++;
-			}
-		}
-
+   	    //others
 		else if(strcasecmp(argv[i],"--debug")==0 || strcasecmp(argv[i],"-d")==0)
 		{
 			if(i<argc-1 && *argv[i+1]!='-')
@@ -196,7 +201,6 @@ int read_dir_method(FSP_SESSION* s,char* dir_name)
 	FSP_RDENTRY entry;
 	FSP_RDENTRY *result;
 	int rc;
-	struct dirent *d;
 	struct tm* p;
 	int num_file=0;
 	int num_link=0;
@@ -287,7 +291,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 
 	struct stat file_stat;
 	
-	int used_time;
+	int used_time_len;
 	float avg_tsf_speed;
 
 	if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
@@ -445,8 +449,8 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	{
 		remove(save_url);
 		printf("Warning,code=%d,reason=\"waiting timeout,try again\n",FSP_WAITING_TIMEOUT_WARNING);
-		g_tsf_controller.init_pkt_size=g_tsf_controller.max_speed_unit.avg_tsf_speed;
-		init_tsf_unit(&g_tsf_controller.cur_unit,g_tsf_controller.init_pkt_size,g_tsf_controller.limit_tsf_times);	
+		g_tsf_controller.cur_pkt_size=g_tsf_controller.max_speed_unit.pkt_size;
+		init_tsf_unit(&g_tsf_controller);
 		f_retry--;
 		get_file_method(s,f_get_url,f_save_url,f_retry);
 		return -3;
@@ -468,20 +472,21 @@ int main (int argc, char *argv[])
 	time_t now2;
 	time_t now3;
 
-	rc=phrase_argv(argc,argv);
+	//init
+	memset(&g_server_info,0,sizeof(SERVER_INFO));
+	memset(&g_fsp_method,0,sizeof(FSP_METHOD_PARAMS));
+	init_tsf_controller(&g_tsf_controller);
+	init_tsf_unit(&g_tsf_controller);
 
+	//get input
+	rc=phrase_argv(argc,argv);
 	if(rc<0) return 0;
-	if(*g_device_id=='\0')
-	{
-		printf("stderr-%s\n",g_usage);
-		return 0;
-	}
-	if(*g_device_id=='\0')
+
 	time(&now1);
 	printf("start p2p time-%ld\n",now1);
-	rc = p2p_init(g_log_dir,"fspClient",g_p2p_log_type,5,NULL,0);
-	// for debug
-	//set_p2p_option(0,1);
+
+	//p2p_init
+	rc = p2p_init(".","fspClient",g_p2p_log_type,5,NULL,0);
 	if(rc!=0)
 	{
 		//printf("p2p init fail\n");
@@ -489,40 +494,40 @@ int main (int argc, char *argv[])
 		return 0;
 	}
 
-	s = fsp_open_session(g_device_id,g_invite_code,NULL,g_fsp_password);
+	s = fsp_open_session(&g_server_info);
 	if(s==NULL) return 0;
 	assert(s);
-	s->timeout=g_max_wait_time*1000;
 
 	time(&now2);
-	printf("p2p using time-%ds\n",now2-now1);
+	printf("p2p using time-%lds\n",now2-now1);
 
-	init_tsf_controller(&g_tsf_controller);
+
+	//do method
 	/* diaplay a file list of dir*/
-
-	if(g_fsp_method==FSP_CC_GET_DIR)
+	if(g_fsp_method.type_flag==FSP_CC_GET_DIR)
 	{
-		rc=read_dir_method(s,g_dir_name);
-		if(rc!=0) printf("Failed,code=%d,reason=\"read dir-%s failed\"\n",FSP_READ_DIR_FAILED,g_dir_name);
+		rc=read_dir_method(s,g_fsp_method.dir_name);
+		if(rc!=0) printf("Failed,code=%d,reason=\"read dir-%s failed\"\n",FSP_READ_DIR_FAILED,g_fsp_method.dir_name);
 	}
 	/* get a file */
-	else if(g_fsp_method==FSP_CC_GET_FILE)
+	else if(g_fsp_method.type_flag==FSP_CC_GET_FILE)
 	{
-		if(*(g_get_url+strlen(g_get_url)-1)=='/')
-			get_dir_files_method(s,g_get_url,g_save_url);
+		if(*(g_fsp_method.get_url+strlen(g_fsp_method.get_url)-1)=='/')
+			get_dir_files_method(s,g_fsp_method.get_url,g_fsp_method.save_url);
 		else
-			get_file_method(s,g_get_url,g_save_url,3);
+			get_file_method(s,g_fsp_method.get_url,g_fsp_method.save_url,3);
 	}
 	/*change password*/
-	else if(g_fsp_method==FSP_CC_CH_PASSWD)
+	else if(g_fsp_method.type_flag==FSP_CC_CH_PASSWD)
 	{
 		//printf("new_password-%s\n",g_new_fsp_password);
-		fsp_ch_passwd(s,g_new_fsp_password);
+		fsp_ch_passwd(s,g_fsp_method.new_password);
 	}
 
+	//done method
 	stop_tsf_controller(&g_tsf_controller);
 	time(&now3);
-	printf("fsp using time %ds\n",now3-now2);
+	//printf("fsp using time %lds\n",now3-now2);
 	if(s!=NULL)	printf("resends %d, dupes %d, cum. rtt %ld, last rtt %d\n",s->resends,s->dupes,s->rtts/s->trips,s->last_rtt);
 	/* bye! */
 	if(s!=NULL)

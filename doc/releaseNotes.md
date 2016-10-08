@@ -2,6 +2,13 @@
 
 > **代码开源地址：**https://github.com/omapi/fspClientLib
 
+## fspClientLib 0.12_V10  ReleaseNotes 2016-10-08  by xxfan
+#### 改进
+| 功能描述                                     | 注意事项 | 关注人     |
+| ---------------------------------------- | ---- | ------- |
+| 改进传输包大小自适应机制| 该版本需要回归测试|dmzhang|
+
+
 ## fspClientLib 0.12_V9  ReleaseNotes 2016-09-09  by xxfan
 
 #### 修复

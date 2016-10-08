@@ -14,6 +14,7 @@ if SHARED:
 #Install library and header
 env.Install(dir = PREFIX+'/lib', source = libfsp)
 env.Install(dir = PREFIX+'/include', source='fsplib.h')
+env.Install(dir = PREFIX+'/include', source='fspClientDemo.h')
 if SHARED:
     env.Install(dir = PREFIX+'/lib', source = libfspshared)
 

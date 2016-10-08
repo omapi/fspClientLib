@@ -24,68 +24,70 @@ ENDPOINT_REGISTER_FAIL	p2pnat/include/p2p_api.h	/^	ENDPOINT_REGISTER_FAIL,$/;"	e
 ENDPOINT_REGISTER_OK	p2pnat/include/p2p_api.h	/^	ENDPOINT_REGISTER_OK,$/;"	e	enum:__anon3
 FILE_NOT_EXISTED	include/error_code.h	/^    FILE_NOT_EXISTED=9,$/;"	e	enum:__anon1
 FILE_OPEN_FAILED	include/error_code.h	/^    FILE_OPEN_FAILED=10,$/;"	e	enum:__anon1
-FSP_CC_BYE	include/fsplib.h	41;"	d
-FSP_CC_CH_PASSWD	include/fsplib.h	46;"	d
-FSP_CC_DEL_DIR	include/fsplib.h	37;"	d
-FSP_CC_DEL_FILE	include/fsplib.h	36;"	d
-FSP_CC_ERR	include/fsplib.h	31;"	d
-FSP_CC_GET_DIR	include/fsplib.h	32;"	d
-FSP_CC_GET_FILE	include/fsplib.h	33;"	d
-FSP_CC_GET_PRO	include/fsplib.h	38;"	d
-FSP_CC_GRAB_DONE	include/fsplib.h	43;"	d
-FSP_CC_GRAB_FILE	include/fsplib.h	42;"	d
-FSP_CC_INFO	include/fsplib.h	30;"	d
-FSP_CC_INSTALL	include/fsplib.h	35;"	d
-FSP_CC_LIMIT	include/fsplib.h	47;"	d
-FSP_CC_MAKE_DIR	include/fsplib.h	40;"	d
-FSP_CC_RENAME	include/fsplib.h	45;"	d
-FSP_CC_SET_PRO	include/fsplib.h	39;"	d
-FSP_CC_STAT	include/fsplib.h	44;"	d
-FSP_CC_TEST	include/fsplib.h	48;"	d
-FSP_CC_UP_LOAD	include/fsplib.h	34;"	d
-FSP_CC_VERSION	include/fsplib.h	29;"	d
+FSP_CC_BYE	include/fsplib.h	42;"	d
+FSP_CC_CH_PASSWD	include/fsplib.h	47;"	d
+FSP_CC_DEL_DIR	include/fsplib.h	38;"	d
+FSP_CC_DEL_FILE	include/fsplib.h	37;"	d
+FSP_CC_ERR	include/fsplib.h	32;"	d
+FSP_CC_GET_DIR	include/fsplib.h	33;"	d
+FSP_CC_GET_FILE	include/fsplib.h	34;"	d
+FSP_CC_GET_PRO	include/fsplib.h	39;"	d
+FSP_CC_GRAB_DONE	include/fsplib.h	44;"	d
+FSP_CC_GRAB_FILE	include/fsplib.h	43;"	d
+FSP_CC_INFO	include/fsplib.h	31;"	d
+FSP_CC_INSTALL	include/fsplib.h	36;"	d
+FSP_CC_LIMIT	include/fsplib.h	48;"	d
+FSP_CC_MAKE_DIR	include/fsplib.h	41;"	d
+FSP_CC_RENAME	include/fsplib.h	46;"	d
+FSP_CC_SET_PRO	include/fsplib.h	40;"	d
+FSP_CC_STAT	include/fsplib.h	45;"	d
+FSP_CC_TEST	include/fsplib.h	49;"	d
+FSP_CC_UP_LOAD	include/fsplib.h	35;"	d
+FSP_CC_VERSION	include/fsplib.h	30;"	d
 FSP_DIR	include/fsplib.h	/^typedef struct FSP_DIR {$/;"	s
 FSP_DIR	include/fsplib.h	/^} FSP_DIR;$/;"	t	typeref:struct:FSP_DIR
-FSP_DIR_ADD	include/fsplib.h	80;"	d
-FSP_DIR_DEL	include/fsplib.h	79;"	d
-FSP_DIR_GET	include/fsplib.h	82;"	d
-FSP_DIR_LIST	include/fsplib.h	84;"	d
-FSP_DIR_MKDIR	include/fsplib.h	81;"	d
-FSP_DIR_OWNER	include/fsplib.h	78;"	d
-FSP_DIR_README	include/fsplib.h	83;"	d
-FSP_DIR_RENAME	include/fsplib.h	85;"	d
+FSP_DIR_ADD	include/fsplib.h	81;"	d
+FSP_DIR_DEL	include/fsplib.h	80;"	d
+FSP_DIR_GET	include/fsplib.h	83;"	d
+FSP_DIR_LIST	include/fsplib.h	85;"	d
+FSP_DIR_MKDIR	include/fsplib.h	82;"	d
+FSP_DIR_OWNER	include/fsplib.h	79;"	d
+FSP_DIR_README	include/fsplib.h	84;"	d
+FSP_DIR_RENAME	include/fsplib.h	86;"	d
 FSP_FILE	include/fsplib.h	/^typedef struct FSP_FILE {$/;"	s
 FSP_FILE	include/fsplib.h	/^} FSP_FILE;$/;"	t	typeref:struct:FSP_FILE
 FSP_GET_FILE_FAILED	include/error_code.h	/^    FSP_GET_FILE_FAILED=7,$/;"	e	enum:__anon1
-FSP_HSIZE	include/fsplib.h	51;"	d
+FSP_HSIZE	include/fsplib.h	52;"	d
 FSP_KEY_PREFIX	include/lock.h	7;"	d
 FSP_LOCK	include/lock.h	/^typedef struct FSP_LOCK {  $/;"	s
 FSP_LOCK	include/lock.h	/^typedef struct FSP_LOCK {$/;"	s
 FSP_LOCK	include/lock.h	/^} FSP_LOCK;$/;"	t	typeref:struct:FSP_LOCK
-FSP_MAXPACKET	include/fsplib.h	55;"	d
-FSP_OFFSET_CMD	include/fsplib.h	58;"	d
-FSP_OFFSET_KEY	include/fsplib.h	60;"	d
-FSP_OFFSET_LEN	include/fsplib.h	62;"	d
-FSP_OFFSET_POS	include/fsplib.h	63;"	d
-FSP_OFFSET_SEQ	include/fsplib.h	61;"	d
-FSP_OFFSET_SUM	include/fsplib.h	59;"	d
+FSP_MAXPACKET	include/fsplib.h	56;"	d
+FSP_METHOD_PARAMS	include/fspClientDemo.h	/^typedef struct FSP_METHOD_PARAMS$/;"	s
+FSP_METHOD_PARAMS	include/fspClientDemo.h	/^}FSP_METHOD_PARAMS;$/;"	t	typeref:struct:FSP_METHOD_PARAMS
+FSP_OFFSET_CMD	include/fsplib.h	59;"	d
+FSP_OFFSET_KEY	include/fsplib.h	61;"	d
+FSP_OFFSET_LEN	include/fsplib.h	63;"	d
+FSP_OFFSET_POS	include/fsplib.h	64;"	d
+FSP_OFFSET_SEQ	include/fsplib.h	62;"	d
+FSP_OFFSET_SUM	include/fsplib.h	60;"	d
 FSP_OPEN_DIR_FAILED	include/error_code.h	/^    FSP_OPEN_DIR_FAILED=6,$/;"	e	enum:__anon1
 FSP_OPEN_FILE_FAILED	include/error_code.h	/^    FSP_OPEN_FILE_FAILED=5,$/;"	e	enum:__anon1
 FSP_PKT	include/fsplib.h	/^typedef struct FSP_PKT {$/;"	s
 FSP_PKT	include/fsplib.h	/^} FSP_PKT;$/;"	t	typeref:struct:FSP_PKT
-FSP_PRO_BYTES	include/fsplib.h	77;"	d
+FSP_PRO_BYTES	include/fsplib.h	78;"	d
 FSP_RDENTRY	include/fsplib.h	/^typedef struct FSP_RDENTRY  {$/;"	s
 FSP_RDENTRY	include/fsplib.h	/^} FSP_RDENTRY;$/;"	t	typeref:struct:FSP_RDENTRY
-FSP_RDTYPE_DIR	include/fsplib.h	68;"	d
-FSP_RDTYPE_END	include/fsplib.h	66;"	d
-FSP_RDTYPE_FILE	include/fsplib.h	67;"	d
-FSP_RDTYPE_LINK	include/fsplib.h	69;"	d
-FSP_RDTYPE_SKIP	include/fsplib.h	70;"	d
+FSP_RDTYPE_DIR	include/fsplib.h	69;"	d
+FSP_RDTYPE_END	include/fsplib.h	67;"	d
+FSP_RDTYPE_FILE	include/fsplib.h	68;"	d
+FSP_RDTYPE_LINK	include/fsplib.h	70;"	d
+FSP_RDTYPE_SKIP	include/fsplib.h	71;"	d
 FSP_READ_DIR_FAILED	include/error_code.h	/^    FSP_READ_DIR_FAILED=13,$/;"	e	enum:__anon1
 FSP_READ_FILE_FAILED	include/error_code.h	/^    FSP_READ_FILE_FAILED=8,$/;"	e	enum:__anon1
 FSP_SESSION	include/fsplib.h	/^typedef struct FSP_SESSION {$/;"	s
 FSP_SESSION	include/fsplib.h	/^} FSP_SESSION;$/;"	t	typeref:struct:FSP_SESSION
-FSP_SPACE	include/fsplib.h	54;"	d
+FSP_SPACE	include/fsplib.h	55;"	d
 FSP_TRANSFER_CONTROLLER	include/fsplib.h	/^typedef struct FSP_TRANSFER_CONTROLLER {$/;"	s
 FSP_TRANSFER_UNIT	include/fsplib.h	/^typedef struct FSP_TRANSFER_UNIT {$/;"	s
 FSP_TSF_CONTR	include/fsplib.h	/^} FSP_TSF_CONTR;$/;"	t	typeref:struct:FSP_TRANSFER_CONTROLLER
@@ -110,16 +112,19 @@ P2P_endpoint_event	p2pnat/include/p2p_api.h	/^typedef int P2P_endpoint_event(REN
 PWD	p2pnat/demo/Makefile	/^PWD :=$(shell pwd)$/;"	m
 REND_CONN_HANDLE	p2pnat/include/p2p_api.h	/^typedef void * REND_CONN_HANDLE;$/;"	t
 REND_EPT_HANDLE	p2pnat/include/p2p_api.h	/^typedef void * REND_EPT_HANDLE;$/;"	t
+SERVER_INFO	include/fspClientDemo.h	/^typedef struct SERVER_INFO$/;"	s
+SERVER_INFO	include/fspClientDemo.h	/^}SERVER_INFO;$/;"	t	typeref:struct:SERVER_INFO
 STRIP	p2pnat/demo/Makefile	/^STRIP = ${CROSS_COMPILE}-strip$/;"	m
 STRIPFLAGS	p2pnat/demo/Makefile	/^STRIPFLAGS = --remove-section=.note --remove-section=.comment$/;"	m
 Usage	p2pnat/demo/p2pdemo.c	/^static char Usage[] =$/;"	v	file:
 VERSION	p2pnat/demo/p2pdemo.c	10;"	d	file:
+_FSPCLINETDEMO_H	include/fspClientDemo.h	2;"	d
 _FSPLIB_H	include/fsplib.h	2;"	d
 _FSPLIB_H_LOCK	include/lock.h	2;"	d
 __buf	lock.c	/^  struct seminfo *__buf;$/;"	m	union:semun	typeref:struct:semun::seminfo	file:
 array	lock.c	/^  unsigned short int *array;$/;"	m	union:semun	file:
-avg_tsf_speed	include/fsplib.h	/^	unsigned double avg_tsf_speed;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
-avg_tsf_speed	include/fsplib.h	/^	unsigned double avg_tsf_speed;$/;"	m	struct:FSP_TRANSFER_UNIT
+avg_speed	include/fsplib.h	/^	unsigned int    avg_speed;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+avg_speed	include/fsplib.h	/^	unsigned int    avg_speed;\/\/ xxx kb\/s$/;"	m	struct:FSP_TRANSFER_UNIT
 blocksize	include/fsplib.h	/^	unsigned short blocksize; \/* size of directory block *\/$/;"	m	struct:FSP_DIR
 buf	include/fsplib.h	/^	unsigned char   buf[FSP_SPACE];   \/* packet payload *\/$/;"	m	struct:FSP_PKT
 buf	lock.c	/^  struct semid_ds *buf;$/;"	m	union:semun	typeref:struct:semun::semid_ds	file:
@@ -135,6 +140,8 @@ checkForUserPrefix	site_scons/prefix.py	/^def checkForUserPrefix(conf,oldprefix=
 check_connection_and_send	p2pnat/demo/p2pdemo.c	/^void check_connection_and_send(int peer_fd, REND_CONN_HANDLE conn)$/;"	f
 check_endpoint_and_connect	p2pnat/demo/p2pdemo.c	/^REND_CONN_HANDLE check_endpoint_and_connect(REND_EPT_HANDLE endpoint, char *tid)$/;"	f
 check_endpoint_event	p2pnat/demo/p2pdemo.c	/^int check_endpoint_event(REND_EPT_HANDLE endpoint, int event)$/;"	f
+circle_time	include/fsplib.h	/^	unsigned int 	circle_time;\/\/one circle of transmissions  using time length $/;"	m	struct:FSP_TRANSFER_CONTROLLER
+circle_times	include/fsplib.h	/^	unsigned int 	circle_times;\/\/one circle of transmissions  using times $/;"	m	struct:FSP_TRANSFER_CONTROLLER
 client_destroy_key	lock.c	/^client_destroy_key(FSP_LOCK *lock)$/;"	f
 client_destroy_key	lock.c	/^void client_destroy_key(FSP_LOCK *lock)$/;"	f
 client_get_key	lock.c	/^unsigned short client_get_key (FSP_LOCK *lock)$/;"	f
@@ -148,17 +155,23 @@ client_set_key	lock.c	/^void client_set_key (FSP_LOCK *lock,unsigned short key)$
 client_set_key	lock.c	/^void client_set_key (FSP_LOCK *lock,unsigned short nkey)$/;"	f
 cmd	include/fsplib.h	/^	unsigned char       cmd; \/* message code.             *\/$/;"	m	struct:FSP_PKT
 code_str	lock.c	/^static char code_str[] =$/;"	v	file:
-cur_tsf	include/fsplib.h	/^	FSP_TRANS_UNIT	cur_tsf;	\/\/the current transferred unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+cur_pkt_size	include/fsplib.h	/^	unsigned int    cur_pkt_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+cur_unit	include/fsplib.h	/^	FSP_TSF_UNIT	cur_unit;	\/\/the current transmission's unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 data	include/fsplib.h	/^	unsigned char  *data;     \/* raw directory data *\/$/;"	m	struct:FSP_DIR
 datasize	include/fsplib.h	/^	unsigned int   datasize;  \/* size of raw dir. data *\/$/;"	m	struct:FSP_DIR
 debug_output	p2pnat/demo/p2pdemo.c	/^int debug_output = 0;$/;"	v
 demo_log_name	p2pnat/demo/p2pdemo.c	/^char demo_log_name[128] = {0};$/;"	v
+device_id	include/fspClientDemo.h	/^	char device_id[256];$/;"	m	struct:SERVER_INFO
+dir_name	include/fspClientDemo.h	/^	char dir_name[256];$/;"	m	struct:FSP_METHOD_PARAMS
 directoryfromfilename	fsplib.c	/^static char * directoryfromfilename(const char *filename)$/;"	f	file:
 dirent	include/fsplib.h	/^	struct dirent dirent;$/;"	m	union:dirent_workaround	typeref:struct:dirent_workaround::dirent
 dirent_workaround	include/fsplib.h	/^typedef union dirent_workaround {$/;"	u
 dirent_workaround	include/fsplib.h	/^} dirent_workaround;$/;"	t	typeref:union:dirent_workaround
 dirname	include/fsplib.h	/^	char   *dirname;          \/* directory name *\/$/;"	m	struct:FSP_DIR
 dirpos	include/fsplib.h	/^	int     dirpos;           \/* current directory pos. *\/$/;"	m	struct:FSP_DIR
+done_size	include/fsplib.h	/^	unsigned long	done_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+done_size	include/fsplib.h	/^	unsigned long   done_size;\/\/the total size of packets which has transferred.$/;"	m	struct:FSP_TRANSFER_UNIT
+done_times	include/fsplib.h	/^	unsigned int    done_times;$/;"	m	struct:FSP_TRANSFER_UNIT
 dummy	.sconf_temp/conftest_0.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_1.c	/^void dummy(void) {}$/;"	f
 dummy	.sconf_temp/conftest_10.c	/^void dummy(void) {}$/;"	f
@@ -217,7 +230,7 @@ fsp_fwrite	fsplib.c	/^size_t fsp_fwrite(const void * source, size_t size, size_t
 fsp_getpro	fsplib.c	/^int fsp_getpro(FSP_SESSION *s,const char *directory,unsigned char *result)$/;"	f
 fsp_install	fsplib.c	/^int fsp_install(FSP_SESSION *s,const char *fname,time_t timestamp)$/;"	f
 fsp_mkdir	fsplib.c	/^int fsp_mkdir(FSP_SESSION *s,const char *directory)$/;"	f
-fsp_open_session	fsplib.c	/^FSP_SESSION * fsp_open_session(const char* tid,const char* invite_code ,const char* key, const char *password)$/;"	f
+fsp_open_session	fsplib.c	/^FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)$/;"	f
 fsp_opendir	fsplib.c	/^FSP_DIR * fsp_opendir(FSP_SESSION *s,const char *dirname)$/;"	f
 fsp_pkt_read	fsplib.c	/^int fsp_pkt_read(FSP_PKT *p,const void *space,size_t recv_len)$/;"	f
 fsp_pkt_write	fsplib.c	/^size_t fsp_pkt_write(const FSP_PKT *p,void *space)$/;"	f
@@ -233,36 +246,24 @@ fsp_stat	fsplib.c	/^int fsp_stat(FSP_SESSION *s,const char *path,struct stat *sb
 fsp_telldir	fsplib.c	/^long fsp_telldir(FSP_DIR *dirp)$/;"	f
 fsp_transaction	fsplib.c	/^int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)$/;"	f
 fsp_unlink	fsplib.c	/^int fsp_unlink(FSP_SESSION *s,const char *directory)$/;"	f
-g_device_id	fspClientDemo.c	/^char g_device_id[256]={0};$/;"	v
-g_dir_name	fspClientDemo.c	/^char g_dir_name[256]={0};$/;"	v
-g_first_resend_time	fspClientDemo.c	/^unsigned int g_first_resend_time=1340;$/;"	v
-g_fsp_method	fspClientDemo.c	/^int g_fsp_method;$/;"	v
-g_fsp_password	fspClientDemo.c	/^char g_fsp_password[60]={0};$/;"	v
-g_get_url	fspClientDemo.c	/^char g_get_url[512]={0};$/;"	v
-g_invite_code	fspClientDemo.c	/^char g_invite_code[256]={0};$/;"	v
-g_last_preferred_size	fsplib.c	/^int g_last_preferred_size=FSP_SPACE;$/;"	v
-g_log_dir	fspClientDemo.c	/^char g_log_dir[256]=".";$/;"	v
-g_lost_packet_rate	fsplib.c	/^double  g_lost_packet_rate=0;$/;"	v
-g_max_wait_time	fspClientDemo.c	/^unsigned int g_max_wait_time=10;$/;"	v
-g_min_lost_packet_rate	fsplib.c	/^double  g_min_lost_packet_rate=0;$/;"	v
-g_min_lost_packet_size	fsplib.c	/^double g_min_lost_packet_size=512;$/;"	v
-g_min_packet_size	fspClientDemo.c	/^unsigned int g_min_packet_size=768;$/;"	v
-g_new_fsp_password	fspClientDemo.c	/^char g_new_fsp_password[60]={0};$/;"	v
-g_no_retry_count	fsplib.c	/^int g_no_retry_count=0;$/;"	v
+g_fsp_method	fspClientDemo.c	/^FSP_METHOD_PARAMS g_fsp_method;$/;"	v
 g_p2p_log_type	fspClientDemo.c	/^int g_p2p_log_type=P2P_LOG_TYPE_NONE;$/;"	v
-g_preferred_size	fspClientDemo.c	/^unsigned int g_preferred_size=7348;\/\/(1500-20-8)*5-12=7348$/;"	v
-g_save_url	fspClientDemo.c	/^char g_save_url[512]={0};$/;"	v
-g_send_packet_count	fsplib.c	/^int g_send_packet_count=0;$/;"	v
+g_server_info	fspClientDemo.c	/^SERVER_INFO     g_server_info;$/;"	v
 g_tid	p2pnat/demo/p2pdemo.c	/^char g_tid[41] = {0};$/;"	v
-g_tmp_num	fspClientDemo.c	/^int g_tmp_num=0;$/;"	v
-g_tsf_unit	fspClientDemo.c	/^FSP_TSF_UNIT	g_tsf_unit;$/;"	v
+g_tsf_controller	fspClientDemo.c	/^FSP_TSF_CONTR	g_tsf_controller;$/;"	v
 g_usage	fspClientDemo.c	/^static char g_usage[] =$/;"	v	file:
-g_version	fspClientDemo.c	/^char g_version[]="0.12_v9";$/;"	v
+g_version	fspClientDemo.c	/^char g_version[]="0.12_v10";$/;"	v
 get_dir_files_method	fspClientDemo.c	/^int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url)$/;"	f
-get_file_method	fspClientDemo.c	/^int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url)$/;"	f
+get_file_method	fspClientDemo.c	/^int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)$/;"	f
+get_url	include/fspClientDemo.h	/^	char get_url[256];$/;"	m	struct:FSP_METHOD_PARAMS
 in	include/fsplib.h	/^	FSP_PKT in,out;            \/* io packets *\/$/;"	m	struct:FSP_FILE
+init_tsf_controller	fsplib.c	/^void init_tsf_controller(FSP_TSF_CONTR* f_controller)$/;"	f
+init_tsf_unit	fsplib.c	/^void init_tsf_unit(FSP_TSF_CONTR* f_controller)$/;"	f
 inuse	include/fsplib.h	/^	short   inuse;            \/* in use counter *\/$/;"	m	struct:FSP_DIR
+invite_code	include/fspClientDemo.h	/^	char invite_code[256];$/;"	m	struct:SERVER_INFO
+ip	include/fspClientDemo.h	/^	char ip[256];$/;"	m	struct:SERVER_INFO
 keep_reg_interval	p2pnat/demo/p2pdemo.c	/^int keep_reg_interval = 0;$/;"	v
+key	include/fspClientDemo.h	/^	char key[256];$/;"	m	struct:SERVER_INFO
 key	include/fsplib.h	/^	unsigned short      key; \/* message key.              *\/$/;"	m	struct:FSP_PKT
 key_string	include/lock.h	/^		char key_string[sizeof(FSP_KEY_PREFIX)+32];$/;"	m	struct:FSP_LOCK
 key_string	include/lock.h	/^	       char key_string[sizeof(FSP_KEY_PREFIX)+32];$/;"	m	struct:FSP_LOCK
@@ -270,9 +271,9 @@ last_delay	include/fsplib.h	/^	unsigned int last_delay;  \/* last delay time    
 last_dupes	include/fsplib.h	/^	unsigned int last_dupes;  \/* last dupes          *\/$/;"	m	struct:FSP_SESSION
 last_resends	include/fsplib.h	/^	unsigned int last_resends;\/* last resends        *\/$/;"	m	struct:FSP_SESSION
 last_rtt	include/fsplib.h	/^	unsigned int last_rtt;    \/* last rtt            *\/$/;"	m	struct:FSP_SESSION
+last_unit	include/fsplib.h	/^	FSP_TSF_UNIT	last_unit;	\/\/the last  transmission's unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 lastmod	include/fsplib.h	/^	unsigned int  lastmod;$/;"	m	struct:FSP_RDENTRY
 len	include/fsplib.h	/^	unsigned short      len; \/* number of bytes in buf 1. *\/$/;"	m	struct:FSP_PKT
-limit_tsf_times	include/fsplib.h	/^	unsigned int 	limit_tsf_times;$/;"	m	struct:FSP_TRANSFER_UNIT
 lock	include/fsplib.h	/^	void *   lock;            \/* key locking         *\/$/;"	m	struct:FSP_SESSION
 lock_fd	include/lock.h	/^	       int lock_fd;$/;"	m	struct:FSP_LOCK
 lock_sem	include/lock.h	/^		int   lock_sem;$/;"	m	struct:FSP_LOCK
@@ -288,20 +289,27 @@ main	fspClientDemo.c	/^int main (int argc, char *argv[])$/;"	f
 main	p2pnat/demo/p2pdemo.c	/^int main(int argc, char *argv[])$/;"	f
 main	test_of_sys_func.c	/^int main()$/;"	f
 make_key_string	lock.c	/^static void make_key_string(	FSP_LOCK *lock,$/;"	f	file:
-max_speed_tsf	include/fsplib.h	/^	FSP_TRANS_UNIT	max_speed_tsf;  \/\/the max transferred speed of the unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+max_pkt_size	include/fsplib.h	/^	unsigned int    max_pkt_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+max_speed_flag	include/fsplib.h	/^	unsigned int    max_speed_flag;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+max_speed_unit	include/fsplib.h	/^	FSP_TSF_UNIT	max_speed_unit;  \/\/the max transmission's speed of the unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 maxdelay	include/fsplib.h	/^	unsigned int   maxdelay;  \/* maximum recv. delay *\/$/;"	m	struct:FSP_SESSION
+min_pkt_size	include/fsplib.h	/^	unsigned int 	min_pkt_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 name	include/fsplib.h	/^	char *name;                \/* filename for upload *\/$/;"	m	struct:FSP_FILE
 name	include/fsplib.h	/^	char name[255 + 1];        \/* entry name *\/$/;"	m	struct:FSP_RDENTRY
 namlen	include/fsplib.h	/^	unsigned short namlen;     \/* length     *\/$/;"	m	struct:FSP_RDENTRY
+new_passwd	include/fspClientDemo.h	/^	char new_passwd[60];$/;"	m	struct:FSP_METHOD_PARAMS
 new_udp_socket	comm.c	/^int new_udp_socket(int local_port, char *local_address)$/;"	f
 new_udp_socket	p2pnat/demo/comm.c	/^int new_udp_socket(int local_port, char *local_address)$/;"	f
 out	include/fsplib.h	/^	FSP_PKT in,out;            \/* io packets *\/$/;"	m	struct:FSP_FILE
 p2p_endpoint	include/fsplib.h	/^	REND_EPT_HANDLE p2p_endpoint;\/*p2p nat struct*\/$/;"	m	struct:FSP_SESSION
 p2p_endpoint_event_bit	p2pnat/include/p2p_api.h	/^}p2p_endpoint_event_bit;$/;"	t	typeref:enum:__anon5
+password	include/fspClientDemo.h	/^	char password[60];$/;"	m	struct:SERVER_INFO
 password	include/fsplib.h	/^	char *password;           \/* host acccess password *\/$/;"	m	struct:FSP_SESSION
 phrase_argv	fspClientDemo.c	/^int phrase_argv(int argc, char *argv[])$/;"	f
 phrase_argv	p2pnat/demo/p2pdemo.c	/^int phrase_argv(int argc, char *argv[])$/;"	f
-pkt_size	include/fsplib.h	/^	unsigned int	pkt_size;\/\/one packet size$/;"	m	struct:FSP_TRANSFER_UNIT
+pkt_ch_range	include/fsplib.h	/^	unsigned int 	pkt_ch_range;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+pkt_size	include/fsplib.h	/^	unsigned int	pkt_size;\/\/one packet size,the unit is byte.$/;"	m	struct:FSP_TRANSFER_UNIT
+port	include/fspClientDemo.h	/^	int  port;$/;"	m	struct:SERVER_INFO
 pos	include/fsplib.h	/^	unsigned int        pos; \/* location in the file.     *\/$/;"	m	struct:FSP_PKT
 pos	include/fsplib.h	/^	unsigned int pos;          \/* position of next packet *\/$/;"	m	struct:FSP_FILE
 random_cid	p2pnat/demo/p2pdemo.c	/^int random_cid = 1;$/;"	v
@@ -313,6 +321,7 @@ rendezvous_connection_status	p2pnat/include/p2p_api.h	/^}rendezvous_connection_s
 resends	include/fsplib.h	/^	unsigned int resends;     \/* total pkt. sends    *\/$/;"	m	struct:FSP_SESSION
 rtts	include/fsplib.h	/^	unsigned long rtts;       \/* cumul. rtt          *\/$/;"	m	struct:FSP_SESSION
 s	include/fsplib.h	/^	FSP_SESSION *s;            \/* master session *\/$/;"	m	struct:FSP_FILE
+save_url	include/fspClientDemo.h	/^	char save_url[256];$/;"	m	struct:FSP_METHOD_PARAMS
 semun	lock.c	/^union semun$/;"	u	file:
 seq	include/fsplib.h	/^	unsigned short      seq; \/* message sequence number.  *\/$/;"	m	struct:FSP_PKT
 seq	include/fsplib.h	/^	unsigned short seq;       \/* sequence number     *\/$/;"	m	struct:FSP_SESSION
@@ -322,20 +331,22 @@ share_key	include/lock.h	/^		unsigned int *share_key;$/;"	m	struct:FSP_LOCK
 share_key	include/lock.h	/^               unsigned short share_key;$/;"	m	struct:FSP_LOCK
 simplecommand	fsplib.c	/^static int simplecommand(FSP_SESSION *s,const char *directory,unsigned char command)$/;"	f	file:
 size	include/fsplib.h	/^	unsigned int  size;$/;"	m	struct:FSP_RDENTRY
+speed_down_flag	include/fsplib.h	/^	unsigned int    speed_down_flag;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 start_time	include/fsplib.h	/^	time_t		start_time;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 start_time	include/fsplib.h	/^	time_t 		start_time;$/;"	m	struct:FSP_TRANSFER_UNIT
+stop_tsf_controller	fsplib.c	/^void stop_tsf_controller(FSP_TSF_CONTR* f_controller)$/;"	f
 sum	include/fsplib.h	/^	unsigned char       sum; \/* message checksum.         *\/$/;"	m	struct:FSP_PKT
 test_decrypt	p2pnat/demo/p2pdemo.c	/^int test_decrypt(char *key, char *enc_data)$/;"	f
 test_encrypt	p2pnat/demo/p2pdemo.c	/^int test_encrypt(char *key, char *data, char *enc_data, int len)$/;"	f
 test_fingprint	p2pnat/demo/p2pdemo.c	/^void test_fingprint(void)$/;"	f
 test_get_deviceId	p2pnat/demo/p2pdemo.c	/^int test_get_deviceId(void)$/;"	f
+tid	include/fspClientDemo.h	/^	char tid[256];$/;"	m	struct:SERVER_INFO
 timeout	include/fsplib.h	/^	unsigned int   timeout;   \/* send timeout 1\/1000s*\/$/;"	m	struct:FSP_SESSION
-total_size	include/fsplib.h	/^	unsigned long    total_size;\/\/the total size of transferred packets$/;"	m	struct:FSP_TRANSFER_UNIT
-total_tsf_size	include/fsplib.h	/^	unsigned long	total_tsf_size;$/;"	m	struct:FSP_TRANSFER_CONTROLLER
 trips	include/fsplib.h	/^	unsigned int trips;       \/* total pkt trips     *\/$/;"	m	struct:FSP_SESSION
 ttest	p2pnat/demo/p2pdemo.c	/^int ttest(void)$/;"	f
 type	include/fsplib.h	/^	unsigned char type;        \/* field type *\/$/;"	m	struct:FSP_RDENTRY
-unit_tsf_times	include/fsplib.h	/^	unsigned int 	unit_tsf_times;\/\/the transfered times of one unit$/;"	m	struct:FSP_TRANSFER_CONTROLLER
+type_flag	include/fspClientDemo.h	/^	int type_flag;$/;"	m	struct:FSP_METHOD_PARAMS
+update_tsf_unit	fsplib.c	/^void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)$/;"	f
 val	lock.c	/^  int val;$/;"	m	union:semun	file:
 writing	include/fsplib.h	/^	unsigned char writing;     \/* opened for writing *\/$/;"	m	struct:FSP_FILE
 xlen	include/fsplib.h	/^	unsigned short     xlen; \/* number of bytes in buf 2  *\/$/;"	m	struct:FSP_PKT
