@@ -1,6 +1,15 @@
 #!/bin/sh
 
-export LD_LIBRARY_PATH=`pwd`/../
+do_export()
+{
+	if [ "`uname -p`" = "x86_64" ];then
+		export LD_LIBRARY_PATH=`pwd`/../lib/x64
+	else
+		export LD_LIBRARY_PATH=`pwd`/../lib/x86
+	fi
+}
+
+do_export
 echo -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
 Server="-s 192.168.130.80"
 if [ "$1" = "s" ];then

@@ -4,7 +4,7 @@
 #ifndef P2P_API
 #define P2P_API
 
-#define P2P_LIB_VERSION "1.1.7"
+#define P2P_LIB_VERSION "1.1.10"
 
 typedef void * REND_EPT_HANDLE;
 typedef void * REND_CONN_HANDLE;
@@ -57,6 +57,7 @@ int handle_rendezvous_packet(int udp_fd, char *udp_message, struct sockaddr_in *
 int rendezvous_status_handle(void); //周期调用
 int set_p2p_reg_keep_interval(int interval);
 void set_p2p_option(int crypt, int debug);
+int set_p2p_config(char *param, char *value);
 
 int get_deviceId_key(char *id, char *key);
 int get_deviceId_byMac(char *mac, char *id);

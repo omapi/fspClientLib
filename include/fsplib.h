@@ -48,11 +48,13 @@
 #define FSP_CC_LIMIT        0x80    /* # > 0x7f for future cntrl blk ext.   */
 #define FSP_CC_TEST         0x81    /* reserved for testing                 */
 
+#define DOWN 0
+#define UP 1
 /* FSP v2 packet size */
 #define FSP_HSIZE 12                           /* 12 bytes for v2 header */
 //#define FSP_SPACE 1024
 //Changed by xxfan
-#define FSP_SPACE 147080                  /* maximum payload.       *//*MTU(max transmission Unit)=1500  FSP_SPACE=(1500-20-8)*10-FSP_HSIZE ,IP header=20,udp header=8*/
+#define FSP_SPACE 14708                  /* maximum payload.       *//*MTU(max transmission Unit)=1500  FSP_SPACE=(1500-20-8)*10-FSP_HSIZE ,IP header=20,udp header=8*/
 #define FSP_MAXPACKET   FSP_HSIZE+FSP_SPACE    /* maximum packet size.   */
 
 /* byte offsets of fields in the FSP v2 header */
@@ -89,7 +91,7 @@
 typedef struct FSP_TRANSFER_UNIT {
 	time_t 		start_time;
 	time_t 		end_time;
-	
+	unsigned int    used_time_len;	
 	unsigned int	pkt_size;//one packet size,the unit is byte.
 	
 	unsigned int    done_times;
@@ -104,8 +106,10 @@ typedef struct FSP_TRANSFER_CONTROLLER {
 	time_t 		end_time;
 
 	unsigned long	done_size;
+	unsigned long	total_size;
 	unsigned int    avg_speed;
-
+	int             direction;//the transmission's direction;
+	int             cmd;
 	FSP_TSF_UNIT	max_speed_unit;  //the max transmission's speed of the unit
 	FSP_TSF_UNIT	cur_unit;	//the current transmission's unit
 	FSP_TSF_UNIT	last_unit;	//the last  transmission's unit
@@ -120,6 +124,7 @@ typedef struct FSP_TRANSFER_CONTROLLER {
 	
 	unsigned int    speed_down_flag;
 	unsigned int    max_speed_flag;
+
 } FSP_TSF_CONTR;
 
 //? end add
@@ -200,7 +205,7 @@ FSP_SESSION* fsp_open_session ( SERVER_INFO *f_server_info);
 void fsp_close_session(FSP_SESSION *s);
 
 /* packet encoding/decoding */
-size_t fsp_pkt_write(const FSP_PKT *p,void *space);
+size_t fsp_pkt_write(FSP_PKT *p,void *space);
 int fsp_pkt_read(FSP_PKT *p,const void *space,size_t recv_len);
 
 /* send/receive round-trip */
@@ -240,6 +245,6 @@ int fsp_canupload(FSP_SESSION *s,const char *fname);
 void init_tsf_controller(FSP_TSF_CONTR* f_controller);
 void stop_tsf_controller(FSP_TSF_CONTR* f_controller);
 void init_tsf_unit(FSP_TSF_CONTR* f_controller);
-void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller);
+void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller,const  int f_len);
 
 #endif

@@ -124,7 +124,7 @@ static char * directoryfromfilename(const char *filename)
 /* Space must be long enough to hold created packet.        */
 /* Maximum created packet size is FSP_MAXPACKET             */
 
-size_t fsp_pkt_write(const FSP_PKT *p,void *space)
+size_t fsp_pkt_write(FSP_PKT *p,void *space)
 {
 	size_t used;
 	unsigned char *ptr;
@@ -137,6 +137,7 @@ size_t fsp_pkt_write(const FSP_PKT *p,void *space)
 		errno = EMSGSIZE;
 		return 0;
 	}
+
 	ptr=space;
 
 	/* pack header */
@@ -150,6 +151,18 @@ size_t fsp_pkt_write(const FSP_PKT *p,void *space)
 	/* copy data block */
 	memcpy(ptr+FSP_HSIZE,p->buf,p->len);
 	used+=p->len;
+	//Add by xxfan 10-17
+	//for dynamically adjusting the pkt size to adjust speed of transction
+	if(p->cmd ==FSP_CC_GET_FILE)
+	{
+		if(p->xlen==2)
+		{
+			//printf("g_tsf_controller.cur_pkt_size-%d\n",g_tsf_controller.cur_pkt_size);
+			*(int32_t*) (p->buf+p->len-2) = htonl((int32_t)g_tsf_controller.cur_pkt_size);
+		}
+	}//end?
+
+
 	/* copy extra data block */
 	memcpy(ptr+used,p->buf+p->len,p->xlen);
 	used+=p->xlen;
@@ -275,8 +288,6 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 		{
 			client_set_key((FSP_LOCK *)s->lock,p->key);
 			errno = ETIMEDOUT;
-			//printf("ETIMEOUT\n");
-			//need error code//xxfan
 			return -3;
 		}
 		/* make a packet */
@@ -313,7 +324,6 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 			t_delay += 1000;
 			continue;
 		}
-		//printf("resend\n");
 
 		/* keep delay value within sane limits */
 		if (w_delay > (int) s->maxdelay)
@@ -421,7 +431,9 @@ int fsp_transaction(FSP_SESSION *s,FSP_PKT *p,FSP_PKT *rpkt)
 			client_set_key((FSP_LOCK *)s->lock,rpkt->key);
 			errno = 0;
 			//Add by xxfan
-			update_tsf_unit(retry,&g_tsf_controller);
+
+			if(rpkt->cmd==FSP_CC_GET_FILE)
+				update_tsf_unit(retry,&g_tsf_controller,rpkt->len);
 			//?end
 			return 0;
 		}
@@ -441,6 +453,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	FSP_SESSION *s;
 	FSP_LOCK *lock;
 
+	if(f_server_info==NULL || f_server_info->device_id==NULL ||strlen(f_server_info->device_id)==0) return NULL;
 	//p2pnat add by xxfan 2016-03-11
 	int rc;
 	int peer_fd;
@@ -1025,7 +1038,7 @@ FSP_FILE * fsp_fopen(FSP_SESSION *session, const char *path,const char *modeflag
 		f->bufpos=FSP_SPACE;
 		f->out.cmd=FSP_CC_GET_FILE;
 		//Add by xxfan 2016/08/16
-		*(int32_t*)(f->out.buf+f->out.len)= htonl((int32_t)g_tsf_controller.cur_unit.pkt_size);
+		*(int32_t*)(f->out.buf+f->out.len)= htonl((int32_t)g_tsf_controller.cur_pkt_size);
 		f->out.xlen=2;
 		f->out.len+=2;
 		//?end add
@@ -1632,8 +1645,7 @@ int fsp_ch_passwd(FSP_SESSION *s,const char *new_fsp_password)
 			return -1;
 		}
 		memcpy(out->buf+out->len,s->password,len+1);
-		out->len+=len;
-	}
+		out->len+=len; }
 
 	len=strlen("\n");
 
@@ -1685,9 +1697,9 @@ void init_tsf_controller(FSP_TSF_CONTR* f_controller)
 	memset(f_controller,0,sizeof(FSP_TSF_CONTR));
 
 	time(&(f_controller->start_time));
-	printf("start downloading,time-%ld\n",f_controller->start_time);
-	f_controller->circle_times=200;
-	f_controller->circle_time= 10;
+	printf("start downloading...\n");
+	f_controller->circle_times=300;
+	f_controller->circle_time= 5;
 	f_controller->pkt_ch_range=256;
 	f_controller->min_pkt_size=768;
 	f_controller->cur_pkt_size=768;
@@ -1699,18 +1711,25 @@ void stop_tsf_controller(FSP_TSF_CONTR* f_controller)
 {
 	int used_time_len;
 	int avg_speed;
+	unsigned long done_size;
 
+	
 	time(&(f_controller->end_time));
 	//printf("end download dir, time-%ld\n",f_controller->end_time);
 	used_time_len=f_controller->end_time-f_controller->start_time;
-	f_controller->done_size+=f_controller->cur_unit.done_size;
+	done_size=f_controller->done_size+f_controller->cur_unit.done_size;
 	
 	if(used_time_len<=0) used_time_len=1;
-	avg_speed=f_controller->done_size/used_time_len;
+	avg_speed=done_size/used_time_len;
+	f_controller->avg_speed=avg_speed;
 
-	printf("toltal size-%ld\n",f_controller->done_size);
-	printf("toltal used time-%d\n",used_time_len);
-	printf("the average speed is %lf KB/s\n",((double)avg_speed)/1024);
+	update_tsf_unit(0,f_controller,-1);
+
+
+	printf("toltal size-%ld KB\n",done_size/1024);
+	printf("toltal used time len-%d s\n",used_time_len);
+	printf("the best pkt size-%d byte\n",f_controller->max_speed_unit.pkt_size);
+	printf("the average speed-%.2lf KB/s\n",((double)avg_speed)/1024);
 	return;
 }
 
@@ -1722,9 +1741,10 @@ void init_tsf_unit(FSP_TSF_CONTR* f_controller)
 
 	cur_unit->pkt_size=f_controller->cur_pkt_size;
 }
-void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)
+void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller,const int recv_len)
 {
 	unsigned int used_time_len;
+	unsigned int old_used_time_len;
 	time_t now;
 	
 	FSP_TSF_UNIT* cur_unit=&(f_controller->cur_unit);
@@ -1734,34 +1754,71 @@ void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)
 	unsigned int max_speed;
 	unsigned int cur_speed;
 	unsigned int last_speed;
+	unsigned long done_size;
 
-
-	cur_unit->done_size+=cur_pkt_size;
-	if(f_retry<10)	cur_unit->lost_pkt[f_retry]++;
-	cur_unit->done_times+=f_retry+1;
-
-	//check if over one transmission circle
+	//recv_len==-1 means recv over
+	if(recv_len>=0)
+	{
+		cur_unit->done_size+=recv_len;
+		if(f_retry<10)	cur_unit->lost_pkt[f_retry]++;
+		cur_unit->done_times+=f_retry+1;
+	}
 	time(&now);
 	used_time_len=now-cur_unit->start_time;
+	old_used_time_len=cur_unit->used_time_len;
 
+	if(old_used_time_len-used_time_len>0)
+	{
+		cur_unit->used_time_len=used_time_len;
+		cur_unit->avg_speed=cur_unit->done_size/used_time_len;
+	}
+	else cur_unit->avg_speed=cur_unit->done_size/1;
+
+	//print
+	if(recv_len==-1 ||//recv_len==-1 means recv over
+			used_time_len -old_used_time_len >=1) //1 second time  passed
+	{
+		done_size=cur_unit->done_size+f_controller->done_size;
+	
+		if(f_controller->direction==DOWN)		printf("Receiving files:");
+		else if(f_controller->direction==UP)	printf("Sending files:");
+		//pre known total size
+		if(f_controller->total_size!=0)
+		{
+			printf("total-%d KB,done-%ld KB(%ld\%),speed-%.2lf KB/s,packet_size-%d byte\n",f_controller->total_size/1024,done_size/1024,(long)(done_size/1024)*100/(f_controller->total_size/1024),(double)cur_unit->avg_speed/1024,f_controller->cur_pkt_size);
+		}
+		else
+		{
+			printf("toltal-unkown,done-%ld KB,speed-%.2lf KB/s,packet_size-%d byte\n",done_size/1024,(double)cur_unit->avg_speed/1024,f_controller->cur_pkt_size);
+		}
+		if(recv_len!=-1)
+		{
+			printf("\033[1A"); //先回到上一行 
+			printf("\033[K");  //清除该行  
+		}
+		else return;
+
+	}
+
+	//check if over one transmission circle
 	//no over
-	if( used_time_len < f_controller->circle_time && cur_unit->done_times < f_controller->circle_times) return;
-
+	if( used_time_len < f_controller->circle_time && cur_unit->done_times < f_controller->circle_times)
+	{
+		return;
+	}
+	//printf("used_time_len-%d,done_times-%d\n",used_time_len,cur_unit->done_times);
 
 	//update cur unit
 	cur_unit->end_time=now;
-	used_time_len=cur_unit->end_time-cur_unit->start_time;
-	if(used_time_len<=0) used_time_len=1;
-	cur_unit->avg_speed=cur_unit->done_size/used_time_len;
+	if(cur_unit->used_time_len!=0)
+		cur_unit->avg_speed=cur_unit->done_size/cur_unit->used_time_len;
+	else cur_unit->avg_speed=cur_unit->done_size/1;
 
 	//update controller info
-	
-	max_speed=f_controller->max_speed_unit.avg_speed;
 	cur_speed=cur_unit->avg_speed;
+	max_speed=f_controller->max_speed_unit.avg_speed;
 	last_speed=f_controller->last_unit.avg_speed;
 
-	if(f_controller->max_speed_flag == 0) 
-		printf("\ncur_pkt_size-%d\n [speed:current-%lf KB/s,last-%lf KB/s,max-%lf KB/s\n",cur_pkt_size,((double)cur_speed)/1024,((double)last_speed)/1024,((double)max_speed/1024));
 	//speed up 
 	if(cur_speed>last_speed) f_controller->speed_down_flag=0;
 	//speed down
@@ -1788,10 +1845,9 @@ void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)
 			}
 		
 			cur_pkt_size += pkt_ch_range;
-	
+			
 			if(cur_pkt_size > f_controller->max_pkt_size) cur_pkt_size=f_controller->max_pkt_size;
 			if(cur_pkt_size < f_controller->min_pkt_size) cur_pkt_size=f_controller->min_pkt_size;
-	
 		}
 		else if(cur_speed<max_speed) 
 		{
@@ -1800,7 +1856,7 @@ void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)
 			{
 				f_controller->max_speed_flag=1;
 				cur_pkt_size=f_controller->max_speed_unit.pkt_size;
-				printf("the best size of packet is %d,find it using %lds\n",f_controller->max_speed_unit.pkt_size,now-f_controller->start_time);
+				//printf("the best size of packet is %d,find it using %lds\n",f_controller->max_speed_unit.pkt_size,now-f_controller->start_time);
 			}
 		}
 	}
@@ -1808,8 +1864,8 @@ void update_tsf_unit(unsigned int f_retry,FSP_TSF_CONTR* f_controller)
 	f_controller->done_size+=cur_unit->done_size;
 	f_controller->cur_pkt_size=cur_pkt_size;
 	memcpy(&(f_controller->last_unit),cur_unit,sizeof(FSP_TSF_UNIT));
-	
-	init_tsf_unit(f_controller);
 
+	init_tsf_unit(f_controller);
+	
 	return;
 }

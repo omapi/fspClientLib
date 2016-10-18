@@ -2,6 +2,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/stat.h>
 #include <sys/fcntl.h>
 #include <time.h>
@@ -14,7 +15,6 @@
 SERVER_INFO     g_server_info;
 FSP_TSF_CONTR	g_tsf_controller;
 FSP_METHOD_PARAMS g_fsp_method;
-
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 
 char g_version[]="0.12_v10";
@@ -33,8 +33,8 @@ static char g_usage[] =
 "      -ls,--list                   display a list of files in the dirent\n"
 "      -v,--version                 display the version of fspClinet and exit.\n"
 "      -d,--debug		    yes,no\n"
-"      -min,--min_pkt_size    	    the min paket size of transmission\n"
-"      -max,--max_pkt_size    	    the max paket size of transmission\n"
+"      -min,--min_pkt_size    	    the min paket size of transmission,the min value is 256\n"
+"      -max,--max_pkt_size    	    the max paket size of transmission,the max value is 14708\n"
 "      -h,--help                    print this help.\n"
 "\n"
 "for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
@@ -134,7 +134,12 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				int_tmp=(unsigned  int)atoi(argv[i+1]);
-				if(int_tmp>0 && int_tmp<=g_tsf_controller.max_pkt_size) g_tsf_controller.min_pkt_size=int_tmp;
+				if(int_tmp>=256 && int_tmp<=g_tsf_controller.max_pkt_size)
+				{
+					g_tsf_controller.min_pkt_size=int_tmp;
+					g_tsf_controller.cur_pkt_size=int_tmp;
+				}
+				//printf("min_pkt_size-%d\n",g_tsf_controller.min_pkt_size);
 				i++;
 			}
 		}
@@ -143,7 +148,8 @@ int phrase_argv(int argc, char *argv[])
 			if(i<argc-1 && *argv[i+1]!='-')
 			{
 				int_tmp=(unsigned int)atoi(argv[i+1]);
-				if(int_tmp> g_tsf_controller.min_pkt_size && int_tmp <= FSP_SPACE) g_tsf_controller.max_pkt_size=int_tmp;
+				if(int_tmp>= g_tsf_controller.min_pkt_size && int_tmp <= FSP_SPACE) g_tsf_controller.max_pkt_size=int_tmp;
+				//printf("max_pkt_size-%d\n",g_tsf_controller.max_pkt_size);
 				i++;
 			}
 		}
@@ -288,11 +294,13 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	char save_dir_url[512];
 	char get_file_url[512];
 	char save_file_url[512];
+	
 
 	struct stat file_stat;
 	
 	int used_time_len;
-	float avg_tsf_speed;
+	int total_count=0;
+	int total_size=0;
 
 	if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
 	{
@@ -314,6 +322,8 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	}
 	else strcpy(save_dir_url,f_save_dir_url);
 
+	
+	//get info: file count,total size ,and so on
 	dir= fsp_opendir(s,f_get_dir_url);
 	if(dir == NULL)
 	{
@@ -338,30 +348,59 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 		if(*(entry.name)=='.')  continue;
 		if((entry.type) == FSP_RDTYPE_FILE)
 		{
+			total_count++;
+			total_size+=entry.size;
+		}
+		else  continue;
+	}
+	fsp_closedir(dir);
+	g_tsf_controller.total_size=total_size;
+	//download
+	dir= fsp_opendir(s,f_get_dir_url);
+	while(1)
+	{
+		if(dir ==NULL ) break;
+		if(dir->dirpos<0 || dir->dirpos % 4)
+		{
+			rc=-1;
+			break;
+		}
+
+		rc=fsp_readdir_native(dir,&entry,&result);
+
+		if(rc !=0) break;
+		if(result==NULL) break;
+
+		if(*(entry.name)=='.')  continue;
+		if((entry.type) == FSP_RDTYPE_FILE)
+		{
 			sprintf(get_file_url,"%s%s",f_get_dir_url,entry.name);
 			sprintf(save_file_url,"%s%s",save_dir_url,entry.name);
 			//check if the file has exited at local
-				if( stat(save_file_url,&file_stat) == 0 && file_stat.st_size == entry.size)
-				{
-				printf("%s has exited at local\n",save_file_url);
+			if( stat(save_file_url,&file_stat) == 0 && file_stat.st_size == entry.size)
+			{
+				g_tsf_controller.done_size+=entry.size;
+				//printf("%s has exited at local\n",save_file_url);
 				continue;
-				}
+			}
 			get_file_method(s,get_file_url,save_file_url,3);
+			//done_size += entry.size;
 		}
 		else if((entry.type) == FSP_RDTYPE_DIR)
 		{
-			printf("%s is directory ,jump downloading it\n",entry.name);
+			//printf("%s is directory ,jump downloading it\n",entry.name);
 			continue;
 		}
 		else if((entry.type) == FSP_RDTYPE_LINK)
 		{
-			printf("%s is link ,jump downloading it\n",entry.name);
+			//printf("%s is link ,jump downloading it\n",entry.name);
 		}
 	}
 	fsp_closedir(dir);
 	
 	return 0;
 }
+
 int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 {
 	FSP_FILE *f;
@@ -372,6 +411,8 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	char* get_url=f_get_url;
 	char save_url[512];
 	int error_flag=1;
+
+	memset(&p,0,sizeof(FSP_PKT));
 
 	//get file name
 	get_file_name=strrchr(get_url,'/');
@@ -427,21 +468,21 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 		printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
 		return -1;
 	}
-	printf("start get file %s\n",get_url);
+//	printf("start get file %s\n",get_url);
 
 	while( ( i=fsp_fread(p.buf,1,g_tsf_controller.cur_unit.pkt_size,f) ) )
 	{
-		error_flag=0;
+		//error_flag=0;
 		fwrite(p.buf,1,i,fp);
-		printf("=");
-		fflush(stdout);
+		//printf("=");
+		//fflush(stdout);
 	}
-	if(f->err!=0)
-	{
-        printf("\n");
+//	if(f->err!=0)
+//	{
+        //printf("\n");
 		error_flag=f->err;
-		remove(save_url);
-	}
+		if(error_flag!=0)	remove(save_url);
+//	}
 
 	fsp_fclose(f);
 	fclose(fp);
@@ -450,6 +491,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 		remove(save_url);
 		printf("Warning,code=%d,reason=\"waiting timeout,try again\n",FSP_WAITING_TIMEOUT_WARNING);
 		g_tsf_controller.cur_pkt_size=g_tsf_controller.max_speed_unit.pkt_size;
+		g_tsf_controller.max_speed_flag=1;
 		init_tsf_unit(&g_tsf_controller);
 		f_retry--;
 		get_file_method(s,f_get_url,f_save_url,f_retry);
@@ -460,7 +502,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 		return -5;
 	}
-	printf("end\n");
+	//printf("end\n");
 	return 0;
 }
 
@@ -483,7 +525,7 @@ int main (int argc, char *argv[])
 	if(rc<0) return 0;
 
 	time(&now1);
-	printf("start p2p time-%ld\n",now1);
+	printf("start p2p ...\n");;
 
 	//p2p_init
 	rc = p2p_init(".","fspClient",g_p2p_log_type,5,NULL,0);
@@ -499,23 +541,29 @@ int main (int argc, char *argv[])
 	assert(s);
 
 	time(&now2);
-	printf("p2p using time-%lds\n",now2-now1);
+	printf("p2p used time len-%ld s\n",now2-now1);
 
 
 	//do method
 	/* diaplay a file list of dir*/
 	if(g_fsp_method.type_flag==FSP_CC_GET_DIR)
 	{
+		g_tsf_controller.direction=DOWN;
 		rc=read_dir_method(s,g_fsp_method.dir_name);
 		if(rc!=0) printf("Failed,code=%d,reason=\"read dir-%s failed\"\n",FSP_READ_DIR_FAILED,g_fsp_method.dir_name);
 	}
 	/* get a file */
 	else if(g_fsp_method.type_flag==FSP_CC_GET_FILE)
 	{
+		g_tsf_controller.direction=DOWN;
 		if(*(g_fsp_method.get_url+strlen(g_fsp_method.get_url)-1)=='/')
+		{
 			get_dir_files_method(s,g_fsp_method.get_url,g_fsp_method.save_url);
+		}
 		else
+		{
 			get_file_method(s,g_fsp_method.get_url,g_fsp_method.save_url,3);
+		}
 	}
 	/*change password*/
 	else if(g_fsp_method.type_flag==FSP_CC_CH_PASSWD)

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <signal.h>
 #include <netinet/in.h> //for sockaddr_in
 #include <sys/types.h>  //for socket
 #include <sys/socket.h> //for socket
@@ -10,6 +11,7 @@
 #define VERSION "1.0.0"
 
 int debug_output = 0;
+int free_endpoint = 0;
 int log_level = 0;
 char demo_log_name[128] = {0};
 int random_cid = 1;
@@ -36,11 +38,38 @@ static char Usage[] =
   "        -S service  client service\n"
   "        -L port     client bind port\n"
   "        -d          output log info to screen\n"
+  "        -F          free endpoint while p2p connect ok\n"
   "        -t          test mode, donn't crypt message\n"
   "        -l level    log level\n"
   "        -T          test get device_id\n"
   "        -K          keep nat interval\n"
   "        -N name     log app name\n";
+
+void print_trace( int signo )
+{
+	void *array[30];
+	size_t size;
+	char **strings;
+	size_t i;
+	int debug_flag = 1;
+
+	size = backtrace (array, 30);
+	strings = backtrace_symbols (array, size);
+
+	if(debug_flag == 1)
+	{
+		printf ("Sig-%d  Obtained %zd stack frames.\n", signo, size);
+		for (i = 0; i < size; i++)
+			printf ("%s\n", strings[i]);
+	}
+	free(strings);
+}
+
+void sig_handler(int signo)
+{
+	print_trace( signo );
+	exit(1);
+}
 
 int test_get_deviceId(void)
 {
@@ -101,8 +130,11 @@ int phrase_argv(int argc, char *argv[])
 {
 	int rc = 0;
 
-	while ((rc = getopt(argc, argv, "K:k:L:S:N:l:c:p:s:i:I:dtT")) != -1) {
+	while ((rc = getopt(argc, argv, "K:k:L:S:N:l:c:p:s:i:I:dtTF")) != -1) {
 		switch(rc) {
+		case 'F':
+			free_endpoint = 1;
+			break;
 		case 'd':
 			if(debug_output < 1)
 				debug_output = 1;
@@ -163,6 +195,10 @@ int check_endpoint_event(REND_EPT_HANDLE endpoint, int event)
 	REND_CONN_HANDLE conn = NULL;
 	if(get_rendezvous_endpoint(endpoint, &status, cid, NULL, ped) == 0){
 		printf("%s(%s) got event %x\n", cid, ped, event);
+		if(free_endpoint == 1){
+			printf("free endpoint %s(%s)\n", cid, ped);
+			free_rendezvous_endpoint(endpoint);
+		}
 	}
 	return 0;
 }
@@ -227,6 +263,7 @@ int main(int argc, char *argv[])
 	int peer_fd;
 	REND_EPT_HANDLE p2p_endpoint;
 	REND_CONN_HANDLE p2p_conn = NULL;
+	signal(SIGSEGV, sig_handler);
 	phrase_argv(argc, argv);
 	if(log_level > 0)
 		printf("demo server version %s\n", VERSION);
