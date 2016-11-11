@@ -17,7 +17,7 @@ FSP_TSF_CONTR	g_tsf_controller;
 FSP_METHOD_PARAMS g_fsp_method;
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 
-char g_version[]="0.12_v10";
+char g_version[]="0.12_v11";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -304,7 +304,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 
 	if(f_get_dir_url==NULL || *f_get_dir_url=='\0')
 	{
-		printf("Failed,code=%d,reason=\"miss get directory or file name\"\n",MISS_PARAMETER_VALUE);
+		printf("\nFailed,code=%d,reason=\"miss get directory or file name\"\n",MISS_PARAMETER_VALUE);
 		return -1;
 	}
 
@@ -327,7 +327,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	dir= fsp_opendir(s,f_get_dir_url);
 	if(dir == NULL)
 	{
-		printf("Failed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
+		printf("\nFailed,code=%d,reason=\"fsp open dir-%s error\"\n",FSP_OPEN_DIR_FAILED,f_get_dir_url);
 		return -2;
 	}
 
@@ -457,7 +457,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	fp=fopen(save_url,"wb+");
 	if(fp==NULL)
 	{
-		printf("Failed,code=%d,reason=\"open file-%s error\"\n",FILE_OPEN_FAILED,save_url);
+		printf("\nFailed,code=%d,reason=\"open file-%s error\"\n",FILE_OPEN_FAILED,save_url);
 		return -2;
 	}
 	//printf("open file for writing-%s\n",save_url);
@@ -465,7 +465,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	assert(f);
 	if(f==NULL)
 	{
-		printf("Failed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
+		printf("\nFailed,code=%d,reason=\"fsp fopen file-%s error\"\n",FSP_OPEN_FILE_FAILED,get_url);
 		return -1;
 	}
 //	printf("start get file %s\n",get_url);
@@ -489,9 +489,22 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	if(error_flag==3&&f_retry>0)//timeout
 	{
 		remove(save_url);
-		printf("Warning,code=%d,reason=\"waiting timeout,try again\n",FSP_WAITING_TIMEOUT_WARNING);
-		g_tsf_controller.cur_pkt_size=g_tsf_controller.max_speed_unit.pkt_size;
-		g_tsf_controller.max_speed_flag=1;
+		printf("\nWarning,code=%d,reason=\"waiting timeout,try again\"\n",FSP_WAITING_TIMEOUT_WARNING);
+		if(f_retry>2)
+		{
+			g_tsf_controller.cur_pkt_size=g_tsf_controller.max_speed_unit.pkt_size;
+			g_tsf_controller.max_speed_flag=1;
+		}
+		else if(f_retry>1)
+		{
+			g_tsf_controller.cur_pkt_size=1024;
+			g_tsf_controller.max_speed_flag=0;
+		}
+		else
+		{
+			g_tsf_controller.cur_pkt_size=g_tsf_controller.min_pkt_size;
+			g_tsf_controller.max_speed_flag=0;
+		}
 		init_tsf_unit(&g_tsf_controller);
 		f_retry--;
 		get_file_method(s,f_get_url,f_save_url,f_retry);
@@ -499,7 +512,7 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	}
 	else if(error_flag!=0)
 	{
-		printf("Failed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
+		printf("\nFailed,code=%d,reason=\"the file -%s read error\"\n",FSP_READ_FILE_FAILED,get_url);
 		return -5;
 	}
 	//printf("end\n");

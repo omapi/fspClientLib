@@ -597,8 +597,8 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	}
 
 	s->fd=peer_fd;
-	s->timeout=300000; /* 5 minutes */
-	s->maxdelay=60000; /* 1 minute  */
+	s->timeout=60000; /* 1 minutes */
+	s->maxdelay=30000; /*30s */
 	s->seq=random() & 0xfff8;
 	s->p2p_endpoint=p2p_endpoint;
 	if ( password )

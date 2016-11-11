@@ -176,7 +176,7 @@ typedef struct FSP_RDENTRY  {
 	unsigned char type;        /* field type */
 	unsigned short reclen;     /* directory record length */
 	unsigned int  size;
-	unsigned int  lastmod;
+	time_t  lastmod;
 } FSP_RDENTRY;
 
 /* fsp file handle */
