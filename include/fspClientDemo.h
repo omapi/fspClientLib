@@ -9,7 +9,7 @@ typedef struct SERVER_INFO
 	char password[60];
 	char key[256];
 	char tid[256];
-	char ip[256];
+	char ip[60];
 	int  port;
 }SERVER_INFO;
 

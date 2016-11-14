@@ -27,6 +27,7 @@ static char g_usage[] =
 "      -id,--device_id              client uses this id to find server\n"
 "      -ic,--invite_code            the invite code of FSP server for  p2pnat\n"
 "      -p,--password                the password of server\n"
+"      -ip,--ip_address             the server ip address:port\n"
 "      -g,--get                     download a file or a dirent from the server of whose device_id is device_id\n"
 "      -s,--save                    the local url for saving the download file or dirent \n"
 "      -np,--new_password           change the  password of server\n"
@@ -37,8 +38,8 @@ static char g_usage[] =
 "      -max,--max_pkt_size    	    the max paket size of transmission,the max value is 14708\n"
 "      -h,--help                    print this help.\n"
 "\n"
-"for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n";
-
+"for example:  ./fspClientDemo -id 8b008c8c-2209-97ab-5143-f0a4aa470023 -ic newrocktech -p newrocktech -ls Recorder/\n"
+"    or    ./fspClientDemo -ip 192.168.130.122:9531 -p newrocktech -ls Recorder/\n";
 int phrase_argv(int argc, char *argv[])
 {
 	int i = 0;
@@ -89,6 +90,16 @@ int phrase_argv(int argc, char *argv[])
 				i++;
 			}
 			else strcpy(g_server_info.password,"");
+		}
+		//the server ip address:port
+		else if(strcasecmp(argv[i],"--ip_address")==0||strcasecmp(argv[i],"-ip")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_server_info.ip,argv[i+1]);
+				i++;
+			}
+			else strcpy(g_server_info.ip,"");
 		}
 		//get file or dir method
 		else if(strcasecmp(argv[i],"--get")==0||strcasecmp(argv[i],"-g")==0)
@@ -537,24 +548,32 @@ int main (int argc, char *argv[])
 	rc=phrase_argv(argc,argv);
 	if(rc<0) return 0;
 
-	time(&now1);
-	printf("start p2p ...\n");;
-
-	//p2p_init
-	rc = p2p_init(".","fspClient",g_p2p_log_type,5,NULL,0);
-	if(rc!=0)
+	if(g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0)
 	{
-		//printf("p2p init fail\n");
-		printf("Failed,code=%d,reason=\"init p2p failed\"\n",P2P_INIT_FAILED);
-		return 0;
+		time(&now1);
+		printf("start p2p ...\n");;
+
+		//p2p_init
+		rc = p2p_init(".","fspClient",g_p2p_log_type,5,NULL,0);
+		if(rc!=0)
+		{
+			//printf("p2p init fail\n");
+			printf("Failed,code=%d,reason=\"init p2p failed\"\n",P2P_INIT_FAILED);
+			return 0;
+		}
 	}
-
 	s = fsp_open_session(&g_server_info);
-	if(s==NULL) return 0;
+	if(s==NULL)
+	{
+		printf("fsp_open_session failed\n");
+		return 0;
+	}		
 	assert(s);
-
-	time(&now2);
-	printf("p2p used time len-%ld s\n",now2-now1);
+	if(g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0)
+	{
+		time(&now2);
+		printf("p2p used time len-%ld s\n",now2-now1);
+	}
 
 
 	//do method

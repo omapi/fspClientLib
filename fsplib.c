@@ -453,7 +453,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	FSP_SESSION *s;
 	FSP_LOCK *lock;
 
-	if(f_server_info==NULL || f_server_info->device_id==NULL ||strlen(f_server_info->device_id)==0) return NULL;
+	
 	//p2pnat add by xxfan 2016-03-11
 	int rc;
 	int peer_fd;
@@ -467,6 +467,8 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	struct sockaddr_in peer_addr;
 
 	peer_fd = new_udp_socket(0,NULL);
+	if(f_server_info->device_id!=NULL && strlen(f_server_info->device_id)>0)
+	{
 	p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,key,peer_fd);
 
 	//
@@ -552,7 +554,15 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			continue;
 		}
 	}
-
+	}
+	else if(f_server_info->ip!=NULL && strlen(f_server_info->ip)>0)
+	{
+		strcpy(server_addr, f_server_info->ip);
+	}
+	else
+	{
+		return NULL;
+	}
 	rc = endpoint_to_address(server_addr, &peer_addr);
 	if(rc != 0)
 	{
