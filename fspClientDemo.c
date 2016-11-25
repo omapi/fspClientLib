@@ -485,6 +485,8 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 	{
 		//error_flag=0;
 		fwrite(p.buf,1,i,fp);
+		if(f_retry<3)
+			f_retry=3;
 		//printf("=");
 		//fflush(stdout);
 	}
@@ -513,8 +515,8 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 		}
 		else
 		{
-			g_tsf_controller.cur_pkt_size=g_tsf_controller.min_pkt_size;
-			g_tsf_controller.max_speed_flag=0;
+			g_tsf_controller.cur_pkt_size=1024;
+			g_tsf_controller.max_speed_flag=1;
 		}
 		init_tsf_unit(&g_tsf_controller);
 		f_retry--;

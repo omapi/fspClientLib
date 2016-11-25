@@ -566,7 +566,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	rc = endpoint_to_address(server_addr, &peer_addr);
 	if(rc != 0)
 	{
-		//printf("Failed,reson=\"invalid ip port:%s\"\n", server_addr);
+		printf("Failed,reson=\"invalid ip port:%s\"\n", server_addr);
 		return NULL;
 	}
 	//?end p2pnat
