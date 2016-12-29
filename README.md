@@ -1,4 +1,4 @@
-# fspClientLib(Linux版)
+# fspClientLib
 
 ## 简介
 
@@ -12,7 +12,7 @@ fsp协议是基于udp的文件管理协议。该协议功能类似ftp协议（�
 
 ## 功能
 
-**目前，该软件Demo(V0.12_V5版本)已实现的功能有：**
+**目前，该软件Demo(0.12_V11版本)已实现的功能有：**
 
 - **点对点NAT穿透：**
   - 一个点在公网，一个点在私网(100%可穿透)
@@ -37,7 +37,7 @@ fsp协议是基于udp的文件管理协议。该协议功能类似ftp协议（�
 
 ### 1. 下载：
 
-进入bin目录，下载和自己系统对应的tar包。如：fspClientDemo\_0.12_V5\_x64.tar.gz
+进入bin目录，下载和自己系统对应的tar包。如：fspClientDemo\_0.12_V11\_x64.tar.gz
 
 
 
@@ -56,14 +56,15 @@ fsp协议是基于udp的文件管理协议。该协议功能类似ftp协议（�
 
 - p2pnat 为程序所依赖的动态库
 
+- Windows可直接使用命令行调用exe程序
+
 
 
 ### 3. 运行
 
 ##### 查看帮助说明
 
-`./fspClientDemo —help`
-
+`./fspClientDemo —h`
 
 
 正常使用时，需要3个必选参数：`device_id`，`invite_code`，`password`
@@ -79,7 +80,8 @@ fsp协议是基于udp的文件管理协议。该协议功能类似ftp协议（�
 ##### **下载文件或文件夹**
 
 `./fspClientDemo -id {OM设备的device_id}  -ic {p2p邀请码}   -p {fsp密码}   -g {下载路径}   -s {保存路径}`
-
+非穿透方式使用
+`./fspClientDemo -ip {OM设备的ip:9531}   -p {fsp密码}   -g {下载路径}   -s {保存路径}`
 
 
 ⚠️：
@@ -94,7 +96,8 @@ fsp协议是基于udp的文件管理协议。该协议功能类似ftp协议（�
 
 `./fspClientDemo -id {OM设备的device_id}  -ic {p2p邀请码}   -p {fsp密码}   -ls {要查看的文件夹}`
 
-
+非穿透方式使用
+`./fspClientDemo -ip {OM设备的ip:9531}  -p {fsp密码} -ls {要查看的文件夹}`
 
 ##### 修改密码
 
