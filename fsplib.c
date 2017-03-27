@@ -467,7 +467,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	struct sockaddr_in peer_addr;
 
 	peer_fd = new_udp_socket(0,NULL);
-	if(f_server_info->device_id!=NULL && strlen(f_server_info->device_id)>0)
+	if((f_server_info->device_id!=NULL && strlen(f_server_info->device_id)>0) )
 	{
 	p2p_endpoint = new_rendezvous_endpoint(NULL,"FSP",NULL,NULL,key,peer_fd);
 
@@ -501,6 +501,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 		{
 			if( status == ENDPOINT_REGISTER_OK && p2p_conn == NULL)
 			{
+				
 				p2p_conn = new_rendezvous_connection(p2p_endpoint, f_server_info->device_id, "FSP", "default" ,invite_code);
 				if(p2p_conn != NULL)
 				{
@@ -514,6 +515,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 				return NULL;
 			}
 		}
+		
 		if(get_rendezvous_connection(p2p_conn, &status, r_ed, r_ped) == 0){
 			if(status == CONNECTION_OK) {
 				//如果连接建立成功，则可以发送应用数据
@@ -532,10 +534,13 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			}
 			else if(status == CONNECTION_FAILED)
 			{
-				printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
+				//printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
+				printf("P2P_CONNECTION_FAILED,continue");
+				continue;
 				return NULL;
 			}
 		}
+		
 		memset(udp_message, 0, sizeof(udp_message));
 		rc = recv_udp_packet(peer_fd, udp_message, sizeof(udp_message), &peer_addr);
 		if(rc <= 0){

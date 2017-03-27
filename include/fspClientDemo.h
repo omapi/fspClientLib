@@ -10,6 +10,7 @@ typedef struct SERVER_INFO
 	char key[256];
 	char tid[256];
 	char ip[60];
+	char mac[60];
 	int  port;
 }SERVER_INFO;
 

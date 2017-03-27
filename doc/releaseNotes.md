@@ -2,6 +2,13 @@
 
 > **代码开源地址：**https://github.com/omapi/fspClientLib
 
+## fspClientLib 0.12_V12  ReleaseNotes 2017-03-27  by ywhou
+#### 改进
+| 功能描述                                     | 注意事项 | 关注人     |
+| ---------------------------------------- | ---- | ------- |
+| 下载文件夹时，当下载到的文件个数为0时尝试下载3次| 修复文件夹中有文件，偶尔下载到文件个数为0的问题|xxtang|
+| p2p建立连接失败后继续尝试直到60s后超时结束| |xxtang|
+
 ## fspClientLib 0.12_V11  ReleaseNotes 2016-11-11  by ywhou
 #### 改进
 | 功能描述                                     | 注意事项 | 关注人     |

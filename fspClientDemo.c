@@ -16,8 +16,9 @@ SERVER_INFO     g_server_info;
 FSP_TSF_CONTR	g_tsf_controller;
 FSP_METHOD_PARAMS g_fsp_method;
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
+int downcount=0;
 
-char g_version[]="0.12_v11";
+char g_version[]="0.12_v12";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -100,6 +101,16 @@ int phrase_argv(int argc, char *argv[])
 				i++;
 			}
 			else strcpy(g_server_info.ip,"");
+		}
+		//the server MAC address
+		else if(strcasecmp(argv[i],"--MAC")==0||strcasecmp(argv[i],"-mac")==0)
+		{
+			if(i<argc-1 && *argv[i+1]!='-')
+			{
+				strcpy(g_server_info.mac,argv[i+1]);
+				i++;
+			}
+			else strcpy(g_server_info.mac,"");
 		}
 		//get file or dir method
 		else if(strcasecmp(argv[i],"--get")==0||strcasecmp(argv[i],"-g")==0)
@@ -366,6 +377,7 @@ int get_dir_files_method(FSP_SESSION* s,char* f_get_dir_url,char* f_save_dir_url
 	}
 	fsp_closedir(dir);
 	g_tsf_controller.total_size=total_size;
+	downcount=total_count;
 	//download
 	dir= fsp_opendir(s,f_get_dir_url);
 	while(1)
@@ -550,7 +562,7 @@ int main (int argc, char *argv[])
 	rc=phrase_argv(argc,argv);
 	if(rc<0) return 0;
 
-	if(g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0)
+	if((g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0) || (g_server_info.mac!=NULL && strlen(g_server_info.mac)>0))
 	{
 		time(&now1);
 		printf("start p2p ...\n");;
@@ -571,7 +583,7 @@ int main (int argc, char *argv[])
 		return 0;
 	}		
 	assert(s);
-	if(g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0)
+	if((g_server_info.device_id!=NULL && strlen(g_server_info.device_id)>0) || (g_server_info.mac!=NULL && strlen(g_server_info.mac)>0))
 	{
 		time(&now2);
 		printf("p2p used time len-%ld s\n",now2-now1);
@@ -592,7 +604,13 @@ int main (int argc, char *argv[])
 		g_tsf_controller.direction=DOWN;
 		if(*(g_fsp_method.get_url+strlen(g_fsp_method.get_url)-1)=='/')
 		{
-			get_dir_files_method(s,g_fsp_method.get_url,g_fsp_method.save_url);
+			int i;
+			for(i=0;i<3;i++)
+			{
+				get_dir_files_method(s,g_fsp_method.get_url,g_fsp_method.save_url);
+				if(downcount>0)
+				break;
+			}
 		}
 		else
 		{
