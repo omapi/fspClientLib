@@ -609,7 +609,8 @@ int main (int argc, char *argv[])
 			{
 				get_dir_files_method(s,g_fsp_method.get_url,g_fsp_method.save_url);
 				if(downcount>0)
-				break;
+					break;
+				sleep(1);
 			}
 		}
 		else

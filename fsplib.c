@@ -465,6 +465,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	REND_EPT_HANDLE p2p_endpoint = NULL;
 	REND_CONN_HANDLE p2p_conn = NULL;
 	struct sockaddr_in peer_addr;
+	int conncount=0;
 
 	peer_fd = new_udp_socket(0,NULL);
 	if((f_server_info->device_id!=NULL && strlen(f_server_info->device_id)>0) )
@@ -490,7 +491,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	{
 		//check if reg timeout
 		time(&now);
-		if(now-do_p2p_reg_time>=60)//60s timeout
+		if(now-do_p2p_reg_time>=120)//60s timeout
 		{
 			printf("Failed,code=%d,reason=\"p2p endpoint register timeout\"\n",P2P_ENDPOINT_REGISTER_FAILED);
 			return NULL;
@@ -516,8 +517,9 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			}
 		}
 		
+	Loop:
 		if(get_rendezvous_connection(p2p_conn, &status, r_ed, r_ped) == 0){
-			if(status == CONNECTION_OK) {
+			if(status == CONNECTION_OK || status ==5) {
 				//如果连接建立成功，则可以发送应用数据
 				//private net address
 				if(strlen(r_ed) > 0){
@@ -534,9 +536,15 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			}
 			else if(status == CONNECTION_FAILED)
 			{
-				//printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
-				printf("P2P_CONNECTION_FAILED,continue");
-				continue;
+				if(conncount<3)
+				{
+					printf("P2P_CONNECTION_FAILED,continue\n");
+					sleep(1);
+					p2p_conn = new_rendezvous_connection(p2p_endpoint, f_server_info->device_id, "FSP", "default" ,invite_code);
+					conncount++;
+					goto Loop;
+				}
+				printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
 				return NULL;
 			}
 		}
