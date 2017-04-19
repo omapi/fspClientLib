@@ -517,9 +517,8 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			}
 		}
 		
-	Loop:
 		if(get_rendezvous_connection(p2p_conn, &status, r_ed, r_ped) == 0){
-			if(status == CONNECTION_OK || status ==5) {
+			if(status == CONNECTION_OK || status ==CONNECTION_POK) {
 				//如果连接建立成功，则可以发送应用数据
 				//private net address
 				if(strlen(r_ed) > 0){
@@ -536,15 +535,18 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 			}
 			else if(status == CONNECTION_FAILED)
 			{
+				int error_code=0;
+				get_rendezvous_connection_error(p2p_conn, &status, &error_code);
+
 				if(conncount<3)
 				{
-					printf("P2P_CONNECTION_FAILED,continue\n");
+					printf("P2P_CONNECTION_FAILED,error_code:%d,continue\n",error_code);
 					sleep(1);
 					p2p_conn = new_rendezvous_connection(p2p_endpoint, f_server_info->device_id, "FSP", "default" ,invite_code);
 					conncount++;
-					goto Loop;
+					continue;
 				}
-				printf("Failed,code=%d,reason=\"p2p connection error\"\n",P2P_CONNECTION_FAILED);
+				printf("Failed,code=%d,reason=\"p2p connection error,error_code:%d\"\n",P2P_CONNECTION_FAILED,error_code);
 				return NULL;
 			}
 		}

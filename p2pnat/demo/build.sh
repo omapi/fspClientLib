@@ -9,18 +9,20 @@ do_export()
 	fi
 }
 
+MAKE="make -f device_makefile"
+
 do_export
 echo -e "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
 Server="-s 192.168.130.80"
 if [ "$1" = "s" ];then
 	shift
-	./p2pdemo ${Server} -d -l 5 $*
+	./pdemo ${Server} -d -l 5 $*
 elif [ "$1" = "c" ];then
 	shift
-	./p2pdemo ${Server} -d -l 5 -c $*
+	./pdemo ${Server} -d -l 5 -c $*
 elif [ "$1" = "r" ];then
 	shift
-	./p2pdemo ${Server} $*
+	./pdemo ${Server} $*
 elif [ "$1" = "lib" ];then
 	cd ../; ./build.sh $2
 elif [ "$1" != "" ];then
@@ -37,8 +39,8 @@ elif [ "$1" != "" ];then
 	elif [ "$1" = "om400" ];then
 		export PATH=/opt/eabi/arm-2009q1/bin:/opt/eabi/arm-eabi-4.4.0/bin:$PATH
 	fi
-	make clean
-	make TARGET=$1 STATIC=$2
-	[ -f p2pdemo ] && cp p2pdemo p2pdemo_$1
+	${MAKE} clean
+	${MAKE} TARGET=$1 STATIC=$2
+	[ -f pdemo ] && cp pdemo pdemo_$1
 fi
 

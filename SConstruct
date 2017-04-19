@@ -4,14 +4,14 @@ import os
 # init Scons
 EnsureSConsVersion(0,96)
 PACKAGE='fsplib'
-VERSION='0.12_v11'
+VERSION='0.12_v13'
 
 #Defaults
 PREFIX='/usr/local'
 SHARED=0
 P2PLAB_PATH='p2pnat/lib/x86'
 
-env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH=os.path.join('#/',P2PLAB_PATH),LIBS='p2pnat')
+env = Environment(CPPPATH=['#/include','#/p2pnat/include'],LIBPATH=os.path.join('#/',P2PLAB_PATH),LIBS=['p2pnat','pthread'])
 # Turn CPPFLAGS to list
 env.Append( CPPFLAGS = [])
 # Add by xxfan

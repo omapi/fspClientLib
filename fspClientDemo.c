@@ -18,7 +18,7 @@ FSP_METHOD_PARAMS g_fsp_method;
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int downcount=0;
 
-char g_version[]="0.12_v12";
+char g_version[]="0.12_v13";
 
 static char g_usage[] =
 "fsp client demo\n"
