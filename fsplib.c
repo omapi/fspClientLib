@@ -465,7 +465,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	REND_EPT_HANDLE p2p_endpoint = NULL;
 	REND_CONN_HANDLE p2p_conn = NULL;
 	struct sockaddr_in peer_addr;
-	int conncount=0;
+	//int conncount=0;
 
 	peer_fd = new_udp_socket(0,NULL);
 	if((f_server_info->device_id!=NULL && strlen(f_server_info->device_id)>0) )
@@ -491,7 +491,7 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 	{
 		//check if reg timeout
 		time(&now);
-		if(now-do_p2p_reg_time>=120)//60s timeout
+		if(now-do_p2p_reg_time>=50)//60s timeout
 		{
 			printf("Failed,code=%d,reason=\"p2p endpoint register timeout\"\n",P2P_ENDPOINT_REGISTER_FAILED);
 			return NULL;
@@ -538,14 +538,14 @@ FSP_SESSION* fsp_open_session(SERVER_INFO* f_server_info)
 				int error_code=0;
 				get_rendezvous_connection_error(p2p_conn, &status, &error_code);
 
-				if(conncount<3)
-				{
-					printf("P2P_CONNECTION_FAILED,error_code:%d,continue\n",error_code);
-					sleep(1);
-					p2p_conn = new_rendezvous_connection(p2p_endpoint, f_server_info->device_id, "FSP", "default" ,invite_code);
-					conncount++;
-					continue;
-				}
+				//if(conncount<3)
+				//{
+				//	printf("P2P_CONNECTION_FAILED,error_code:%d,continue\n",error_code);
+				//	sleep(1);
+				//	p2p_conn = new_rendezvous_connection(p2p_endpoint, f_server_info->device_id, "FSP", "default" ,invite_code);
+				//	conncount++;
+				//	continue;
+				//}
 				printf("Failed,code=%d,reason=\"p2p connection error,error_code:%d\"\n",P2P_CONNECTION_FAILED,error_code);
 				return NULL;
 			}

@@ -18,7 +18,7 @@ FSP_METHOD_PARAMS g_fsp_method;
 int g_p2p_log_type=P2P_LOG_TYPE_NONE;
 int downcount=0;
 
-char g_version[]="0.12_v13";
+char g_version[]="0.12_v14";
 
 static char g_usage[] =
 "fsp client demo\n"
@@ -546,11 +546,12 @@ int get_file_method(FSP_SESSION *s,char* f_get_url,char* f_save_url,int f_retry)
 
 int main (int argc, char *argv[])
 {
-	FSP_SESSION* s;
+	FSP_SESSION* s=NULL;
 	int rc;
 	time_t now1;
 	time_t now2;
 	time_t now3;
+	int connum=0;
 
 	//init
 	memset(&g_server_info,0,sizeof(SERVER_INFO));
@@ -576,7 +577,13 @@ int main (int argc, char *argv[])
 			return 0;
 		}
 	}
-	s = fsp_open_session(&g_server_info);
+	while(s==NULL)
+	{
+		s = fsp_open_session(&g_server_info);
+		connum++;
+		if(connum>=3)
+			break;
+	}
 	if(s==NULL)
 	{
 		printf("fsp_open_session failed\n");
